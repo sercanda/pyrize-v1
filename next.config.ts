@@ -1,7 +1,10 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+<<<<<<< HEAD
   output: 'standalone',
+=======
+>>>>>>> 443061a79f7ac9272c9ca4805e98964e4cad8f67
   images: {
     remotePatterns: [
       {
