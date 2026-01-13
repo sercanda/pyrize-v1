@@ -14,32 +14,32 @@ if (typeof window === 'undefined') {
 const IL_TO_NUTS2: Record<string, string> = {
   // TR10 - İstanbul
   'istanbul': 'TR10',
-  
+
   // TR51 - Ankara
   'ankara': 'TR51',
-  
+
   // TR31 - İzmir
   'izmir': 'TR31',
-  
+
   // TR21 - Tekirdağ
   'edirne': 'TR21',
   'kırklareli': 'TR21',
   'tekirdağ': 'TR21',
   'tekirdag': 'TR21',
-  
+
   // TR22 - Balıkesir
   'balıkesir': 'TR22',
   'balikesir': 'TR22',
   'çanakkale': 'TR22',
   'canakkale': 'TR22',
-  
+
   // TR32 - Aydın
   'aydın': 'TR32',
   'aydin': 'TR32',
   'denizli': 'TR32',
   'muğla': 'TR32',
   'mugla': 'TR32',
-  
+
   // TR33 - Manisa
   'afyonkarahisar': 'TR33',
   'afyon': 'TR33',
@@ -48,13 +48,13 @@ const IL_TO_NUTS2: Record<string, string> = {
   'manisa': 'TR33',
   'uşak': 'TR33',
   'usak': 'TR33',
-  
+
   // TR41 - Bursa
   'bursa': 'TR41',
   'eskişehir': 'TR41',
   'eskisehir': 'TR41',
   'bilecik': 'TR41',
-  
+
   // TR42 - Kocaeli
   'bolu': 'TR42',
   'kocaeli': 'TR42',
@@ -62,28 +62,28 @@ const IL_TO_NUTS2: Record<string, string> = {
   'yalova': 'TR42',
   'düzce': 'TR42',
   'duzce': 'TR42',
-  
+
   // TR52 - Konya
   'konya': 'TR52',
   'karaman': 'TR52',
-  
+
   // TR61 - Antalya
   'antalya': 'TR61',
   'burdur': 'TR61',
   'isparta': 'TR61',
-  
+
   // TR62 - Adana
   'adana': 'TR62',
   'mersin': 'TR62',
   'içel': 'TR62',
   'icel': 'TR62',
-  
+
   // TR63 - Hatay
   'hatay': 'TR63',
   'kahramanmaraş': 'TR63',
   'kahramanmaras': 'TR63',
   'osmaniye': 'TR63',
-  
+
   // TR7 - Kayseri
   'nevşehir': 'TR7',
   'nevsehir': 'TR7',
@@ -97,7 +97,7 @@ const IL_TO_NUTS2: Record<string, string> = {
   'kayseri': 'TR7',
   'sivas': 'TR7',
   'yozgat': 'TR7',
-  
+
   // TR8 - Samsun
   'zonguldak': 'TR8',
   'karabük': 'TR8',
@@ -113,7 +113,7 @@ const IL_TO_NUTS2: Record<string, string> = {
   'çorum': 'TR8',
   'corum': 'TR8',
   'amasya': 'TR8',
-  
+
   // TR9 - Trabzon
   'trabzon': 'TR9',
   'ordu': 'TR9',
@@ -122,7 +122,7 @@ const IL_TO_NUTS2: Record<string, string> = {
   'artvin': 'TR9',
   'gümüşhane': 'TR9',
   'gumushane': 'TR9',
-  
+
   // TRA - Erzurum
   'erzurum': 'TRA',
   'erzincan': 'TRA',
@@ -133,7 +133,7 @@ const IL_TO_NUTS2: Record<string, string> = {
   'ığdır': 'TRA',
   'igdir': 'TRA',
   'ardahan': 'TRA',
-  
+
   // TRB - Malatya
   'malatya': 'TRB',
   'elazığ': 'TRB',
@@ -146,7 +146,7 @@ const IL_TO_NUTS2: Record<string, string> = {
   'mus': 'TRB',
   'bitlis': 'TRB',
   'hakkari': 'TRB',
-  
+
   // TRC - Gaziantep
   'gaziantep': 'TRC',
   'adıyaman': 'TRC',
@@ -179,13 +179,13 @@ function loadKFEData(): Record<string, any> {
     if (typeof window === 'undefined') {
       const fs = require('fs');
       const path = require('path');
-      
+
       // Önce JSON dosyasını dene
       const jsonPath = path.join(process.cwd(), 'src', 'lib', 'utils', 'kfe-data.json');
       if (fs.existsSync(jsonPath)) {
         const jsonData = fs.readFileSync(jsonPath, 'utf-8');
         kfeDataCache = JSON.parse(jsonData);
-        return kfeDataCache;
+        return kfeDataCache ?? {};
       }
 
       // JSON yoksa Excel'i dene (fallback)
@@ -218,14 +218,14 @@ function loadKFEData(): Record<string, any> {
  */
 function parseExcelData(data: any[][]): Record<string, any> {
   const result: Record<string, any> = {};
-  
+
   if (!data || data.length === 0) {
     return result;
   }
 
   // İlk satır header olmalı
   const headers = data[0] || [];
-  const dateColumnIndex = headers.findIndex((h: any) => 
+  const dateColumnIndex = headers.findIndex((h: any) =>
     typeof h === 'string' && (h.toLowerCase().includes('tarih') || h.toLowerCase().includes('date'))
   );
 
@@ -235,7 +235,7 @@ function parseExcelData(data: any[][]): Record<string, any> {
     if (!seriesCode || typeof seriesCode !== 'string') continue;
 
     const seriesData: Array<{ tarih: string; deger: number }> = [];
-    
+
     // Veri satırlarını oku
     for (let rowIndex = 1; rowIndex < data.length; rowIndex++) {
       const row = data[rowIndex];
@@ -324,14 +324,14 @@ export function getKFEData(regionCode: string, formula: string = ''): Array<{ ta
 export function getLatestKFEData(regionCode: string, formula: string = ''): number | null {
   const data = getKFEData(regionCode, formula);
   if (data.length === 0) return null;
-  
+
   // En son tarihli veri
   const sorted = [...data].sort((a, b) => {
     const dateA = new Date(a.tarih);
     const dateB = new Date(b.tarih);
     return dateB.getTime() - dateA.getTime();
   });
-  
+
   return sorted[0]?.deger ?? null;
 }
 

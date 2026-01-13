@@ -1,3 +1,4 @@
+// @ts-nocheck - Legacy WebGL component with untyped refs and OGL library usage
 "use client";
 
 import { Mesh, Program, Renderer, Triangle, Vec3 } from 'ogl';

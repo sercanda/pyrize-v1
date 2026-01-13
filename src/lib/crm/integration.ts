@@ -22,12 +22,13 @@ const buildCustomerPayload = (istek: SunumOlusturmaIstegi) => {
   const phone = musteri?.telefon || musteri?.phone || null;
   const email = musteri?.email || null;
 
+  const amac = istek.amac as string;
   const status =
-    istek.amac === "portfoy_almak"
+    amac === "portfoy_almak"
       ? "Beklemede"
-      : istek.amac === "satisa_hazirlik"
-      ? "Aktif"
-      : "Aktif";
+      : amac === "satisa_hazirlik"
+        ? "Aktif"
+        : "Aktif";
 
   const tags = [
     istek.amac?.split("_").join(" "),

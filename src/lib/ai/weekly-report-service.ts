@@ -41,7 +41,7 @@ function buildWeeklyReportPrompt(rapor: HaftalikRaporVerisi): string {
   } = rapor;
 
   // CTR hesaplama
-  const hesaplananCTR = toplamGoruntulenme > 0 
+  const hesaplananCTR = toplamGoruntulenme > 0
     ? ((tiklanmaSayisi / toplamGoruntulenme) * 100).toFixed(2)
     : '0.00';
 
@@ -143,7 +143,7 @@ export async function generateWeeklyReportAI(
 
   try {
     const prompt = buildWeeklyReportPrompt(rapor);
-    
+
     const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
       method: 'POST',
       headers: {
@@ -175,7 +175,7 @@ export async function generateWeeklyReportAI(
 
     const data = await response.json();
     const content = data.choices?.[0]?.message?.content || '';
-    
+
     // JSON parse et
     try {
       const parsed = JSON.parse(content);
@@ -188,9 +188,9 @@ export async function generateWeeklyReportAI(
       // JSON parse edilemezse içeriği böl
       const sections = content.split(/(?=AI PERFORMANS YORUMU|AI STRATEJİ ÖNERİSİ|AI HAFTALIK ÖZET)/i);
       return {
-        aiPerformansYorumu: sections.find(s => s.includes('PERFORMANS'))?.replace(/AI PERFORMANS YORUMU:?/i, '').trim() || '',
-        aiStratejiOnerisi: sections.find(s => s.includes('STRATEJİ'))?.replace(/AI STRATEJİ ÖNERİSİ:?/i, '').trim() || '',
-        aiHaftalikOzet: sections.find(s => s.includes('ÖZET'))?.replace(/AI HAFTALIK ÖZET:?/i, '').trim() || ''
+        aiPerformansYorumu: sections.find((s: string) => s.includes('PERFORMANS'))?.replace(/AI PERFORMANS YORUMU:?/i, '').trim() || '',
+        aiStratejiOnerisi: sections.find((s: string) => s.includes('STRATEJİ'))?.replace(/AI STRATEJİ ÖNERİSİ:?/i, '').trim() || '',
+        aiHaftalikOzet: sections.find((s: string) => s.includes('ÖZET'))?.replace(/AI HAFTALIK ÖZET:?/i, '').trim() || ''
       };
     }
   } catch (error) {

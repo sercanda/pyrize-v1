@@ -89,6 +89,7 @@ const createProperty = (
   marketing: { anaMesaj: string; vurgular: string[]; gorselIcerikPlani: string },
   valuePlan: { fiyatStratejisi: string; hedefSatisSuresi: string; tahminiIlgi: string },
   adChannels: string[],
+  marketBolge?: Bolge,
 ): Property => {
   const { istek, icerik } = data;
   const mulk = istek?.mulk;
@@ -111,14 +112,14 @@ const createProperty = (
     mulk?.tur === 'arsa'
       ? 'Arsa'
       : mulk?.tur === 'daire'
-      ? 'Daire'
-      : mulk?.tur === 'villa'
-      ? 'Villa'
-      : mulk?.tur === 'ticari'
-      ? 'Ticari Gayrimenkul'
-      : mulk?.tur === 'ofis'
-      ? 'Ofis'
-      : 'Gayrimenkul';
+        ? 'Daire'
+        : mulk?.tur === 'villa'
+          ? 'Villa'
+          : mulk?.tur === 'ticari'
+            ? 'Ticari Gayrimenkul'
+            : mulk?.tur === 'ofis'
+              ? 'Ofis'
+              : 'Gayrimenkul';
   const mevcutYapi =
     formatMetrekare(mulk?.metrekare) || (mulk?.odaSayisi ? `${mulk.odaSayisi} oda` : 'Belirtilmemiş');
 
@@ -149,22 +150,22 @@ const createProperty = (
       targetAudienceFromTemplate.length > 0
         ? targetAudienceFromTemplate
         : [
-            {
-              baslik: 'Yatırımcılar',
-              aciklama:
-                'Bölgedeki değer artışı ve kiralama potansiyelini değerlendirmek isteyen yatırımcılar.',
-            },
-            {
-              baslik: 'Aileler',
-              aciklama:
-                'Güvenli, konforlu ve sosyal olanaklara yakın yaşam arayan aileler.',
-            },
-            {
-              baslik: 'Profesyoneller',
-              aciklama:
-                'İş merkezlerine kolay ulaşım ve kaliteli yaşam alanı arayan profesyoneller.',
-            },
-          ],
+          {
+            baslik: 'Yatırımcılar',
+            aciklama:
+              'Bölgedeki değer artışı ve kiralama potansiyelini değerlendirmek isteyen yatırımcılar.',
+          },
+          {
+            baslik: 'Aileler',
+            aciklama:
+              'Güvenli, konforlu ve sosyal olanaklara yakın yaşam arayan aileler.',
+          },
+          {
+            baslik: 'Profesyoneller',
+            aciklama:
+              'İş merkezlerine kolay ulaşım ve kaliteli yaşam alanı arayan profesyoneller.',
+          },
+        ],
     tanitimStratejisi: marketing,
     satisPlani: valuePlan,
     // Standart reklam kanalları - her zaman sabit
@@ -177,7 +178,7 @@ const createProperty = (
     ],
     marketAnalysis: (() => {
       const marketData = marketBolge?.icerik || '';
-      
+
       // Geliştirilmiş eşleştirme - tam başlık eşleşmesi öncelikli
       const findByTitle = (keywords: string[]) => {
         return marketBolge?.altBolge?.find((alt) => {
@@ -185,23 +186,23 @@ const createProperty = (
           return keywords.some(keyword => baslik.includes(keyword.toLowerCase()));
         });
       };
-      
+
       // Nadir Fırsat için eşleştirme
       const risk = findByTitle(['nadir fırsat', 'nadir', 'fırsat', 'risk', 'dikkat']);
-      
+
       // Konum Primi için eşleştirme
       const premium = findByTitle(['konum primi', 'primi', 'avantaj', 'deniz', 'konum']);
-      
+
       // Gelişim Potansiyeli için eşleştirme
       const regional = findByTitle(['gelişim potansiyeli', 'gelişim', 'potansiyel', 'bölge', 'trend']);
-      
+
       const microLocation = findByTitle(['mikro', 'lokasyon', 'değer']);
       const buyer = findByTitle(['alıcı', 'hedef', 'kitle']);
       const seasonal = findByTitle(['mevsim', 'sezon']);
-      
+
       // Fallback değerler
       const locationName = extractMainLocation(mulk?.konum);
-      
+
       return {
         microLocationValue: microLocation?.icerik || marketData || `${locationName} konumu stratejik avantajlar sunmaktadır.`,
         regionalTrend: regional?.icerik || `${locationName} bölgesi hızlı bir gelişim göstermektedir. Yeni altyapı projeleri ve ticari yatırımlar, mülkün değer artış potansiyelini yükseltmektedir.`,
@@ -213,7 +214,7 @@ const createProperty = (
       };
     })(),
   };
-  
+
   return propertyData;
 };
 
@@ -235,12 +236,12 @@ const mapModernData = (data: OlusturulanSunum): ModernTemplateData => {
 
   const locationAdvantagesFromTemplate = locationAdvantagesBolge
     ? locationAdvantagesBolge.altBolge?.flatMap((alt) => splitLines(alt.icerik)) ||
-      splitLines(locationAdvantagesBolge.icerik)
+    splitLines(locationAdvantagesBolge.icerik)
     : [];
 
   const usagePotentialFromTemplate = usagePotentialBolge
     ? usagePotentialBolge.altBolge?.flatMap((alt) => splitLines(alt.icerik)) ||
-      splitLines(usagePotentialBolge.icerik)
+    splitLines(usagePotentialBolge.icerik)
     : [];
 
   const targetAudienceFromTemplate = targetAudienceBolge?.altBolge
@@ -287,6 +288,7 @@ const mapModernData = (data: OlusturulanSunum): ModernTemplateData => {
     marketing,
     valuePlan,
     adChannels,
+    marketBolge,
   );
 
   const valuation: ValuationData = {
@@ -307,8 +309,8 @@ const mapModernData = (data: OlusturulanSunum): ModernTemplateData => {
       })) || [],
     estimatedValueRange:
       data.icerik.detayliDegerleme?.estimatedValueRange &&
-      data.icerik.detayliDegerleme.estimatedValueRange !== 'Detaylı değerleme verisi paylaşılmadı' &&
-      data.icerik.detayliDegerleme.estimatedValueRange.trim() !== ''
+        data.icerik.detayliDegerleme.estimatedValueRange !== 'Detaylı değerleme verisi paylaşılmadı' &&
+        data.icerik.detayliDegerleme.estimatedValueRange.trim() !== ''
         ? data.icerik.detayliDegerleme.estimatedValueRange
         : formatCurrency((data.istek.mulk as any)?.fiyatMax ?? (data.istek.mulk as any)?.fiyatMin ?? (data.istek.mulk as any)?.fiyat) || 'Değerleme yapılıyor...',
     priceStrategyNote: 'Dairenizin özellikleri ve konumu, standart m² fiyatlarının üzerinde, özel fiyatlama gerektirir.',
@@ -317,14 +319,14 @@ const mapModernData = (data: OlusturulanSunum): ModernTemplateData => {
   // KFE verilerine göre dinamik snapshot'lar oluştur
   if (valuation.marketSnapshots.length === 0) {
     const kfeDataFromIcerik = (data.icerik as any)?.kfeData;
-    
+
     if (kfeDataFromIcerik?.bolge?.yillikDegisim !== null && kfeDataFromIcerik?.bolge?.yillikDegisim !== undefined) {
       const priceValue = (data.istek.mulk as any)?.fiyatMax ?? (data.istek.mulk as any)?.fiyatMin ?? (data.istek.mulk as any)?.fiyat;
       const metrekareValue = typeof data.istek.mulk.metrekare === 'number' ? data.istek.mulk.metrekare : null;
       const sqmPrice = priceValue && metrekareValue ? Math.round(priceValue / metrekareValue) : null;
-      
+
       const kfeYillikDegisim = kfeDataFromIcerik.bolge.yillikDegisim;
-      const regionalAverage = sqmPrice 
+      const regionalAverage = sqmPrice
         ? Math.round(sqmPrice / (1 + kfeYillikDegisim / 100) * 0.9)
         : 65000;
 
@@ -384,15 +386,15 @@ const mapModernData = (data: OlusturulanSunum): ModernTemplateData => {
 
   const salesBenefits: StrategicAdvantage[] = cozumBolge?.altBolge && cozumBolge.altBolge.length > 0
     ? cozumBolge.altBolge.map((alt, index) => {
-        const [firstLine, ...rest] = splitLines(alt.icerik);
-        const defaultBenefit = defaultSalesBenefits[index] || defaultSalesBenefits[0];
-        return {
-          icon: defaultBenefit.icon,
-          title: alt.baslik || defaultBenefit.title,
-          description: firstLine || alt.icerik || defaultBenefit.description,
-          comparison: rest.join(' • ') || defaultBenefit.comparison,
-        };
-      })
+      const [firstLine, ...rest] = splitLines(alt.icerik);
+      const defaultBenefit = defaultSalesBenefits[index] || defaultSalesBenefits[0];
+      return {
+        icon: defaultBenefit.icon,
+        title: alt.baslik || defaultBenefit.title,
+        description: firstLine || alt.icerik || defaultBenefit.description,
+        comparison: rest.join(' • ') || defaultBenefit.comparison,
+      };
+    })
     : defaultSalesBenefits;
 
   // Template'deki gibi detaylı 6 adımlı sistem
@@ -447,35 +449,35 @@ const mapModernData = (data: OlusturulanSunum): ModernTemplateData => {
 
   const salesSteps: SalesSystemStep[] = processBolge?.altBolge && processBolge.altBolge.length > 0
     ? processBolge.altBolge.map((alt, index) => {
-        const segments = alt.icerik.split(/\n\s*\n/);
-        const actions: string[] = [];
-        let benefit = '';
-        let maliyetNotu = '';
-        let ucretNotu = '';
+      const segments = alt.icerik.split(/\n\s*\n/);
+      const actions: string[] = [];
+      let benefit = '';
+      let maliyetNotu = '';
+      let ucretNotu = '';
 
-        segments.forEach((segment) => {
-          if (/ne yapıyorum|ne yapıyoruz/i.test(segment)) {
-            actions.push(...splitLines(segment.split(/ne yapıyorum|ne yapıyoruz[:]?/i)[1]));
-          } else if (/kazancınız|kazanç|sizin kazancınız/i.test(segment)) {
-            benefit = splitLines(segment.split(/kazancınız|kazanç|sizin kazancınız[:]?/i)[1]).join(' ');
-          } else if (/piyasa değeri|maliyet/i.test(segment)) {
-            maliyetNotu = segment.match(/₺[\d,]+|[\d,]+ TL/i)?.[0] || '';
-          } else if (/sizin için|ücretsiz/i.test(segment)) {
-            ucretNotu = segment.match(/ücretsiz|ÜCRETSİZ|₺[\d,]+|[\d,]+ TL/i)?.[0] || '';
-          }
-        });
+      segments.forEach((segment) => {
+        if (/ne yapıyorum|ne yapıyoruz/i.test(segment)) {
+          actions.push(...splitLines(segment.split(/ne yapıyorum|ne yapıyoruz[:]?/i)[1]));
+        } else if (/kazancınız|kazanç|sizin kazancınız/i.test(segment)) {
+          benefit = splitLines(segment.split(/kazancınız|kazanç|sizin kazancınız[:]?/i)[1]).join(' ');
+        } else if (/piyasa değeri|maliyet/i.test(segment)) {
+          maliyetNotu = segment.match(/₺[\d,]+|[\d,]+ TL/i)?.[0] || '';
+        } else if (/sizin için|ücretsiz/i.test(segment)) {
+          ucretNotu = segment.match(/ücretsiz|ÜCRETSİZ|₺[\d,]+|[\d,]+ TL/i)?.[0] || '';
+        }
+      });
 
-        const defaultStep = defaultSalesSteps[index] || defaultSalesSteps[0];
-        return {
-          icon: stepIcon(index),
-          gun: defaultStep.gun,
-          baslik: alt.baslik || defaultStep.baslik,
-          neYapiyoruz: actions.length > 0 ? actions : (splitLines(alt.icerik).length > 0 ? splitLines(alt.icerik) : defaultStep.neYapiyoruz),
-          kazanciniz: benefit || defaultStep.kazanciniz,
-          maliyetNotu: maliyetNotu || defaultStep.maliyetNotu,
-          ucretNotu: ucretNotu || defaultStep.ucretNotu,
-        };
-      })
+      const defaultStep = defaultSalesSteps[index] || defaultSalesSteps[0];
+      return {
+        icon: stepIcon(index),
+        gun: defaultStep.gun,
+        baslik: alt.baslik || defaultStep.baslik,
+        neYapiyoruz: actions.length > 0 ? actions : (splitLines(alt.icerik).length > 0 ? splitLines(alt.icerik) : defaultStep.neYapiyoruz),
+        kazanciniz: benefit || defaultStep.kazanciniz,
+        maliyetNotu: maliyetNotu || defaultStep.maliyetNotu,
+        ucretNotu: ucretNotu || defaultStep.ucretNotu,
+      };
+    })
     : defaultSalesSteps;
 
   const heroDescription =
@@ -515,9 +517,9 @@ const mapModernData = (data: OlusturulanSunum): ModernTemplateData => {
 
   const faqs: FAQItem[] = faqBolge?.altBolge && faqBolge.altBolge.length > 0
     ? faqBolge.altBolge.map((alt, index) => ({
-        question: alt.baslik || defaultFAQs[index]?.question || 'Sık Sorulan Soru',
-        answer: alt.icerik || defaultFAQs[index]?.answer || '',
-      }))
+      question: alt.baslik || defaultFAQs[index]?.question || 'Sık Sorulan Soru',
+      answer: alt.icerik || defaultFAQs[index]?.answer || '',
+    }))
     : defaultFAQs;
 
   // Consultant verilerini map et
@@ -536,18 +538,18 @@ const mapModernData = (data: OlusturulanSunum): ModernTemplateData => {
     telefon: danisman?.telefon || '',
     email: danisman?.email || '',
     // Form'dan gelen profilFotografi veya profilFotografiUrl'yi kontrol et
-    profilFotografiUrl: (danisman as any)?.profilFotografi || danisman?.profilFotografiUrl || 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400',
-    ofisLogosuUrl: (danisman as any)?.ofisLogosu || danisman?.ofisLogosuUrl || 'https://i.ibb.co/1yynDd7/e92f870139b241e9820965c4ac5167b3-removebg-preview.png',
+    profilFotografiUrl: (danisman as any)?.profilFotografi || (danisman as any)?.profilFotografiUrl || 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400',
+    ofisLogosuUrl: (danisman as any)?.ofisLogosu || (danisman as any)?.ofisLogosuUrl || 'https://i.ibb.co/1yynDd7/e92f870139b241e9820965c4ac5167b3-removebg-preview.png',
     ofisAdi: danisman?.ofisAdi || 'RE/MAX Parla',
     oduller: odulList,
     gucler: [
       ...(danisman?.deneyim
         ? [
-            {
-              icon: React.createElement('div', { className: 'w-6 h-6' }),
-              text: danisman.deneyim,
-            },
-          ]
+          {
+            icon: React.createElement('div', { className: 'w-6 h-6' }),
+            text: danisman.deneyim,
+          },
+        ]
         : []),
     ],
     deneyim: danisman?.deneyim,
@@ -574,77 +576,77 @@ const TemplateModernFromZip: React.FC<{ data: OlusturulanSunum }> = ({ data }) =
 
   return (
     <div className="bg-slate-950 min-h-screen font-sans text-slate-200 antialiased selection:bg-indigo-500 selection:text-white relative overflow-x-hidden print:bg-white print:text-black">
-      
+
       {/* Global Gradient Background (Screen Only) */}
       <div className="absolute inset-0 z-0 pointer-events-none h-full w-full fixed print:hidden">
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-slate-900 via-slate-950 to-slate-950 h-full"></div>
-          <div className="absolute inset-0 opacity-[0.03] h-full" style={{ 
-              backgroundImage: 'linear-gradient(rgba(255, 255, 255, 0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.1) 1px, transparent 1px)', 
-              backgroundSize: '40px 40px' 
-          }}></div>
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-slate-900 via-slate-950 to-slate-950 h-full"></div>
+        <div className="absolute inset-0 opacity-[0.03] h-full" style={{
+          backgroundImage: 'linear-gradient(rgba(255, 255, 255, 0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.1) 1px, transparent 1px)',
+          backgroundSize: '40px 40px'
+        }}></div>
       </div>
 
       <div className="relative z-10 max-w-[1440px] mx-auto bg-slate-950 shadow-2xl shadow-black print:bg-transparent print:shadow-none print:w-full print:max-w-none">
-        
+
         <main className="flex flex-col gap-24 print:gap-0">
-            
-            {/* PAGE 1: KAPAK + DEĞERLEME */}
-            <div className="min-h-screen flex flex-col print:block print:h-auto print:break-after-page print:px-8 print:py-8 relative">
-                
-                {/* Content Wrapper */}
-                <div className="flex-1 flex flex-col justify-center gap-12 px-6 md:px-12 lg:px-16 print:px-0 print:gap-8 print:block">
-                    {/* Hero Section */}
-                    <HeroSection
-                      property={mapped.property}
-                      heroDescription={mapped.heroDescription}
-                      heroHighlight={mapped.heroHighlight}
-                    />
-                    
-                    {/* Valuation Section */}
-                    <div className="print:mt-8">
-                        <RegionalComparisonSection property={mapped.property} valuationData={mapped.valuation} />
-                    </div>
-                </div>
+
+          {/* PAGE 1: KAPAK + DEĞERLEME */}
+          <div className="min-h-screen flex flex-col print:block print:h-auto print:break-after-page print:px-8 print:py-8 relative">
+
+            {/* Content Wrapper */}
+            <div className="flex-1 flex flex-col justify-center gap-12 px-6 md:px-12 lg:px-16 print:px-0 print:gap-8 print:block">
+              {/* Hero Section */}
+              <HeroSection
+                property={mapped.property}
+                heroDescription={mapped.heroDescription}
+                heroHighlight={mapped.heroHighlight}
+              />
+
+              {/* Valuation Section */}
+              <div className="print:mt-8">
+                <RegionalComparisonSection property={mapped.property} valuationData={mapped.valuation} />
+              </div>
+            </div>
+          </div>
+
+          {/* PAGE 2: POTENTIAL & STRATEGY */}
+          <div className="w-full min-h-screen px-6 md:px-12 lg:px-16 py-24 flex flex-col print:block print:h-auto print:min-h-0 print:py-12 print:px-8 print:break-after-page">
+            <PropertyPlanSection property={mapped.property} />
+          </div>
+
+          {/* PAGE 3: 6-STEP SALES SYSTEM */}
+          <div className="w-full min-h-screen px-6 md:px-12 lg:px-16 py-24 flex flex-col print:block print:h-auto print:min-h-0 print:py-12 print:px-8 print:break-after-page">
+            <SalesProcessSection steps={mapped.salesSteps} />
+          </div>
+
+          {/* PAGE 4: BENEFITS (Neden Kurumsal?) */}
+          <div className="w-full min-h-screen px-6 md:px-12 lg:px-16 py-24 flex flex-col print:block print:h-auto print:min-h-0 print:py-12 print:px-8 print:break-after-page">
+            <BenefitsSection benefits={mapped.salesBenefits} />
+          </div>
+
+          {/* PAGE 5: TRUST, FAQ & CLOSING */}
+          <div className="w-full min-h-screen px-6 md:px-12 lg:px-16 py-24 flex flex-col print:block print:h-auto print:min-h-0 print:py-12 print:px-8 print:break-after-page">
+            <div className="space-y-16 print:space-y-12 flex-grow flex flex-col justify-start">
+              <FAQSection faqs={mapped.faqs} />
+              <ConsultantTrustSection consultant={mapped.consultant} />
             </div>
 
-            {/* PAGE 2: POTENTIAL & STRATEGY */}
-            <div className="w-full min-h-screen px-6 md:px-12 lg:px-16 py-24 flex flex-col print:block print:h-auto print:min-h-0 print:py-12 print:px-8 print:break-after-page">
-                <PropertyPlanSection property={mapped.property} />
-            </div>
+            <footer className="border-t border-white/5 py-8 flex flex-col items-center text-center bg-slate-950 mt-auto print:py-6 print:bg-transparent print:border-slate-300 print:mt-8">
+              <p className="text-slate-400 text-xs uppercase tracking-widest mb-2 print:text-slate-800">Gizli ve Özel Ticari Bilgi İçerir</p>
+              <p className="text-slate-400 font-medium text-sm mb-6 print:text-black">© 2024 RE/MAX Parla Gayrimenkul Danışmanlığı</p>
 
-            {/* PAGE 3: 6-STEP SALES SYSTEM */}
-            <div className="w-full min-h-screen px-6 md:px-12 lg:px-16 py-24 flex flex-col print:block print:h-auto print:min-h-0 print:py-12 print:px-8 print:break-after-page">
-              <SalesProcessSection steps={mapped.salesSteps} />
-            </div>
-
-            {/* PAGE 4: BENEFITS (Neden Kurumsal?) */}
-            <div className="w-full min-h-screen px-6 md:px-12 lg:px-16 py-24 flex flex-col print:block print:h-auto print:min-h-0 print:py-12 print:px-8 print:break-after-page">
-                <BenefitsSection benefits={mapped.salesBenefits} />
-            </div>
-
-            {/* PAGE 5: TRUST, FAQ & CLOSING */}
-            <div className="w-full min-h-screen px-6 md:px-12 lg:px-16 py-24 flex flex-col print:block print:h-auto print:min-h-0 print:py-12 print:px-8 print:break-after-page">
-                <div className="space-y-16 print:space-y-12 flex-grow flex flex-col justify-start">
-                  <FAQSection faqs={mapped.faqs} />
-                  <ConsultantTrustSection consultant={mapped.consultant} />
-                </div>
-
-                <footer className="border-t border-white/5 py-8 flex flex-col items-center text-center bg-slate-950 mt-auto print:py-6 print:bg-transparent print:border-slate-300 print:mt-8">
-                    <p className="text-slate-400 text-xs uppercase tracking-widest mb-2 print:text-slate-800">Gizli ve Özel Ticari Bilgi İçerir</p>
-                    <p className="text-slate-400 font-medium text-sm mb-6 print:text-black">© 2024 RE/MAX Parla Gayrimenkul Danışmanlığı</p>
-                    
-                    <div className="flex flex-col items-center gap-2 opacity-70 print:opacity-100">
-                        <img 
-                          src="https://i.ibb.co/HLQpWmS0/Ekran-Al-nt-s.jpg" 
-                          alt="Pyrize" 
-                          className="h-5 w-auto object-contain mix-blend-multiply print:mix-blend-normal" 
-                        />
-                        <a href="https://pyrize.com" target="_blank" rel="noopener noreferrer" className="text-[10px] font-semibold text-slate-600 uppercase tracking-wider print:text-slate-800">
-                          powered by pyrize.com
-                        </a>
-                    </div>
-                </footer>
-            </div>
+              <div className="flex flex-col items-center gap-2 opacity-70 print:opacity-100">
+                <img
+                  src="https://i.ibb.co/HLQpWmS0/Ekran-Al-nt-s.jpg"
+                  alt="Pyrize"
+                  className="h-5 w-auto object-contain mix-blend-multiply print:mix-blend-normal"
+                />
+                <a href="https://pyrize.com" target="_blank" rel="noopener noreferrer" className="text-[10px] font-semibold text-slate-600 uppercase tracking-wider print:text-slate-800">
+                  powered by pyrize.com
+                </a>
+              </div>
+            </footer>
+          </div>
 
         </main>
 

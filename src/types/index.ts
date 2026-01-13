@@ -33,12 +33,13 @@ export interface DanismanBilgileri {
   adSoyad: string;
   telefon: string;
   email: string;
-  profilFotografi?: string; // URL veya base64
-  ofisLogosu?: string; // URL veya base64
+  unvan?: string;             // Consultant title for templates (e.g., "Gayrimenkul Danışmanı")
+  profilFotografi?: string;   // URL veya base64
+  ofisLogosu?: string;        // URL veya base64
   deneyim?: string;
-  oduller?: string; // Ödüller ve başarılar
+  oduller?: string;           // Ödüller ve başarılar
   referans?: string;
-  ofisAdi?: string; // RE/MAX, Zeren Gayrimenkul, Coldwell Banker vs.
+  ofisAdi?: string;           // RE/MAX, Zeren Gayrimenkul, Coldwell Banker vs.
 }
 
 export interface MulkBilgileri {

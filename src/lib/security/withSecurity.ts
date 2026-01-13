@@ -42,7 +42,7 @@ const mergeConfig = (
 
 const getClientIp = (request: NextRequest) => {
   return (
-    request.ip ||
+    (request as unknown as { ip?: string }).ip ||
     request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ||
     request.headers.get('x-real-ip') ||
     'unknown'

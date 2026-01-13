@@ -23,7 +23,7 @@ export const getNadirFirsatTemplate = (params: {
 }): string => {
   const { mulkTur, metrekare, odaSayisi, konum, fiyat } = params;
   const locationName = konum.split(',')[0].trim();
-  
+
   const templates: Record<string, string[]> = {
     daire: [
       `${locationName} bölgesinde ${metrekare ? `${metrekare}m²` : ''} ${odaSayisi || ''} daire nadir bulunur. ${metrekare && metrekare > 150 ? 'Net kullanım alanı ve kalite vurgulanmalı.' : 'Benzer alternatifler sınırlı.'}`,
@@ -56,7 +56,7 @@ export const getNadirFirsatTemplate = (params: {
       `${locationName} çevresinde ${fiyat ? 'bu fiyat aralığında' : ''} lüks kompleks seçenekleri oldukça sınırlıdır. Kapalı site avantajı ve sosyal tesisler bir arada nadir fırsattır.`
     ]
   };
-  
+
   const mulkTemplates = templates[mulkTur] || templates.daire;
   return mulkTemplates[Math.floor(Math.random() * mulkTemplates.length)];
 };
@@ -69,7 +69,7 @@ export const getKonumPrimiTemplate = (params: {
 }): string => {
   const { mulkTur, konum, locationAnalysis } = params;
   const locationName = konum.split(',')[0].trim();
-  
+
   const templates: Record<string, string[]> = {
     daire: [
       `${locationName} lokasyonu, ana arterlere yakınlığı ile konum primi sağlıyor. Ulaşım ve sosyal tesislere erişim avantajlı.`,
@@ -103,14 +103,14 @@ export const getKonumPrimiTemplate = (params: {
       `${locationName}, merkezi konumu ile şehir merkezine yakın ancak yeşil alanlarla çevrili olması sayesinde hem ulaşım hem huzur sunan nadir bölgelerden biridir. Sosyal tesisler ve güvenlik ile konum primi kazandırır.`
     ]
   };
-  
+
   // Eğer daire veya kompleks ise ve "site" veya "kompleks" kelimelerini içeriyorsa özel şablon kullan
   if ((mulkTur === 'daire' || mulkTur === 'kompleks') && konum.toLowerCase().includes('site')) {
     const mulkTemplates = templates[mulkTur] || templates.daire;
     // Site konsepti vurgusu için son şablonu tercih et
     return mulkTemplates[mulkTemplates.length - 1];
   }
-  
+
   const mulkTemplates = templates[mulkTur] || templates.daire;
   return mulkTemplates[Math.floor(Math.random() * mulkTemplates.length)];
 };
@@ -123,7 +123,7 @@ export const getGelisimPotansiyeliTemplate = (params: {
 }): string => {
   const { mulkTur, konum, locationAnalysis } = params;
   const locationName = konum.split(',')[0].trim();
-  
+
   const templates: Record<string, string[]> = {
     daire: [
       `${locationName} bölgesinde yeni yapılaşmalar artıyor. Geniş m² talep %40 daha hızlı artıyor. 3-5 yılda önemli değer artışı bekleniyor.`,
@@ -157,14 +157,14 @@ export const getGelisimPotansiyeliTemplate = (params: {
       `${locationName} çevresinde kapalı site konseptli projelere yönelik talep, piyasa verilerine göre apartman dairelerine kıyasla belirgin şekilde yüksektir. Sosyal tesisler (havuz, spor salonu, çocuk parkı) olan projelerin değer kazanma hızı, TÜİK verilerine göre %40 daha fazla olduğu gözlemlenmektedir.`
     ]
   };
-  
+
   // Kompleks veya site konsepti için özel şablon seçimi
   if ((mulkTur === 'kompleks' || mulkTur === 'daire') && (konum.toLowerCase().includes('site') || konum.toLowerCase().includes('kompleks'))) {
     const mulkTemplates = templates[mulkTur === 'kompleks' ? 'kompleks' : 'daire'] || templates.daire;
     // Site/kompleks konsepti için son şablonu tercih et (TÜİK referanslı)
     return mulkTemplates[mulkTemplates.length - 1];
   }
-  
+
   const mulkTemplates = templates[mulkTur] || templates.daire;
   return mulkTemplates[Math.floor(Math.random() * mulkTemplates.length)];
 };
@@ -179,7 +179,7 @@ export const getHedefKitleTemplates = (params: {
 }): TargetAudienceTemplate[] => {
   const { mulkTur, konum, metrekare, odaSayisi, fiyat } = params;
   const locationName = konum.split(',')[0].trim();
-  
+
   const templates: Record<string, TargetAudienceTemplate[]> = {
     daire: [
       {
@@ -270,14 +270,14 @@ export const getHedefKitleTemplates = (params: {
       }
     ]
   };
-  
+
   return templates[mulkTur] || templates.daire;
 };
 
 // Reklam Kanalları şablonu - Mülk türüne ve özelliklerine göre dinamik
 export const getReklamKanallariTemplate = (
-  ofisAdi?: string, 
-  mulkTur?: string, 
+  ofisAdi?: string,
+  mulkTur?: string,
   fiyat?: number
 ): string[] => {
   const baseChannels = [
@@ -286,7 +286,7 @@ export const getReklamKanallariTemplate = (
     "Facebook/Instagram (Aile Hedefli)",
     "Google Ads"
   ];
-  
+
   // Mülk türüne göre özel kanallar
   if (mulkTur === 'daire' || mulkTur === 'kompleks') {
     baseChannels.push("YouTube Reklamları");
@@ -303,19 +303,19 @@ export const getReklamKanallariTemplate = (
     baseChannels.push("LinkedIn (Yatırımcı Hedefli)");
     baseChannels.push("İnşaat Sektörü Ağları");
   }
-  
+
   if (ofisAdi) {
     // Büyük ofis ağları için özel kanal ekle
     const bigNetworks = ['RE/MAX', 'Coldwell Banker', 'Century 21', 'Keller Williams'];
     const isBigNetwork = bigNetworks.some(network => ofisAdi.toUpperCase().includes(network.toUpperCase()));
-    
+
     if (isBigNetwork) {
       baseChannels.push(`${ofisAdi} Ağı`);
     } else {
       baseChannels.push(`${ofisAdi} Veritabanı`);
     }
   }
-  
+
   return baseChannels;
 };
 
@@ -326,7 +326,7 @@ export const getGorselIcerikPlaniTemplate = (params: {
   odaSayisi?: string;
 }): string => {
   const { mulkTur, metrekare, odaSayisi } = params;
-  
+
   const templates: Record<string, string> = {
     daire: `📸 İç mekan geniş açı çekim (${odaSayisi || 'tüm odalar'}, salon, mutfak, banyolar)\n🚁 Drone ile ${metrekare && metrekare > 140 ? 'site/kompleks genel görünüm' : 'bina ve çevre çekimi'}\n🎬 Tanıtım videosu (60-90 saniye, sinematik)\n📱 360° Sanal Tur (tüm odalar)\n🌅 Gün ışığı ve gece çekimleri\n📐 Kat planı ve 3D görselleştirme`,
     villa: `📸 İç mekan geniş açı çekim (tüm odalar, salon, mutfak, özel alanlar)\n🚁 Drone ile bahçe, havuz ve villa genel görünüm\n🎬 Tanıtım videosu (90-120 saniye, lüks yaşam vurgusu)\n📱 360° Sanal Tur (villa içi ve bahçe)\n🌅 Gün batımı ve gece aydınlatma çekimleri\n🏊 Havuz ve sosyal alanların özel çekimi\n📐 Villa planı ve 3D görselleştirme`,
@@ -335,7 +335,7 @@ export const getGorselIcerikPlaniTemplate = (params: {
     ofis: `📸 İç mekan geniş açı çekim (ofis alanları, toplantı odaları, ortak alanlar)\n🚁 Drone ile bina ve çevre çekimi (iş merkezi vurgusu)\n🎬 Tanıtım videosu (60-90 saniye, profesyonel çevre vurgusu)\n📱 360° Sanal Tur (tüm ofis alanları)\n🏢 Bina girişi ve ortak alanların özel çekimi\n📐 Kat planı ve ofis düzenleme önerileri`,
     kompleks: `📸 İç mekan geniş açı çekim (${odaSayisi || 'tüm odalar'}, salon, mutfak, banyolar)\n🚁 Drone ile site/kompleks genel görünüm (havuz, spor alanları, sosyal tesisler)\n🎬 Tanıtım videosu (90-120 saniye, sosyal tesisler vurgusu)\n📱 360° Sanal Tur (daire içi ve sosyal alanlar)\n🏊 Havuz, spor salonu ve sosyal tesislerin özel çekimi\n🌅 Gün ışığı ve gece aydınlatma çekimleri\n📐 Kat planı ve site yerleşim planı`
   };
-  
+
   return templates[mulkTur] || templates.daire;
 };
 
@@ -351,23 +351,27 @@ export interface KurumsalKart {
  */
 export const generateMarketAnalysisTemplates = (mulk: any): { baslik: string; icerik: string }[] => {
   return [
-    { baslik: "Nadir Fırsat", icerik: getNadirFirsatTemplate({ 
-      mulkTur: mulk.tur || 'daire', 
-      metrekare: mulk.metrekare, 
-      odaSayisi: mulk.odaSayisi, 
-      konum: mulk.konum || 'Bölge', 
-      fiyat: mulk.fiyatMax 
-    }) },
-    { baslik: "Konum Primi", icerik: getKonumPrimiTemplate({ 
-      mulkTur: mulk.tur || 'daire', 
-      metrekare: mulk.metrekare, 
-      konum: mulk.konum || 'Bölge' 
-    }) },
-    { baslik: "Gelişim Potansiyeli", icerik: getGelisimPotansiyeliTemplate({ 
-      mulkTur: mulk.tur || 'daire', 
-      metrekare: mulk.metrekare, 
-      konum: mulk.konum || 'Bölge' 
-    }) }
+    {
+      baslik: "Nadir Fırsat", icerik: getNadirFirsatTemplate({
+        mulkTur: mulk.tur || 'daire',
+        metrekare: mulk.metrekare,
+        odaSayisi: mulk.odaSayisi,
+        konum: mulk.konum || 'Bölge',
+        fiyat: mulk.fiyatMax
+      })
+    },
+    {
+      baslik: "Konum Primi", icerik: getKonumPrimiTemplate({
+        mulkTur: mulk.tur || 'daire',
+        konum: mulk.konum || 'Bölge'
+      })
+    },
+    {
+      baslik: "Gelişim Potansiyeli", icerik: getGelisimPotansiyeliTemplate({
+        mulkTur: mulk.tur || 'daire',
+        konum: mulk.konum || 'Bölge'
+      })
+    }
   ];
 };
 
@@ -391,7 +395,7 @@ export const getNedenKurumsalKartlari = (params: {
   ofisAdi?: string;
 }): KurumsalKart[] => {
   const { mulkTur, metrekare, odaSayisi, ofisAdi } = params;
-  
+
   return [
     {
       baslik: "Doğru Fiyatlama",
@@ -415,7 +419,7 @@ export const getNedenKurumsalKartlari = (params: {
     },
     {
       baslik: ofisAdi && (ofisAdi.toUpperCase().includes('RE/MAX') || ofisAdi.toUpperCase().includes('COLDWELL') || ofisAdi.toUpperCase().includes('CENTURY')) ? "Global Ağ Gücü" : "Geniş Ağ Gücü",
-      aciklama: ofisAdi && (ofisAdi.toUpperCase().includes('RE/MAX') || ofisAdi.toUpperCase().includes('COLDWELL') || ofisAdi.toUpperCase().includes('CENTURY')) 
+      aciklama: ofisAdi && (ofisAdi.toUpperCase().includes('RE/MAX') || ofisAdi.toUpperCase().includes('COLDWELL') || ofisAdi.toUpperCase().includes('CENTURY'))
         ? `Sadece yerel değil, ${ofisAdi}'in uluslararası ağı sayesinde döviz bazlı yatırım yapan yabancı alıcılara da erişim.`
         : `${ofisAdi ? `${ofisAdi}'in` : 'Kurumsal'} geniş ağı sayesinde yerel ve bölgesel alıcılara hızlı erişim.`,
       sonuc: ofisAdi && (ofisAdi.toUpperCase().includes('RE/MAX') || ofisAdi.toUpperCase().includes('COLDWELL') || ofisAdi.toUpperCase().includes('CENTURY')) ? "Döviz Fırsatı" : "Geniş Erişim"

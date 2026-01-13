@@ -141,13 +141,13 @@ export class MarketAnalysisService {
     // Aggregate results
     const aggregated = this.aggregateResults(results.map((r) => (r.status === 'fulfilled' ? r.value : null)));
 
-    // Cache the result
+    // Cache the result - spread aggregated first, then override with explicit values
     await this.cacheMarketData({
+      ...aggregated,
       location,
       province,
       district,
       neighborhood,
-      ...aggregated,
     });
 
     // Cleanup scrapers (no longer needed with mock data)

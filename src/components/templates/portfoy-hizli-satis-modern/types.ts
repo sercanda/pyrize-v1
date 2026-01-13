@@ -57,15 +57,16 @@ export interface ConsultantStrength {
 }
 
 export interface Consultant {
-  adSoyad: string;
-  unvan: string;
-  telefon: string;
-  email: string;
-  profilFotografiUrl: string;
-  ofisLogosuUrl: string;
-  ofisAdi: string;
-  oduller: string[];
-  gucler: ConsultantStrength[];
+    adSoyad: string;
+    unvan: string;
+    tagline?: string;  // Optional display line with experience info
+    telefon: string;
+    email: string;
+    profilFotografiUrl: string;
+    ofisLogosuUrl: string;
+    ofisAdi: string;
+    oduller: string[];
+    gucler: ConsultantStrength[];
 }
 
 export interface DigitalMarketingTool {
@@ -75,8 +76,8 @@ export interface DigitalMarketingTool {
 }
 
 export interface FAQItem {
-  question: string;
-  answer: string;
+    question: string;
+    answer: string;
 }
 
 // FIX: Add missing RegionalData type definition
