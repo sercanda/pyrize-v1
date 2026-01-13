@@ -1,0 +1,809 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Körfez, Atakum, Samsun - Detaylı Analiz Planı</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    :root {
+      --brand-primary: #24d6a4;
+      --brand-secondary: #3A7DFF;
+      --brand-accent: #FF6B9D;
+    }
+    
+    @media print {
+      /* Reset animations and transitions */
+      * {
+        animation: none !important;
+        transition: none !important;
+        text-shadow: none !important;
+      }
+      
+      /* A4 compatible width */
+      html, body {
+        width: 210mm !important;
+        height: auto !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        background: white !important;
+        overflow: visible !important;
+        font-size: 11pt !important;
+      }
+      
+      main {
+        width: 190mm !important;
+        max-width: 190mm !important;
+        margin: 0 auto !important;
+        padding: 5mm 0 !important;
+      }
+      
+      /* CRITICAL: Prevent section splitting - apply to ALL containers */
+      section, 
+      article,
+      .hero, 
+      .profile, 
+      .card, 
+      .detail-card, 
+      .avoid-break,
+      [class*="Section"],
+      [class*="Card"],
+      [class*="Block"],
+      [class*="grid"] > div,
+      .flex > div {
+        break-inside: avoid !important;
+        page-break-inside: avoid !important;
+        -webkit-column-break-inside: avoid !important;
+        display: block !important;
+        position: relative !important;
+        overflow: visible !important;
+      }
+      
+      /* Keep headings with their content */
+      h1, h2, h3, h4, h5, h6 {
+        break-after: avoid !important;
+        page-break-after: avoid !important;
+        orphans: 3;
+        widows: 3;
+      }
+      
+      /* Remove min-height constraints */
+      body, section, div {
+        min-height: 0 !important;
+        height: auto !important;
+      }
+      
+      /* Major section breaks */
+      .major-section-break {
+        break-before: page !important;
+        page-break-before: always !important;
+      }
+      
+      /* Preserve backgrounds */
+      body, section, div {
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+        color-adjust: exact !important;
+      }
+      
+      /* Limit image heights */
+      img {
+        max-height: 150mm !important;
+        max-width: 100% !important;
+        height: auto !important;
+        break-inside: avoid !important;
+        page-break-inside: avoid !important;
+      }
+      
+      /* Hide dev overlays */
+      [data-nextjs-toast],
+      [data-nextjs-scroll-focus-boundary],
+      #__next-build-watcher,
+      #__next-prerender-indicator {
+        display: none !important;
+      }
+      
+      /* Reasonable section padding */
+      section {
+        padding-top: 10mm !important;
+        padding-bottom: 10mm !important;
+        margin-bottom: 5mm !important;
+      }
+      
+      /* Grid to block in print */
+      .grid {
+        display: block !important;
+      }
+      
+      .grid > * {
+        width: 100% !important;
+        margin-bottom: 5mm !important;
+      }
+      
+      /* Reduce box shadows */
+      [style*="box-shadow"] {
+        box-shadow: 0 1px 2px rgba(0,0,0,0.1) !important;
+      }
+    }
+  </style>
+</head>
+<body class="bg-gray-900 text-gray-800 antialiased" style="max-width: 100vw; overflow-x: hidden;">
+  <main style="max-width: 100%; overflow-x: hidden;">
+    
+    <div class="relative h-screen min-h-[500px] sm:min-h-[600px] flex flex-col items-center justify-center text-white text-center p-4" style="page-break-inside: avoid;">
+      <div class="absolute inset-0 bg-cover bg-center bg-no-repeat" style="background-image: url('https://picsum.photos/1920/1080?blur=5&random=1');"></div>
+      <div class="absolute inset-0 bg-gradient-to-b from-black/80 via-black/50 to-transparent"></div>
+      
+      <div class="absolute top-0 left-0 right-0 bg-black/50 p-2 sm:p-4 text-xs sm:text-sm md:text-lg lg:text-xl font-bold tracking-wide sm:tracking-widest">
+        <p class="text-center">🔒 Gizli • Sadece Sizin İçin Hazırlandı • Körfez, Atakum, Samsun</p>
+      </div>
+
+      <div class="relative z-10 flex flex-col items-center px-4">
+        <h1 class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-black uppercase tracking-tighter leading-tight text-center" style="text-shadow: 0 4px 15px rgba(0,0,0,0.5);">
+          Dairenizin Gerçek Değerini Biliyor musunuz?
+        </h1>
+        <p class="mt-4 sm:mt-6 max-w-3xl text-base sm:text-lg md:text-xl lg:text-2xl font-light text-center px-2" style="text-shadow: 0 2px 8px rgba(0,0,0,0.7);">
+          Bu sunum, Körfez, Atakum, Samsun bölgesindeki gayrimenkulünüzün nasıl 30-60 gün içinde <strong class="font-bold text-yellow-300">hak ettiği en yüksek fiyata</strong> satılabileceğini gösteriyor.
+        </p>
+        
+        <div class="mt-6 sm:mt-8 bg-white/10 backdrop-blur-sm border border-white/20 rounded-lg px-4 sm:px-6 py-2 sm:py-3 text-sm sm:text-lg font-semibold">
+          Ücretsiz Analiz • Sıfır Risk
+        </div>
+      </div>
+    </div>
+    
+    <section class="bg-gray-900 text-white py-12 sm:py-16 md:py-24 px-4 sm:px-6 md:px-12 lg:px-24" style="background-image: radial-gradient(circle at top left, rgba(31, 41, 55, 0.9), rgba(17, 24, 39, 1)); page-break-inside: avoid;">
+      <div class="text-center mb-6 sm:mb-8">
+        <div class="inline-block bg-yellow-400 text-gray-900 font-bold px-3 sm:px-6 py-1 sm:py-2 rounded-full text-xs sm:text-sm uppercase tracking-wide sm:tracking-widest mb-3 sm:mb-4">
+          🎯 SİZİN DAIREINIZ İÇİN HAZIRLADIĞIM ÖZEL PLAN
+        </div>
+        <h2 class="text-2xl sm:text-3xl md:text-4xl font-black">Körfez, Atakum, Samsun</h2>
+        <h3 class="text-base sm:text-lg md:text-xl text-white/80 mt-2">125 m² </h3>
+      </div>
+      
+      <div class="grid lg:grid-cols-2 gap-4 sm:gap-6 mb-4">
+        
+    <div class="bg-white/5 p-4 sm:p-6 rounded-xl border border-white/10 backdrop-blur-sm h-full">
+      <h4 class="text-lg sm:text-xl font-bold flex items-center text-yellow-300 mb-3 sm:mb-4 flex-wrap">
+        <span class="text-xl sm:text-2xl mr-2">📍</span>
+        <span>KONUM ANALİZİ</span>
+      </h4>
+      <div class="text-sm sm:text-base">
+          <ul class="space-y-1 text-white/80 text-sm">
+            <li><strong>Konum:</strong> Körfez, Atakum, Samsun</li>
+            <li><strong>Mülk Türü:</strong> Daire</li>
+            <li><strong>Fiyat:</strong> 5.000.000 TL</li>
+            <li><strong>Metrekare:</strong> 125 m²</li>
+          </ul>
+        </div>
+    </div>
+        
+    <div class="bg-white/5 p-4 sm:p-6 rounded-xl border border-white/10 backdrop-blur-sm h-full">
+      <h4 class="text-lg sm:text-xl font-bold flex items-center text-yellow-300 mb-3 sm:mb-4 flex-wrap">
+        <span class="text-xl sm:text-2xl mr-2">🏖️</span>
+        <span>KONUM AVANTAJLARI</span>
+      </h4>
+      <div class="text-sm sm:text-base">
+          <ul class="list-inside space-y-1 text-sm">
+            
+              <li class="flex items-start">
+                <span class="text-green-400 mr-2">✅</span>
+                <span>Konum Bilgileri</span>
+              </li>
+            
+              <li class="flex items-start">
+                <span class="text-green-400 mr-2">✅</span>
+                <span>Konum Avantajları</span>
+              </li>
+            
+          </ul>
+        </div>
+    </div>
+      </div>
+    </section>
+    
+    
+    <section class="bg-black text-white py-12 sm:py-16 md:py-24 px-4 sm:px-6 md:px-12 lg:px-24" style="page-break-inside: avoid;">
+      <h2 class="text-3xl md:text-5xl font-bold text-center mb-8 sm:mb-12">
+        Daireünüzü Satarken Karşılaşacağınız <span class="text-red-500">5 Büyük Sorun</span>
+      </h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+        
+          <div class="bg-gray-800 p-4 sm:p-6 rounded-lg border border-gray-700">
+            <h3 class="text-lg sm:text-xl font-bold flex items-center flex-wrap">
+              <span class="text-red-500 text-xl sm:text-2xl mr-2 sm:mr-3">❌</span>
+              <span class="flex-1">1. 1. Yanlış Fiyatlandırma</span>
+            </h3>
+            <p class="mt-2 text-gray-400 text-sm sm:text-base leading-relaxed">Çoğu daire sahibi, piyasa analizini yanlış yapıyor. Ya çok ucuza satıyor, ya da aylarca satamıyor.
+
+Kayıp: Potansiyel gelirden önemli kayıp</p>
+            <p class="mt-3 text-red-400 font-semibold text-xs sm:text-sm"><em>Kayıp: Potansiyel gelirden önemli kayıp</em></p>
+          </div>
+        
+          <div class="bg-gray-800 p-4 sm:p-6 rounded-lg border border-gray-700">
+            <h3 class="text-lg sm:text-xl font-bold flex items-center flex-wrap">
+              <span class="text-red-500 text-xl sm:text-2xl mr-2 sm:mr-3">❌</span>
+              <span class="flex-1">2. 2. Yetersiz Tanıtım</span>
+            </h3>
+            <p class="mt-2 text-gray-400 text-sm sm:text-base leading-relaxed">Telefon fotoğrafları ve basit ilanlar yeterli değil. Gayrimenkulünüz potansiyel alıcıların %95&#039;ine ulaşamıyor.
+
+Kayıp: 10-15 potansiyel alıcı</p>
+            <p class="mt-3 text-red-400 font-semibold text-xs sm:text-sm"><em>Kayıp: Potansiyel gelirden önemli kayıp</em></p>
+          </div>
+        
+          <div class="bg-gray-800 p-4 sm:p-6 rounded-lg border border-gray-700">
+            <h3 class="text-lg sm:text-xl font-bold flex items-center flex-wrap">
+              <span class="text-red-500 text-xl sm:text-2xl mr-2 sm:mr-3">❌</span>
+              <span class="flex-1">3. 3. Güvenlik Riski</span>
+            </h3>
+            <p class="mt-2 text-gray-400 text-sm sm:text-base leading-relaxed">Birebir görüşmeler, dolandırıcılık riski, ödeme sorunları... Stresli ve riskli bir süreç.
+
+Risk: Zaman + Para + Emniyet</p>
+            <p class="mt-3 text-red-400 font-semibold text-xs sm:text-sm"><em>Kayıp: Potansiyel gelirden önemli kayıp</em></p>
+          </div>
+        
+          <div class="bg-gray-800 p-4 sm:p-6 rounded-lg border border-gray-700">
+            <h3 class="text-lg sm:text-xl font-bold flex items-center flex-wrap">
+              <span class="text-red-500 text-xl sm:text-2xl mr-2 sm:mr-3">❌</span>
+              <span class="flex-1">4. 4. Zaman Kaybı</span>
+            </h3>
+            <p class="mt-2 text-gray-400 text-sm sm:text-base leading-relaxed">Ortalama bireysel satış süresi: 8-12 ay. Her ay beklemek = değer kaybı.
+
+Kayıp: Her ay emlak değer artışından geri kalma</p>
+            <p class="mt-3 text-red-400 font-semibold text-xs sm:text-sm"><em>Kayıp: Potansiyel gelirden önemli kayıp</em></p>
+          </div>
+        
+          <div class="bg-gray-800 p-4 sm:p-6 rounded-lg border border-gray-700">
+            <h3 class="text-lg sm:text-xl font-bold flex items-center flex-wrap">
+              <span class="text-red-500 text-xl sm:text-2xl mr-2 sm:mr-3">❌</span>
+              <span class="flex-1">5. 5. Pazarlık Gücü Kaybı</span>
+            </h3>
+            <p class="mt-2 text-gray-400 text-sm sm:text-base leading-relaxed">Profesyonel olmayan sunum = pazarlık masasında zayıflık = daha düşük fiyat.
+
+Kayıp: %10-20 daha az satış fiyatı</p>
+            <p class="mt-3 text-red-400 font-semibold text-xs sm:text-sm"><em>Kayıp: Potansiyel gelirden önemli kayıp</em></p>
+          </div>
+        
+      </div>
+      <div class="mt-8 sm:mt-12 bg-red-900/50 border border-red-700 text-red-300 p-4 sm:p-6 rounded-lg text-center">
+        <p class="text-base sm:text-lg md:text-xl font-bold">⚠️ Bu sorunların her biri sizi <span class="underline">yüz binlerce lira zarara</span> uğratabilir.</p>
+      </div>
+    </section>
+    
+    <section class="bg-gray-50 text-gray-800 py-12 sm:py-16 md:py-24 px-4 sm:px-6 md:px-12 lg:px-24 major-section-break avoid-break">
+      <h2 class="text-3xl md:text-5xl font-bold text-center mb-4">Peki Ya Bu Sorunların Hiçbiri Olmasaydı?</h2>
+      <p class="text-center text-lg md:text-xl text-gray-600 mb-12">Size özel hazırladığım profesyonel satış sistemi ile...</p>
+      
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6 md:gap-8" style="max-width: 100%; width: 100%;">
+        
+          <div class="bg-white p-4 sm:p-6 md:p-8 rounded-xl shadow-lg border border-gray-200 text-center">
+            <div class="text-green-500 text-4xl sm:text-5xl mb-3 sm:mb-4">✅</div>
+            <h3 class="text-lg sm:text-xl md:text-2xl font-bold text-gray-800">Doğru Fiyatlama</h3>
+            <p class="mt-2 text-gray-600 text-sm sm:text-base">✅
+
+Ortalama satış sürem: 45 gün
+Gerçek zamanlı raporlama ve otomasyon
+
+Vs. bireysel: 8-12 ay</p>
+            <p class="mt-3 sm:mt-4 text-xs sm:text-sm text-gray-500 italic">Vs. bireysel: Daha iyi sonuç</p>
+          </div>
+        
+          <div class="bg-white p-4 sm:p-6 md:p-8 rounded-xl shadow-lg border border-gray-200 text-center">
+            <div class="text-green-500 text-4xl sm:text-5xl mb-3 sm:mb-4">✅</div>
+            <h3 class="text-lg sm:text-xl md:text-2xl font-bold text-gray-800">Nitelikli Alıcı</h3>
+            <p class="mt-2 text-gray-600 text-sm sm:text-base">✅
+
+Profesyonel pazarlama = daha yüksek teklif
+dijital hikaye anlatımı ve veri odaklı optimizasyon
+
+Vs. bireysel satış: Değerinde satış fırsatı</p>
+            <p class="mt-3 sm:mt-4 text-xs sm:text-sm text-gray-500 italic">Vs. bireysel: Daha iyi sonuç</p>
+          </div>
+        
+          <div class="bg-white p-4 sm:p-6 md:p-8 rounded-xl shadow-lg border border-gray-200 text-center">
+            <div class="text-green-500 text-4xl sm:text-5xl mb-3 sm:mb-4">✅</div>
+            <h3 class="text-lg sm:text-xl md:text-2xl font-bold text-gray-800">Profesyonel Sunum</h3>
+            <p class="mt-2 text-gray-600 text-sm sm:text-base">✅
+
+Ben her şeyi hallederken, siz süreci keyifle izleyin.
+Gerçek zamanlı raporlama ve otomasyon
+
+Satış olmazsa tek kuruş ödemezsiniz</p>
+            <p class="mt-3 sm:mt-4 text-xs sm:text-sm text-gray-500 italic">Vs. bireysel: Daha iyi sonuç</p>
+          </div>
+        
+          <div class="bg-white p-4 sm:p-6 md:p-8 rounded-xl shadow-lg border border-gray-200 text-center">
+            <div class="text-green-500 text-4xl sm:text-5xl mb-3 sm:mb-4">✅</div>
+            <h3 class="text-lg sm:text-xl md:text-2xl font-bold text-gray-800">Hukuki Güvence</h3>
+            <p class="mt-2 text-gray-600 text-sm sm:text-base">Satış sözleşmeleri, kaparo süreçleri ve tapu devri, kurumsal hukuk departmanımızın denetiminde, sıfır risk ile yönetilir.
+
+Sonuç
+Tam Güvenlik</p>
+            <p class="mt-3 sm:mt-4 text-xs sm:text-sm text-gray-500 italic">Vs. bireysel: Daha iyi sonuç</p>
+          </div>
+        
+          <div class="bg-white p-4 sm:p-6 md:p-8 rounded-xl shadow-lg border border-gray-200 text-center">
+            <div class="text-green-500 text-4xl sm:text-5xl mb-3 sm:mb-4">✅</div>
+            <h3 class="text-lg sm:text-xl md:text-2xl font-bold text-gray-800">Geniş Ağ Gücü</h3>
+            <p class="mt-2 text-gray-600 text-sm sm:text-base">Kurumsal geniş ağı sayesinde yerel ve bölgesel alıcılara hızlı erişim.
+
+Sonuç
+Geniş Erişim</p>
+            <p class="mt-3 sm:mt-4 text-xs sm:text-sm text-gray-500 italic">Vs. bireysel: Daha iyi sonuç</p>
+          </div>
+        
+      </div>
+
+      <div class="text-center mt-16 border-t border-gray-200 pt-6">
+        <p class="text-gray-500">Birçok arsa sahibi bu sisteme güvendi → Hepsi başarıyla sattı</p>
+      </div>
+    </section>
+    
+    
+    <section class="bg-gradient-to-br from-blue-900 via-indigo-900 to-red-900 text-white py-12 sm:py-16 md:py-24 px-4 sm:px-6 md:px-12 lg:px-24 major-section-break avoid-break">
+      <h2 class="text-3xl sm:text-4xl md:text-6xl font-black text-center mb-4">6 Adımlı Profesyonel Satış Sistemi</h2>
+      <p class="text-center text-base sm:text-lg md:text-xl text-white/80 mb-8 sm:mb-16">
+        Daireünüzü En Yüksek Fiyata, En Hızlı Şekilde Satmanın Formülü
+      </p>
+
+      <div class="space-y-8 sm:space-y-12">
+        
+          <div class="relative pl-12 sm:pl-16">
+            <div class="absolute left-0 top-0 flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-white text-blue-800 text-xl sm:text-2xl font-black shadow-lg z-10" style="width: 48px; height: 48px;">
+              📊
+            </div>
+            <div class="absolute left-5 sm:left-6 top-10 sm:top-12 bottom-0 w-px bg-white/30"></div>
+            
+            <div class="bg-black/20 p-4 sm:p-6 rounded-xl border border-white/20 backdrop-blur-sm">
+              <p class="text-xs sm:text-sm font-bold text-yellow-300">Gün 1-2</p>
+              <h3 class="text-xl sm:text-2xl font-bold mt-1">1. 1. PROFESYONEL DEĞERLEME</h3>
+              
+              <div class="grid md:grid-cols-2 gap-4 sm:gap-6 mt-4">
+                <div>
+                  <h4 class="font-semibold text-white/90 text-sm sm:text-base">Ne yapıyorum:</h4>
+                  <ul class="list-disc list-inside mt-2 text-white/70 space-y-1 text-xs sm:text-sm">
+                    <li>Detaylı piyasa analizi</li><li>Benzer satışlar incelemesi</li><li>Bölge değer artış trendi</li><li>Optimal fiyat stratejisi</li>
+                  </ul>
+                </div>
+                <div class="bg-white/10 p-3 sm:p-4 rounded-lg">
+                  <h4 class="font-semibold text-yellow-300 text-sm sm:text-base">💰 Sizin kazancınız:</h4>
+                  <p class="mt-1 text-white/90 text-xs sm:text-sm">💰 Sizin Kazancınız:</p>
+                </div>
+              </div>
+              
+              
+              
+              
+            </div>
+          </div>
+        
+          <div class="relative pl-12 sm:pl-16">
+            <div class="absolute left-0 top-0 flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-white text-blue-800 text-xl sm:text-2xl font-black shadow-lg z-10" style="width: 48px; height: 48px;">
+              📹
+            </div>
+            <div class="absolute left-5 sm:left-6 top-10 sm:top-12 bottom-0 w-px bg-white/30"></div>
+            
+            <div class="bg-black/20 p-4 sm:p-6 rounded-xl border border-white/20 backdrop-blur-sm">
+              <p class="text-xs sm:text-sm font-bold text-yellow-300">Gün 3-5</p>
+              <h3 class="text-xl sm:text-2xl font-bold mt-1">2. 2. GÖRSEL ŞÖLEN</h3>
+              
+              <div class="grid md:grid-cols-2 gap-4 sm:gap-6 mt-4">
+                <div>
+                  <h4 class="font-semibold text-white/90 text-sm sm:text-base">Ne yapıyorum:</h4>
+                  <ul class="list-disc list-inside mt-2 text-white/70 space-y-1 text-xs sm:text-sm">
+                    <li>4K profesyonel drone çekimi</li><li>Zemin fotoğraf seansı (gün batımı/gün doğumu)</li><li>HD tanıtım videosu (45-60 saniye)</li><li>360° sanal tur</li><li>Profesyonel edit ve renklendirme</li>
+                  </ul>
+                </div>
+                <div class="bg-white/10 p-3 sm:p-4 rounded-lg">
+                  <h4 class="font-semibold text-yellow-300 text-sm sm:text-base">💡 Sizin kazancınız:</h4>
+                  <p class="mt-1 text-white/90 text-xs sm:text-sm">💡 Sizin Kazancınız:</p>
+                </div>
+              </div>
+              
+              
+                <div class="mt-4 bg-yellow-400/10 border border-yellow-500 text-yellow-300 p-3 rounded-lg text-xs sm:text-sm">
+                  
+                    <p class="">Profesyonel drone çekimi maliyeti: ₺3,500-5,000</p>
+                  
+                    <p class="mt-1 font-bold">Sizin için: TAMAMEN ÜCRETSİZ</p>
+                  
+                </div>
+              
+              
+              
+            </div>
+          </div>
+        
+          <div class="relative pl-12 sm:pl-16">
+            <div class="absolute left-0 top-0 flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-white text-blue-800 text-xl sm:text-2xl font-black shadow-lg z-10" style="width: 48px; height: 48px;">
+              📱
+            </div>
+            <div class="absolute left-5 sm:left-6 top-10 sm:top-12 bottom-0 w-px bg-white/30"></div>
+            
+            <div class="bg-black/20 p-4 sm:p-6 rounded-xl border border-white/20 backdrop-blur-sm">
+              <p class="text-xs sm:text-sm font-bold text-yellow-300">Gün 5-10</p>
+              <h3 class="text-xl sm:text-2xl font-bold mt-1">3. 3. DİJİTAL PAZARLAMA</h3>
+              
+              <div class="grid md:grid-cols-2 gap-4 sm:gap-6 mt-4">
+                <div>
+                  <h4 class="font-semibold text-white/90 text-sm sm:text-base">Ne yapıyorum:</h4>
+                  <ul class="list-disc list-inside mt-2 text-white/70 space-y-1 text-xs sm:text-sm">
+                    <li>Facebook &amp; Instagram reklamları (hedefli kitle)</li><li>Google Ads (arama + harita)</li><li>Emlakjet, Sahibinden, Hepsiemlak Premium ilanlar</li><li>YouTube video reklamı</li><li>500+ alıcı database&#039;ine e-posta</li><li>₺8,00012,000 değerindeki reklam bütçesi tamamen ÜCRETSİZ</li>
+                  </ul>
+                </div>
+                <div class="bg-white/10 p-3 sm:p-4 rounded-lg">
+                  <h4 class="font-semibold text-yellow-300 text-sm sm:text-base">📈 Erişim metriği:</h4>
+                  <p class="mt-1 text-white/90 text-xs sm:text-sm">📈 Erişim:</p>
+                </div>
+              </div>
+              
+              
+                <div class="mt-4 bg-yellow-400/10 border border-yellow-500 text-yellow-300 p-3 rounded-lg text-xs sm:text-sm">
+                  
+                    <p class="">Reklam bütçesi: ₺8,000-12,000 aylık reklam harcaması</p>
+                  
+                    <p class="mt-1 font-bold">Sizin için: TAMAMEN ÜCRETSİZ</p>
+                  
+                </div>
+              
+              
+              
+                <div class="mt-4 overflow-x-auto">
+                  <table class="w-full text-xs sm:text-sm text-left text-white/90 bg-white/5 rounded-lg">
+                    <thead class="bg-white/10">
+                      <tr>
+                        <th class="p-2 sm:p-3"></th>
+                        <th class="p-2 sm:p-3">Bireysel</th>
+                        <th class="p-2 sm:p-3">Benimle</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr class="border-t border-white/10">
+                        <td class="p-2 sm:p-3 font-semibold">Erişim</td>
+                        <td class="p-2 sm:p-3">50-100</td>
+                        <td class="p-2 sm:p-3 text-green-400 font-bold">15,000+ ✅</td>
+                      </tr>
+                      <tr class="border-t border-white/10">
+                        <td class="p-2 sm:p-3 font-semibold">Maliyet</td>
+                        <td class="p-2 sm:p-3">₺0 (ama satmıyor)</td>
+                        <td class="p-2 sm:p-3 text-green-400 font-bold">₺0 (ben karşılıyorum)</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              
+            </div>
+          </div>
+        
+          <div class="relative pl-12 sm:pl-16">
+            <div class="absolute left-0 top-0 flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-white text-blue-800 text-xl sm:text-2xl font-black shadow-lg z-10" style="width: 48px; height: 48px;">
+              🌍
+            </div>
+            <div class="absolute left-5 sm:left-6 top-10 sm:top-12 bottom-0 w-px bg-white/30"></div>
+            
+            <div class="bg-black/20 p-4 sm:p-6 rounded-xl border border-white/20 backdrop-blur-sm">
+              <p class="text-xs sm:text-sm font-bold text-yellow-300">Gün 1-30</p>
+              <h3 class="text-xl sm:text-2xl font-bold mt-1">4. KURUMSAL AĞ AKTİVASYONU</h3>
+              
+              <div class="grid md:grid-cols-2 gap-4 sm:gap-6 mt-4">
+                <div>
+                  <h4 class="font-semibold text-white/90 text-sm sm:text-base">Ne yapıyorum:</h4>
+                  <ul class="list-disc list-inside mt-2 text-white/70 space-y-1 text-xs sm:text-sm">
+                    <li>Geniş emlak ağına duyuru</li><li>Kurumsal yatırımcı erişimi</li><li>Diğer danışmanlarla iş birliği</li><li>Emlak fuarlarında sunum</li><li>Gerçek zamanlı raporlama ve otomasyon</li><li>Yerel + ulusal + kurumsal alıcılar aynı anda</li><li>Profesyonel uzman ağı ile satışın hızlanması</li>
+                  </ul>
+                </div>
+                <div class="bg-white/10 p-3 sm:p-4 rounded-lg">
+                  <h4 class="font-semibold text-yellow-300 text-sm sm:text-base">🤝 Sizin kazancınız:</h4>
+                  <p class="mt-1 text-white/90 text-xs sm:text-sm">💼 Sizin kazancınız:</p>
+                </div>
+              </div>
+              
+              
+              
+              
+            </div>
+          </div>
+        
+          <div class="relative pl-12 sm:pl-16">
+            <div class="absolute left-0 top-0 flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-white text-blue-800 text-xl sm:text-2xl font-black shadow-lg z-10" style="width: 48px; height: 48px;">
+              🔍
+            </div>
+            <div class="absolute left-5 sm:left-6 top-10 sm:top-12 bottom-0 w-px bg-white/30"></div>
+            
+            <div class="bg-black/20 p-4 sm:p-6 rounded-xl border border-white/20 backdrop-blur-sm">
+              <p class="text-xs sm:text-sm font-bold text-yellow-300">Gün 10-45</p>
+              <h3 class="text-xl sm:text-2xl font-bold mt-1">5. 5. NİTELİKLİ ALICI FİLTRESİ</h3>
+              
+              <div class="grid md:grid-cols-2 gap-4 sm:gap-6 mt-4">
+                <div>
+                  <h4 class="font-semibold text-white/90 text-sm sm:text-base">Ne yapıyorum:</h4>
+                  <ul class="list-disc list-inside mt-2 text-white/70 space-y-1 text-xs sm:text-sm">
+                    <li>İlk telefon filtrelemesi</li><li>Finansal yeterlilik kontrolü</li><li>Ciddiyet testi</li><li>Profesyonel görüşme planlama</li>
+                  </ul>
+                </div>
+                <div class="bg-white/10 p-3 sm:p-4 rounded-lg">
+                  <h4 class="font-semibold text-yellow-300 text-sm sm:text-base">✅ Sizin kazancınız:</h4>
+                  <p class="mt-1 text-white/90 text-xs sm:text-sm">💰 Sizin Kazancınız:</p>
+                </div>
+              </div>
+              
+              
+              
+              
+            </div>
+          </div>
+        
+          <div class="relative pl-12 sm:pl-16">
+            <div class="absolute left-0 top-0 flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-white text-blue-800 text-xl sm:text-2xl font-black shadow-lg z-10" style="width: 48px; height: 48px;">
+              🤝
+            </div>
+            
+            
+            <div class="bg-black/20 p-4 sm:p-6 rounded-xl border border-white/20 backdrop-blur-sm">
+              <p class="text-xs sm:text-sm font-bold text-yellow-300">Gün 30-60</p>
+              <h3 class="text-xl sm:text-2xl font-bold mt-1">6. 6. PROFESYONEL KAPANIŞ</h3>
+              
+              <div class="grid md:grid-cols-2 gap-4 sm:gap-6 mt-4">
+                <div>
+                  <h4 class="font-semibold text-white/90 text-sm sm:text-base">Ne yapıyorum:</h4>
+                  <ul class="list-disc list-inside mt-2 text-white/70 space-y-1 text-xs sm:text-sm">
+                    <li>Pazarlık stratejisi</li><li>Sözleşme yönetimi</li><li>Noter süreç yönetimi</li><li>Ödeme garantisi koordinasyonu</li><li>Tapu devir güvenliği</li><li>En yüksek teklif + güvenli ödeme. Ortalama 3060 günde sonuç</li>
+                  </ul>
+                </div>
+                <div class="bg-white/10 p-3 sm:p-4 rounded-lg">
+                  <h4 class="font-semibold text-yellow-300 text-sm sm:text-base">🎯 Sizin kazancınız:</h4>
+                  <p class="mt-1 text-white/90 text-xs sm:text-sm">💼 Sizin Kazancınız:</p>
+                </div>
+              </div>
+              
+              
+              
+              
+            </div>
+          </div>
+        
+      </div>
+
+      <div class="mt-12 sm:mt-16 text-center bg-white/10 p-4 sm:p-6 rounded-lg border border-white/20">
+        <p class="text-base sm:text-xl">⏱️ Toplam süreç: Ortalama 45 gün</p>
+        <p class="text-xl sm:text-2xl font-bold text-yellow-300 mt-2">💰 Hedef: Piyasa değerinde hızlı satış</p>
+      </div>
+    </section>
+    
+    <section class="bg-gray-900 text-white py-12 sm:py-16 md:py-24 px-4 sm:px-6 md:px-12 lg:px-24" style="background-image: radial-gradient(circle at top left, rgba(31, 41, 55, 0.9), rgba(17, 24, 39, 1)), url(https://picsum.photos/1920/1080?random=4&blur=2); page-break-inside: avoid;">
+      <div class="text-center mb-8 sm:mb-12">
+        <div class="inline-block bg-yellow-400 text-gray-900 font-bold px-3 sm:px-6 py-1 sm:py-2 rounded-full text-xs sm:text-sm uppercase tracking-wide sm:tracking-widest mb-3 sm:mb-4">
+          🎯 SİZİN DAIREINIZ İÇİN HAZIRLADIĞIM ÖZEL PLAN
+        </div>
+        <h2 class="text-2xl sm:text-3xl md:text-5xl font-black">Körfez, Atakum, Samsun</h2>
+        <h3 class="text-base sm:text-xl md:text-2xl text-white/80 mt-2">125 m² </h3>
+      </div>
+      
+      <div class="grid lg:grid-cols-2 gap-4 sm:gap-6 md:gap-8 mb-6 sm:mb-8">
+        
+    <div class="bg-white/5 p-4 sm:p-6 rounded-xl border border-white/10 backdrop-blur-sm h-full">
+      <h4 class="text-lg sm:text-xl font-bold flex items-center text-yellow-300 mb-3 sm:mb-4 flex-wrap">
+        <span class="text-xl sm:text-2xl mr-2">📍</span>
+        <span>KONUM ANALİZİ</span>
+      </h4>
+      <div class="text-sm sm:text-base">
+          <ul class="space-y-2 text-white/80">
+            <li><strong>Konum:</strong> Körfez, Atakum, Samsun</li>
+            <li><strong>Mülk Türü:</strong> Daire</li>
+            <li><strong>Fiyat:</strong> 5.000.000 TL</li>
+            <li><strong>Metrekare:</strong> 125 m²</li>
+          </ul>
+          <p class="mt-4 text-white/70">Körfez, Atakum, Samsun bölgesi hakkında detaylı analiz:</p>
+        </div>
+    </div>
+        
+        
+    <div class="bg-white/5 p-4 sm:p-6 rounded-xl border border-white/10 backdrop-blur-sm h-full">
+      <h4 class="text-lg sm:text-xl font-bold flex items-center text-yellow-300 mb-3 sm:mb-4 flex-wrap">
+        <span class="text-xl sm:text-2xl mr-2">🏖️</span>
+        <span>KONUM AVANTAJLARI</span>
+      </h4>
+      <div class="text-sm sm:text-base">
+          <ul class="list-inside space-y-2">
+            
+              <li class="flex items-start">
+                <span class="text-green-400 mr-2 mt-1">✅</span>
+                <span>Konum Bilgileri</span>
+              </li>
+            
+              <li class="flex items-start">
+                <span class="text-green-400 mr-2 mt-1">✅</span>
+                <span>Konum Avantajları</span>
+              </li>
+            
+          </ul>
+        </div>
+    </div>
+        
+        
+    <div class="bg-white/5 p-4 sm:p-6 rounded-xl border border-white/10 backdrop-blur-sm h-full">
+      <h4 class="text-lg sm:text-xl font-bold flex items-center text-yellow-300 mb-3 sm:mb-4 flex-wrap">
+        <span class="text-xl sm:text-2xl mr-2">🎯</span>
+        <span>HEDEF KİTLE PROFİLİ</span>
+      </h4>
+      <div class="text-sm sm:text-base">
+          <div>
+            
+              <div class="mb-4">
+                <h5 class="font-bold">1. Yatırımcılar</h5>
+                <p class="text-sm text-white/70">Körfez, Atakum, Samsun bölgesindeki değer artış potansiyelini değerlendiren yatırımcılar için ideal.</p>
+              </div>
+            
+              <div class="mb-4">
+                <h5 class="font-bold">2. Aileler</h5>
+                <p class="text-sm text-white/70">Güvenli, konforlu ve sosyal olanaklara yakın yaşam arayan aileler için uygun.</p>
+              </div>
+            
+              <div class="mb-4">
+                <h5 class="font-bold">3. Profesyoneller</h5>
+                <p class="text-sm text-white/70">İş merkezlerine kolay ulaşım arayan genç profesyoneller için cazip.</p>
+              </div>
+            
+          </div>
+        </div>
+    </div>
+        
+        
+      </div>
+
+      <div class="mt-8 sm:mt-12 text-center bg-green-900/50 border border-green-700 text-green-300 p-4 sm:p-6 rounded-lg">
+        <p class="text-sm sm:text-base md:text-lg font-semibold">✅ Satış olmazsa <span class="font-bold">0₺</span> ücret • ✅ Tüm hizmetler <span class="font-bold">ücretsiz</span> • ✅ Hizmet bedeli sadece satış olunca</p>
+      </div>
+    </section>
+    
+    
+    <section class="bg-blue-50 text-gray-800 py-12 sm:py-16 md:py-24 px-4 sm:px-6 md:px-12 lg:px-24" style="page-break-inside: avoid;">
+      <h2 class="text-2xl sm:text-3xl md:text-5xl font-bold text-center mb-8 sm:mb-12">
+        Hiçbir Risk Almıyorsunuz - <span class="text-blue-600">Garantilerim:</span>
+      </h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 md:gap-8">
+        
+          <div class="bg-white p-4 sm:p-6 md:p-8 rounded-xl shadow-lg border border-blue-200 text-center">
+            <div class="text-4xl sm:text-5xl mb-3 sm:mb-4 inline-block">💸</div>
+            <h3 class="text-lg sm:text-xl md:text-2xl font-bold text-blue-800">Sıfır Ön Ödeme</h3>
+            <div class="mt-2 text-sm sm:text-base text-gray-600">Dairenizi listelemek için tek kuruş ödemezsiniz.
+
+• Değerleme: Ücretsiz
+• Drone Çekimi: Ücretsiz
+• Pazarlama: Ücretsiz
+
+Gerçek zamanlı raporlama ve otomasyon. Hizmet bedeli sadece satış gerçekleşirse!</div>
+          </div>
+        
+          <div class="bg-white p-4 sm:p-6 md:p-8 rounded-xl shadow-lg border border-blue-200 text-center">
+            <div class="text-4xl sm:text-5xl mb-3 sm:mb-4 inline-block">🔒</div>
+            <h3 class="text-lg sm:text-xl md:text-2xl font-bold text-blue-800">Teknoloji Destekli Garantiler</h3>
+            <div class="mt-2 text-sm sm:text-base text-gray-600">Kurumsal güvence arkanızda.
+
+• Sigortalı İşlemler
+• Hukuki Destek
+• Kurumsal Sorumluluk</div>
+          </div>
+        
+          <div class="bg-white p-4 sm:p-6 md:p-8 rounded-xl shadow-lg border border-blue-200 text-center">
+            <div class="text-4xl sm:text-5xl mb-3 sm:mb-4 inline-block">📞</div>
+            <h3 class="text-lg sm:text-xl md:text-2xl font-bold text-blue-800">7/24 İletişim</h3>
+            <div class="mt-2 text-sm sm:text-base text-gray-600">Satış sürecinde her an bana ulaşabilirsiniz.
+
+• Telefon
+• WhatsApp
+• Email & Yüz yüze</div>
+          </div>
+        
+      </div>
+    </section>
+    
+    
+    <div class="bg-gray-900 py-20">
+      <div class="max-w-6xl mx-auto px-6">
+        <h2 class="text-3xl font-bold text-white text-center mb-8">Piyasa Analizi</h2>
+        <p class="text-white/80 text-center">Körfez, Atakum, Samsun, daire yatırımları için stratejik bir konumda. Bölgenin gelişim potansiyeli ve ulaşım avantajları göz önünde bulundurulduğunda, orta-uzun vadede değer artışı beklenen bir bölge.</p>
+      </div>
+    </div>
+    
+    <section class="bg-gray-50 py-12 sm:py-16 md:py-24 px-4 sm:px-6 md:px-12 lg:px-24 major-section-break" style="page-break-inside: avoid;">
+      <h2 class="text-3xl md:text-5xl font-bold text-center mb-12">Aklınızdaki Sorular</h2>
+      <div class="max-w-3xl mx-auto">
+        
+          <div class="border-b border-gray-200 py-4">
+            <div class="w-full flex justify-between items-center text-left text-lg font-semibold text-gray-800">
+              <span>Hizmet bedeli oranınız nedir?</span>
+            </div>
+            <div class="mt-4 text-gray-600 pr-4">
+              Satış olmazsa 0₺ ücret • Tüm hizmetler ücretsiz • Hizmet bedeli sadece satış olunca.
+            </div>
+          </div>
+        
+          <div class="border-b border-gray-200 py-4">
+            <div class="w-full flex justify-between items-center text-left text-lg font-semibold text-gray-800">
+              <span>Dairem satılmazsa ne olur?</span>
+            </div>
+            <div class="mt-4 text-gray-600 pr-4">
+              Hiçbir şey olmaz. Satış olmazsa tek kuruş ödemezsiniz. Tüm hizmetler ücretsizdir.
+            </div>
+          </div>
+        
+          <div class="border-b border-gray-200 py-4">
+            <div class="w-full flex justify-between items-center text-left text-lg font-semibold text-gray-800">
+              <span>Neden sizinle çalışayım, başka danışman değil?</span>
+            </div>
+            <div class="mt-4 text-gray-600 pr-4">
+              Profesyonel hizmet, sıfır risk, garantili satış ve ${danisman.ofisAdi ? danisman.ofisAdi + &#039; güvencesi&#039; : &#039;kurumsal güvence&#039;} ile fark yaratıyoruz.
+            </div>
+          </div>
+        
+          <div class="border-b border-gray-200 py-4">
+            <div class="w-full flex justify-between items-center text-left text-lg font-semibold text-gray-800">
+              <span>Drone ve video çekimi gerçekten ücretsiz mi?</span>
+            </div>
+            <div class="mt-4 text-gray-600 pr-4">
+              Evet, tamamen ücretsiz. Profesyonel drone çekimi (₺3,500-5,000) ve video çekimi (₺2,000-3,000) maliyetlerini biz karşılıyoruz.
+            </div>
+          </div>
+        
+          <div class="border-b border-gray-200 py-4">
+            <div class="w-full flex justify-between items-center text-left text-lg font-semibold text-gray-800">
+              <span>Ne kadar sürede satarsınız?</span>
+            </div>
+            <div class="mt-4 text-gray-600 pr-4">
+              Ortalama 45 gün içinde satış garantisi. Hedef: 30-60 gün arası satış.
+            </div>
+          </div>
+        
+          <div class="border-b border-gray-200 py-4">
+            <div class="w-full flex justify-between items-center text-left text-lg font-semibold text-gray-800">
+              <span>Kurumsal hizmet bedeli alıyor mu?</span>
+            </div>
+            <div class="mt-4 text-gray-600 pr-4">
+              Hayır. Satış olmazsa hiçbir ücret alınmaz. Hizmet bedeli sadece satış gerçekleştiğinde alınır.
+            </div>
+          </div>
+        
+      </div>
+    </section>
+    
+    <section class="bg-gray-900 text-white py-12 sm:py-16 md:py-24 px-4 sm:px-6 md:px-12 lg:px-24" style="background-image: radial-gradient(circle at center, rgba(17, 24, 39, 0.95), rgba(17, 24, 39, 1)); page-break-inside: avoid;">
+      <div class="text-center">
+        <h2 class="text-4xl sm:text-5xl md:text-6xl font-black uppercase tracking-tighter" style="text-shadow: 0 0 15px rgba(255, 255, 255, 0.1);">
+          Dijital Strateji Oturumu Planlayalım
+        </h2>
+        <p class="mt-4 max-w-2xl mx-auto text-lg md:text-xl text-gray-400">
+          bed ile dijital kampanya planınızı 20 dakikada netleştirelim.
+        </p>
+      </div>
+
+      <div class="mt-12 max-w-6xl mx-auto flex justify-center items-center">
+        <div class="text-center">
+          
+          <h3 class="text-2xl font-bold">bed</h3>
+          <div class="mt-6 flex flex-wrap justify-center gap-4 text-sm text-green-400">
+            <span class="bg-green-500/10 p-2 rounded">✅ 24 saat içinde geri dönüş</span>
+            <span class="bg-green-500/10 p-2 rounded">✅ Hiçbir bağlayıcılık yok</span>
+            <span class="bg-green-500/10 p-2 rounded">✅ 100% gizlilik garantisi</span>
+          </div>
+          <div class="mt-8 flex flex-col sm:flex-row gap-4 justify-center">
+            <a href="tel:958" class="px-6 py-3 text-white rounded-lg transition-opacity" style="background-color: #3A7DFF;">
+              📞 958
+            </a>
+            <a href="mailto:" class="px-6 py-3 text-white rounded-lg transition-opacity" style="background-color: #24d6a4;">
+              📧 
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+    
+    <section class="bg-white py-8 px-4 sm:px-6 md:px-12 lg:px-24" style="page-break-inside: avoid;">
+      <footer class="text-center text-gray-400 text-sm pt-8 border-t">
+        <p>&copy; 2026 bed. Tüm hakları saklıdır.</p>
+        <p>Bu sunum Körfez, Atakum, Samsun bölgesindeki daireınız için özel olarak hazırlanmıştır.</p>
+      </footer>
+    </section>
+  </main>
+</body>
+</html>

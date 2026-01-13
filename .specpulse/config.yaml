@@ -1,0 +1,18 @@
+ai:
+  primary: cursor
+  selected_tools:
+  - cursor
+conventions:
+  branch_naming: '{number:03d}-{feature-name}'
+  plan_naming: plan-{number:03d}.md
+  spec_naming: spec-{number:03d}.md
+  task_naming: task-{number:03d}.md
+project:
+  created: '2025-12-01T01:13:05.549374'
+  name: pyrize
+  type: web
+templates:
+  plan: .specpulse/templates/plan.md
+  spec: .specpulse/templates/spec.md
+  task: .specpulse/templates/task.md
+version: 2.7.5

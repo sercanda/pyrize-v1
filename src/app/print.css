@@ -1,0 +1,41 @@
+@media print {
+  * {
+    color: #000 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+    animation: none !important;
+    transition: none !important;
+    font-family: Arial, Helvetica, sans-serif !important;
+  }
+
+  @page {
+    size: A4;
+    margin: 0;
+  }
+
+  html,
+  body {
+    margin: 0;
+    padding: 0;
+    width: 210mm;
+  }
+
+  /* Ana sunum kapsayıcısı A4 genişliğine sabitlensin */
+  #sunum-icerik {
+    width: 210mm !important;
+    min-height: 297mm;
+    margin: 0 auto;
+  }
+
+  /* Her .page bloğu tam A4 sayfa olsun */
+  .page {
+    page-break-after: always;
+    width: 210mm;
+    min-height: 297mm;
+  }
+
+  .no-print {
+    display: none !important;
+  }
+}

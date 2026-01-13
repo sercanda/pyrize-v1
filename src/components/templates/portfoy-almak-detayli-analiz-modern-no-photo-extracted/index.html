@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="tr" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Kurumsal Değerleme ve Pazarlama Raporu</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+      body {
+        font-family: 'Poppins', sans-serif;
+      }
+
+      /* PRINT / PDF OPTIMIZATION */
+      @media print {
+        @page {
+          size: A4;
+          margin: 0;
+        }
+        
+        html, body {
+          height: 100%;
+          width: 100%;
+        }
+
+        body {
+          -webkit-print-color-adjust: exact !important;
+          print-color-adjust: exact !important;
+          /* FIX: Ensure background is white for print so black text is visible */
+          background-color: white !important; 
+          
+          /* FIX: Use Arial/Helvetica for PDF safety. 
+             System fonts can sometimes fail to embed in certain PDF engines.
+             Arial is universally available and renders Turkish chars correctly. */
+          font-family: Arial, Helvetica, sans-serif !important;
+          color: black !important;
+        }
+
+        /* FIX: Force all text elements to use the safe font and black color */
+        h1, h2, h3, h4, h5, h6, p, span, div, a, li {
+            font-family: Arial, Helvetica, sans-serif !important;
+            text-shadow: none !important;
+            filter: none !important;
+            opacity: 1 !important;
+            color: black !important;
+        }
+
+        /* Force page breaks */
+        .print-break-after {
+          break-after: page;
+          page-break-after: always;
+        }
+
+        .print-break-inside-avoid {
+          break-inside: avoid;
+          page-break-inside: avoid;
+        }
+
+        /* Hide scrollbars */
+        ::-webkit-scrollbar {
+          display: none;
+        }
+        
+        /* Background fix */
+        #root {
+          min-height: 100vh;
+        }
+      }
+    </style>
+  <script type="importmap">
+{
+  "imports": {
+    "recharts": "https://aistudiocdn.com/recharts@^3.3.0",
+    "react/": "https://aistudiocdn.com/react@^19.2.0/",
+    "react": "https://aistudiocdn.com/react@^19.2.0",
+    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/"
+  }
+}
+</script>
+<link rel="stylesheet" href="/index.css">
+</head>
+  <body class="bg-slate-950 text-slate-200">
+    <div id="root"></div>
+    <script type="module" src="/index.tsx"></script>
+  </body>
+</html>

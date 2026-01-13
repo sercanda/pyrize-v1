@@ -1,0 +1,6 @@
+
+{
+  "name": "Stellar Plasma UI - WebGL Fluid Dynamics",
+  "description": "A high-performance organic plasma background component built with React and OGL, featuring 300es GLSL shaders and interactive fluid motion.",
+  "requestFramePermissions": []
+}
