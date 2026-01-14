@@ -1,31 +1,19 @@
 import { NextRequest, NextResponse } from "next/server";
-import Groq from "groq-sdk";
 import { MulkBilgileri } from "@/types";
-import { 
-  getNadirFirsatTemplate, 
-  getKonumPrimiTemplate, 
-  getGelisimPotansiyeliTemplate 
+import {
+  getNadirFirsatTemplate,
+  getKonumPrimiTemplate,
+  getGelisimPotansiyeliTemplate
 } from "@/lib/templates/default-sections";
-import { 
-  getKFEForProperty, 
-  formatKFEForPrompt 
+import {
+  getKFEForProperty,
+  formatKFEForPrompt
 } from "@/lib/utils/kfe";
-
-const GROQ_API_KEY = process.env.GROQ_API_KEY;
-
-const groq = new Groq({
-  apiKey: GROQ_API_KEY,
-});
+import { getGroqClient, isGroqAvailable } from "@/lib/ai/groq";
 
 export async function POST(request: NextRequest) {
   try {
-    if (!GROQ_API_KEY) {
-      return NextResponse.json(
-        { error: "GROQ_API_KEY ortam değişkeni ayarlanmamış." },
-        { status: 500 }
-      );
-    }
-
+    // Parse request body first to get mulk data for fallback
     const { mulk, locationAnalysis } = await request.json();
 
     if (!mulk?.tur || !mulk?.konum) {
@@ -34,6 +22,51 @@ export async function POST(request: NextRequest) {
         { status: 400 }
       );
     }
+
+    // Fallback şablonlar - formdan gelen bilgilere göre dinamik
+    const getFallbackTemplates = () => {
+      return [
+        {
+          baslik: "Nadir Fırsat",
+          icerik: getNadirFirsatTemplate({
+            mulkTur: mulk.tur,
+            metrekare: mulk.metrekare,
+            odaSayisi: mulk.odaSayisi,
+            konum: mulk.konum,
+            fiyat: mulk.fiyat || mulk.fiyatMax
+          })
+        },
+        {
+          baslik: "Konum Primi",
+          icerik: getKonumPrimiTemplate({
+            mulkTur: mulk.tur,
+            konum: mulk.konum,
+            locationAnalysis
+          })
+        },
+        {
+          baslik: "Gelişim Potansiyeli",
+          icerik: getGelisimPotansiyeliTemplate({
+            mulkTur: mulk.tur,
+            konum: mulk.konum,
+            locationAnalysis
+          })
+        }
+      ];
+    };
+
+    // Check if Groq is available (lazy check - no build-time crash)
+    if (!isGroqAvailable()) {
+      console.warn("⚠️ GROQ_API_KEY bulunamadı, fallback şablonları kullanılıyor");
+      return NextResponse.json({ success: true, data: getFallbackTemplates() });
+    }
+
+    const groq = getGroqClient();
+    if (!groq) {
+      console.warn("⚠️ Groq client oluşturulamadı, fallback şablonları kullanılıyor");
+      return NextResponse.json({ success: true, data: getFallbackTemplates() });
+    }
+
 
     const locationName = mulk.konum.split(',')[0].trim();
     const mulkTurLabel = getMulkLabel(mulk.tur);
@@ -102,38 +135,6 @@ SADECE geçerli bir JSON dizisi döndür. Her öğe { "baslik": "...", "icerik":
 
 Başka hiçbir açıklama, metin veya ek bilgi ekleme. Sadece JSON dizisi.`;
 
-    // Fallback şablonlar - formdan gelen bilgilere göre dinamik
-    const getFallbackTemplates = () => {
-      return [
-        {
-          baslik: "Nadir Fırsat",
-          icerik: getNadirFirsatTemplate({
-            mulkTur: mulk.tur,
-            metrekare: mulk.metrekare,
-            odaSayisi: mulk.odaSayisi,
-            konum: mulk.konum,
-            fiyat: mulk.fiyat || mulk.fiyatMax
-          })
-        },
-        {
-          baslik: "Konum Primi",
-          icerik: getKonumPrimiTemplate({
-            mulkTur: mulk.tur,
-            konum: mulk.konum,
-            locationAnalysis
-          })
-        },
-        {
-          baslik: "Gelişim Potansiyeli",
-          icerik: getGelisimPotansiyeliTemplate({
-            mulkTur: mulk.tur,
-            konum: mulk.konum,
-            locationAnalysis
-          })
-        }
-      ];
-    };
-
     let parsedContent;
     try {
       const chatCompletion = await groq.chat.completions.create({
@@ -149,13 +150,13 @@ Başka hiçbir açıklama, metin veya ek bilgi ekleme. Sadece JSON dizisi.`;
       });
 
       const content = chatCompletion.choices[0]?.message?.content || "[]";
-      
+
       // JSON parse et
       try {
         // Markdown kod bloklarını temizle
         const cleanedContent = content.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
         parsedContent = JSON.parse(cleanedContent);
-        
+
         // Başlıkları kontrol et ve düzelt
         if (Array.isArray(parsedContent) && parsedContent.length === 3) {
           parsedContent = parsedContent.map((item, index) => {
