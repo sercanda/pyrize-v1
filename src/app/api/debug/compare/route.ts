@@ -17,6 +17,10 @@ export async function GET(request: NextRequest) {
 
         const supabase = getSupabaseServiceClient();
 
+        if (!supabase) {
+            return NextResponse.json({ error: 'Supabase not configured' }, { status: 503 });
+        }
+
         const [result1, result2] = await Promise.all([
             supabase.from('sunumlar').select('id, slug, baslik, created_at, istek').eq('id', id1).single(),
             supabase.from('sunumlar').select('id, slug, baslik, created_at, istek').eq('id', id2).single()

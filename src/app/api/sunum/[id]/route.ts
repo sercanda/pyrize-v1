@@ -21,8 +21,15 @@ export async function GET(
             );
         }
 
-        // getSupabaseServiceClient() throws if env vars missing, never returns null
+        // Lazy init - returns null if env vars missing (build-time safe)
         const supabaseServer = getSupabaseServiceClient();
+
+        if (!supabaseServer) {
+            return NextResponse.json(
+                { error: "Supabase yapılandırılmamış" },
+                { status: 503 }
+            );
+        }
 
         // UUID regex accepts any UUID format (not just v4) for better compatibility
         const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;

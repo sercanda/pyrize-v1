@@ -9,6 +9,10 @@ export async function GET(request: NextRequest) {
     try {
         const supabase = getSupabaseServiceClient();
 
+        if (!supabase) {
+            return NextResponse.json({ error: 'Supabase not configured' }, { status: 503 });
+        }
+
         // Get all presentations ordered by creation date
         const { data, error, count } = await supabase
             .from('sunumlar')

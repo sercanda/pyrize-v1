@@ -4,8 +4,6 @@ import { securityConfig } from "@/lib/security/config";
 import { getSupabaseServiceClient } from "@/lib/supabase/server";
 import { randomUUID } from "crypto";
 
-const supabase = getSupabaseServiceClient();
-
 type CreateTaskBody = {
   title: string;
   description?: string;
@@ -20,6 +18,9 @@ type CreateTaskBody = {
 const estimateCost = () => securityConfig.defaultRequestCost * 0.1;
 
 export async function POST(request: NextRequest) {
+  // Lazy init inside handler - build-time safe
+  const supabase = getSupabaseServiceClient();
+
   if (!supabase) {
     return NextResponse.json(
       { error: "Supabase yapılandırılmamış" },

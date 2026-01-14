@@ -24,6 +24,11 @@ interface PageProps {
 async function getSunumData(identifier: string) {
     const supabaseServer = getSupabaseServiceClient();
 
+    if (!supabaseServer) {
+        console.warn('[PrintPage] Supabase not configured');
+        return null;
+    }
+
     // UUID regex
     const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
     const isUUID = uuidRegex.test(identifier);
