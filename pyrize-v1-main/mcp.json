@@ -1,0 +1,46 @@
+{
+  "mcpServers": {
+    "context7": {
+      "url": "https://mcp.context7.com/mcp",
+      "headers": {}
+    },
+    "sequential-thinking": {
+      "command": "npx.cmd",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-sequential-thinking@latest"
+      ]
+    },
+    "arxiv-mcp-server": {
+      "command": "python",
+      "args": [
+        "-m",
+        "arxiv_mcp_server",
+        "--storage-path",
+        "C:\\Users\\90546\\.arxiv-mcp-server\\papers"
+      ]
+    },
+    "shadcn": {
+      "command": "npx",
+      "args": [
+        "shadcn@latest",
+        "mcp"
+      ]
+    },
+    "cursor-rules": {
+      "command": "node",
+      "args": [
+        "C:\\Users\\90546\\AppData\\Roaming\\mcp-cursor-rules\\mcp\\dist\\cli.js"
+      ],
+      "priority": 100
+    },
+    "filesystem": {
+      "command": "npx.cmd",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-filesystem@latest"
+      ]
+    }
+  }
+}
+

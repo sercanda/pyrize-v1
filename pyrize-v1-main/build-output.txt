@@ -1,0 +1,93 @@
+<<<<<<< HEAD
+﻿
+> pyrize@0.1.0 build
+> next build
+
+node.exe : [baseline-
+browser-mapping] The 
+data in this module i
+s over two months old
+.  To ensure accurate
+ Baseline data, pleas
+e update: `npm i base
+line-browser-mapping@
+latest -D`
+At line:1 char:1
++ & "D:\Program Files
+\nodejs/node.exe" "D:
+\Program Files\nodejs
+/node_mo ...
++ ~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~
+    + CategoryInfo   
+           : NotSpe  
+  cified: ([baseli   
+ ne-brows...ping@    
+latest -D`:Strin    g
+) [], RemoteExc    ep
+tion
+    + FullyQualified 
+   ErrorId : Native  
+  CommandError
+ 
+   Ôû▓ Next.js 16.0.1 (Turbopack)
+   - Environments: .env.local
+
+   Creating an optimized production build ...
+[baseline-browser-map
+ping] The data in thi
+s module is over two 
+months old.  To ensur
+e accurate Baseline d
+ata, please update: `
+npm i baseline-browse
+r-mapping@latest -D`
+=======
+﻿
+> pyrize@0.1.0 build
+> next build
+
+node.exe : [baseline-
+browser-mapping] The 
+data in this module i
+s over two months old
+.  To ensure accurate
+ Baseline data, pleas
+e update: `npm i base
+line-browser-mapping@
+latest -D`
+At line:1 char:1
++ & "D:\Program Files
+\nodejs/node.exe" "D:
+\Program Files\nodejs
+/node_mo ...
++ ~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~
+    + CategoryInfo   
+           : NotSpe  
+  cified: ([baseli   
+ ne-brows...ping@    
+latest -D`:Strin    g
+) [], RemoteExc    ep
+tion
+    + FullyQualified 
+   ErrorId : Native  
+  CommandError
+ 
+   Ôû▓ Next.js 16.0.1 (Turbopack)
+   - Environments: .env.local
+
+   Creating an optimized production build ...
+[baseline-browser-map
+ping] The data in thi
+s module is over two 
+months old.  To ensur
+e accurate Baseline d
+ata, please update: `
+npm i baseline-browse
+r-mapping@latest -D`
+>>>>>>> 443061a79f7ac9272c9ca4805e98964e4cad8f67

@@ -1,0 +1,54 @@
+# Dependencies
+node_modules
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Next.js build output
+.next
+out
+build
+
+# Testing
+coverage
+*.log
+
+# IDE
+.vscode
+.idea
+.cursor
+
+# Git
+.git
+.gitignore
+
+# Environment
+.env*
+!.env.example
+
+# Development files
+*.md
+!README.md
+docs
+*.tsbuildinfo
+
+# Debug
+.debug
+debug.log
+
+# Other
+.vercel
+.specpulse
+scrapers
+scripts
+security_prd_tmp
+stellar-plasma-ui---webgl-fluid-dynamics
+template-source
+supabase
+Dockerfile
+docker-compose.yml
+playwright.config.ts
+eslint.config.mjs
+*.ps1
+*.txt
+*.zip

@@ -1,0 +1,962 @@
+/**
+ * PDF Print Styles
+ * 
+ * Optimized for Gotenberg/Chromium server-side PDF rendering.
+ * - A4 page size with zero margins (content handles its own padding)
+ * - Exact color printing (print backgrounds enabled)
+ * - No animations or transitions
+ * - Deterministic page breaks
+ * - PDF-first layout components
+ */
+
+/* ═══════════════════════════════════════════════════════════════
+   PAGE SETUP
+   ═══════════════════════════════════════════════════════════════ */
+@page {
+    size: A4;
+    margin: 0;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   ROOT & BASE STYLES
+   ═══════════════════════════════════════════════════════════════ */
+html,
+body {
+    margin: 0;
+    padding: 0;
+    background: #ffffff;
+    font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+    font-size: 11pt;
+    line-height: 1.4;
+    color: #1f2937;
+    -webkit-font-smoothing: antialiased;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+}
+
+/* Force exact color rendering */
+* {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+}
+
+/* Disable all animations */
+*,
+*::before,
+*::after {
+    animation: none !important;
+    animation-delay: 0s !important;
+    animation-duration: 0s !important;
+    transition: none !important;
+    transition-delay: 0s !important;
+    transition-duration: 0s !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   PDF DOCUMENT & PAGE
+   ═══════════════════════════════════════════════════════════════ */
+.pdf-document {
+    width: 210mm;
+    margin: 0 auto;
+    background: #ffffff;
+}
+
+.pdf-page {
+    width: 210mm;
+    height: 297mm;
+    padding: 10mm;
+    box-sizing: border-box;
+    position: relative;
+    overflow: hidden;
+    background: #ffffff;
+    break-after: page;
+    page-break-after: always;
+    break-inside: avoid;
+    page-break-inside: avoid;
+}
+
+.pdf-page-content {
+    width: 100%;
+    height: calc(297mm - 20mm - 8mm);
+    /* Full height minus padding and footer */
+    overflow: hidden;
+}
+
+.pdf-page-footer {
+    position: absolute;
+    bottom: 5mm;
+    left: 10mm;
+    right: 10mm;
+    text-align: center;
+    font-size: 8pt;
+    color: #9ca3af;
+}
+
+.pdf-page-number {
+    font-weight: 500;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   DEBUG & ERROR STATES
+   ═══════════════════════════════════════════════════════════════ */
+.pdf-debug-banner {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    background: #fef3c7;
+    border-bottom: 2px solid #f59e0b;
+    padding: 4px 10mm;
+    font-size: 8pt;
+    font-family: 'Courier New', monospace;
+    color: #92400e;
+    z-index: 9999;
+}
+
+.pdf-error {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    text-align: center;
+    padding: 40px;
+}
+
+.pdf-error h1 {
+    color: #dc2626;
+    font-size: 24pt;
+    margin-bottom: 16px;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   PAGE 1: HERO & SUMMARY
+   ═══════════════════════════════════════════════════════════════ */
+.pdf-hero {
+    padding: 20mm 15mm;
+    text-align: center;
+    color: #ffffff;
+    border-radius: 4mm;
+    margin-bottom: 8mm;
+}
+
+.pdf-hero-content {
+    max-width: 160mm;
+    margin: 0 auto;
+}
+
+.pdf-badge {
+    display: inline-block;
+    background: rgba(255, 255, 255, 0.2);
+    padding: 2mm 4mm;
+    border-radius: 2mm;
+    font-size: 8pt;
+    font-weight: 600;
+    margin-bottom: 4mm;
+}
+
+.pdf-hero-title {
+    font-size: 20pt;
+    font-weight: 800;
+    line-height: 1.2;
+    margin: 0 0 4mm 0;
+}
+
+.pdf-hero-subtitle {
+    font-size: 10pt;
+    font-weight: 400;
+    opacity: 0.9;
+    margin: 0;
+}
+
+.pdf-hero-subtitle strong {
+    color: #fef08a;
+}
+
+/* Summary Grid */
+.pdf-summary-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 4mm;
+    margin-bottom: 6mm;
+}
+
+.pdf-summary-card {
+    background: #f9fafb;
+    border: 0.5mm solid #e5e7eb;
+    border-radius: 2mm;
+    padding: 4mm;
+    text-align: center;
+}
+
+.pdf-summary-icon {
+    font-size: 16pt;
+    margin-bottom: 2mm;
+}
+
+.pdf-summary-label {
+    font-size: 7pt;
+    color: #6b7280;
+    text-transform: uppercase;
+    font-weight: 600;
+    margin-bottom: 1mm;
+}
+
+.pdf-summary-value {
+    font-size: 9pt;
+    font-weight: 700;
+    color: #111827;
+}
+
+/* Valuation Highlight */
+.pdf-valuation-highlight {
+    background: linear-gradient(135deg, #0891b2 0%, #0284c7 100%);
+    color: #ffffff;
+    padding: 5mm 8mm;
+    border-radius: 2mm;
+    text-align: center;
+    margin-bottom: 6mm;
+}
+
+.pdf-valuation-label {
+    display: block;
+    font-size: 8pt;
+    opacity: 0.9;
+    margin-bottom: 2mm;
+}
+
+.pdf-valuation-value {
+    display: block;
+    font-size: 16pt;
+    font-weight: 800;
+}
+
+/* Agent Intro */
+.pdf-agent-intro {
+    text-align: center;
+    padding-top: 4mm;
+    border-top: 0.5mm solid #e5e7eb;
+}
+
+.pdf-agent-name {
+    font-size: 12pt;
+    font-weight: 700;
+    color: #111827;
+}
+
+.pdf-agent-title {
+    font-size: 9pt;
+    color: #6b7280;
+    margin-top: 1mm;
+}
+
+.pdf-agent-contact {
+    font-size: 8pt;
+    color: #4b5563;
+    margin-top: 2mm;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   PAGE 2: PROBLEMS
+   ═══════════════════════════════════════════════════════════════ */
+.pdf-section-heading {
+    font-size: 16pt;
+    font-weight: 800;
+    text-align: center;
+    margin: 0 0 6mm 0;
+    color: #111827;
+}
+
+.pdf-problems-heading .text-red {
+    color: #dc2626;
+}
+
+.pdf-problems-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 4mm;
+    margin-bottom: 5mm;
+}
+
+.pdf-problem-card {
+    background: #1f2937;
+    color: #ffffff;
+    padding: 4mm;
+    border-radius: 2mm;
+    border-left: 1mm solid #dc2626;
+}
+
+.pdf-problem-card:last-child:nth-child(odd) {
+    grid-column: span 2;
+}
+
+.pdf-problem-number {
+    font-size: 14pt;
+    margin-bottom: 2mm;
+}
+
+.pdf-problem-title {
+    font-size: 10pt;
+    font-weight: 700;
+    margin: 0 0 2mm 0;
+}
+
+.pdf-problem-text {
+    font-size: 8pt;
+    color: #d1d5db;
+    margin: 0 0 2mm 0;
+    line-height: 1.4;
+}
+
+.pdf-problem-loss {
+    font-size: 7pt;
+    color: #f87171;
+    font-weight: 600;
+    margin: 0;
+}
+
+.pdf-warning-box {
+    background: #7f1d1d;
+    color: #fecaca;
+    padding: 4mm;
+    border-radius: 2mm;
+    text-align: center;
+    font-size: 9pt;
+    font-weight: 600;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   PAGE 3: SOLUTIONS & PROCESS
+   ═══════════════════════════════════════════════════════════════ */
+.pdf-section-subheading {
+    font-size: 10pt;
+    color: #6b7280;
+    text-align: center;
+    margin: 0 0 6mm 0;
+}
+
+.pdf-solutions-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 4mm;
+    margin-bottom: 8mm;
+}
+
+.pdf-solution-card {
+    background: #ffffff;
+    border: 0.5mm solid #e5e7eb;
+    border-radius: 2mm;
+    padding: 5mm;
+    text-align: center;
+    box-shadow: 0 1mm 2mm rgba(0, 0, 0, 0.05);
+}
+
+.pdf-solution-icon {
+    font-size: 24pt;
+    margin-bottom: 2mm;
+}
+
+.pdf-solution-title {
+    font-size: 10pt;
+    font-weight: 700;
+    color: #111827;
+    margin: 0 0 2mm 0;
+}
+
+.pdf-solution-text {
+    font-size: 8pt;
+    color: #4b5563;
+    margin: 0 0 2mm 0;
+}
+
+.pdf-solution-comparison {
+    font-size: 7pt;
+    color: #9ca3af;
+    font-style: italic;
+    margin: 0;
+}
+
+/* Process Overview */
+.pdf-process-overview {
+    background: linear-gradient(135deg, #1e3a8a 0%, #312e81 100%);
+    color: #ffffff;
+    padding: 6mm;
+    border-radius: 2mm;
+    text-align: center;
+}
+
+.pdf-process-title {
+    font-size: 12pt;
+    font-weight: 700;
+    margin: 0 0 4mm 0;
+}
+
+.pdf-process-steps {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 2mm;
+    flex-wrap: wrap;
+}
+
+.pdf-process-step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 3mm 4mm;
+    border-radius: 2mm;
+}
+
+.pdf-step-icon {
+    font-size: 14pt;
+}
+
+.pdf-step-label {
+    font-size: 7pt;
+    font-weight: 600;
+    margin-top: 1mm;
+}
+
+.pdf-process-arrow {
+    font-size: 10pt;
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.pdf-process-footer {
+    font-size: 8pt;
+    margin: 4mm 0 0 0;
+    opacity: 0.9;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   PAGE 4: LOCATION + TARGET + MARKETING
+   ═══════════════════════════════════════════════════════════════ */
+.pdf-special-plan-header {
+    color: #ffffff;
+    padding: 8mm;
+    border-radius: 2mm;
+    text-align: center;
+    margin-bottom: 5mm;
+}
+
+.pdf-special-badge {
+    display: inline-block;
+    background: #fcd34d;
+    color: #1f2937;
+    padding: 1mm 3mm;
+    border-radius: 1mm;
+    font-size: 7pt;
+    font-weight: 700;
+    margin-bottom: 2mm;
+}
+
+.pdf-special-title {
+    font-size: 14pt;
+    font-weight: 800;
+    margin: 0;
+}
+
+.pdf-special-subtitle {
+    font-size: 10pt;
+    opacity: 0.9;
+    margin: 1mm 0 0 0;
+}
+
+.pdf-plan-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 4mm;
+    margin-bottom: 4mm;
+}
+
+.pdf-plan-card {
+    background: #f9fafb;
+    border: 0.5mm solid #e5e7eb;
+    border-radius: 2mm;
+    padding: 4mm;
+}
+
+.pdf-plan-card-full {
+    grid-column: span 2;
+}
+
+.pdf-plan-card-title {
+    font-size: 9pt;
+    font-weight: 700;
+    color: #111827;
+    margin: 0 0 3mm 0;
+}
+
+.pdf-plan-list {
+    font-size: 8pt;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.pdf-plan-list li {
+    margin-bottom: 2mm;
+    color: #4b5563;
+}
+
+.pdf-plan-list li strong {
+    color: #111827;
+}
+
+.pdf-advantages {
+    margin-top: 3mm;
+    padding-top: 3mm;
+    border-top: 0.3mm solid #e5e7eb;
+}
+
+.pdf-advantages ul {
+    margin: 2mm 0 0 0;
+    padding: 0;
+    list-style: none;
+    font-size: 8pt;
+}
+
+.pdf-advantages li {
+    margin-bottom: 1mm;
+    color: #059669;
+}
+
+.pdf-persona-desc {
+    font-size: 7pt;
+    color: #6b7280;
+    margin: 1mm 0 0 0;
+}
+
+.pdf-plan-text {
+    font-size: 8pt;
+    color: #4b5563;
+    margin: 0;
+}
+
+.pdf-marketing-channels {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2mm;
+    margin-top: 3mm;
+}
+
+.pdf-channel-tag {
+    background: #d1fae5;
+    color: #065f46;
+    padding: 1mm 2mm;
+    border-radius: 1mm;
+    font-size: 7pt;
+    font-weight: 600;
+}
+
+.pdf-guarantee-banner {
+    background: #065f46;
+    color: #d1fae5;
+    padding: 4mm;
+    border-radius: 2mm;
+    text-align: center;
+    font-size: 8pt;
+    font-weight: 600;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   PAGE 5: VALUATION + FAQ
+   ═══════════════════════════════════════════════════════════════ */
+.pdf-valuation-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 4mm;
+    margin-bottom: 5mm;
+}
+
+.pdf-valuation-card {
+    background: #f9fafb;
+    border: 0.5mm solid #e5e7eb;
+    border-radius: 2mm;
+    padding: 4mm;
+    text-align: center;
+}
+
+.pdf-valuation-card-label {
+    font-size: 7pt;
+    color: #6b7280;
+    text-transform: uppercase;
+    font-weight: 600;
+}
+
+.pdf-valuation-card-value {
+    font-size: 14pt;
+    font-weight: 800;
+    color: #111827;
+    margin-top: 2mm;
+}
+
+.pdf-comparables {
+    margin-bottom: 5mm;
+}
+
+.pdf-comparables-title {
+    font-size: 10pt;
+    font-weight: 700;
+    color: #111827;
+    margin: 0 0 3mm 0;
+}
+
+.pdf-comparables-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 8pt;
+}
+
+.pdf-comparables-table th {
+    background: #f3f4f6;
+    padding: 2mm 3mm;
+    text-align: left;
+    font-weight: 700;
+    color: #374151;
+    border-bottom: 0.5mm solid #e5e7eb;
+    text-transform: uppercase;
+    font-size: 7pt;
+}
+
+.pdf-comparables-table td {
+    padding: 2mm 3mm;
+    border-bottom: 0.3mm solid #e5e7eb;
+    color: #4b5563;
+}
+
+.pdf-status {
+    display: inline-block;
+    padding: 0.5mm 2mm;
+    border-radius: 1mm;
+    font-size: 7pt;
+    font-weight: 600;
+}
+
+.pdf-status.sold {
+    background: #d1fae5;
+    color: #065f46;
+}
+
+.pdf-status.active {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.pdf-value-range {
+    background: #dbeafe;
+    border: 0.5mm solid #93c5fd;
+    border-radius: 2mm;
+    padding: 4mm;
+    text-align: center;
+    margin-bottom: 5mm;
+}
+
+.pdf-value-range-label {
+    display: block;
+    font-size: 8pt;
+    color: #1e40af;
+    font-weight: 600;
+    margin-bottom: 2mm;
+}
+
+.pdf-value-range-value {
+    display: block;
+    font-size: 16pt;
+    font-weight: 800;
+    color: #1e3a8a;
+}
+
+/* FAQ */
+.pdf-faq-section {
+    margin-top: 4mm;
+}
+
+.pdf-faq-title {
+    font-size: 11pt;
+    font-weight: 700;
+    color: #111827;
+    margin: 0 0 4mm 0;
+}
+
+.pdf-faq-list {
+    display: grid;
+    gap: 3mm;
+}
+
+.pdf-faq-item {
+    background: #f9fafb;
+    border-left: 1mm solid #57B6B2;
+    padding: 3mm 4mm;
+}
+
+.pdf-faq-q {
+    font-size: 9pt;
+    font-weight: 700;
+    color: #111827;
+    margin-bottom: 1mm;
+}
+
+.pdf-faq-a {
+    font-size: 8pt;
+    color: #4b5563;
+    line-height: 1.4;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   PAGE 6: LAST PAGE - CRITICAL + GUARANTEES + AGENT
+   ═══════════════════════════════════════════════════════════════ */
+.pdf-last-page .pdf-page-content {
+    display: flex;
+    flex-direction: column;
+}
+
+.pdf-critical-section {
+    margin-bottom: 5mm;
+}
+
+.pdf-critical-title {
+    font-size: 12pt;
+    font-weight: 800;
+    color: #111827;
+    margin: 0 0 4mm 0;
+}
+
+.pdf-critical-questions {
+    display: flex;
+    flex-direction: column;
+    gap: 2mm;
+    margin-bottom: 3mm;
+}
+
+.pdf-critical-q {
+    display: flex;
+    align-items: center;
+    gap: 2mm;
+    background: #f9fafb;
+    padding: 2mm 3mm;
+    border-radius: 1mm;
+}
+
+.pdf-q-icon {
+    font-size: 12pt;
+}
+
+.pdf-q-text {
+    font-size: 9pt;
+    color: #374151;
+    font-weight: 500;
+}
+
+.pdf-critical-answer {
+    font-size: 9pt;
+    color: #1e40af;
+    font-weight: 600;
+    margin: 0;
+    padding: 3mm;
+    background: #dbeafe;
+    border-radius: 1mm;
+}
+
+/* Guarantees */
+.pdf-guarantees-section {
+    margin-bottom: 5mm;
+}
+
+.pdf-guarantees-title {
+    font-size: 11pt;
+    font-weight: 700;
+    color: #111827;
+    margin: 0 0 4mm 0;
+}
+
+.pdf-guarantees-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 4mm;
+}
+
+.pdf-guarantee-card {
+    background: #eff6ff;
+    border: 0.5mm solid #bfdbfe;
+    border-radius: 2mm;
+    padding: 4mm;
+    text-align: center;
+}
+
+.pdf-guarantee-icon {
+    font-size: 20pt;
+    display: block;
+    margin-bottom: 2mm;
+}
+
+.pdf-guarantee-title {
+    font-size: 9pt;
+    font-weight: 700;
+    color: #1e40af;
+    margin: 0 0 2mm 0;
+}
+
+.pdf-guarantee-text {
+    font-size: 7pt;
+    color: #4b5563;
+    margin: 0;
+}
+
+/* Agent Section */
+.pdf-agent-section {
+    flex: 1;
+    color: #ffffff;
+    padding: 6mm;
+    border-radius: 2mm;
+    margin-top: auto;
+}
+
+.pdf-agent-info {
+    text-align: center;
+}
+
+.pdf-agent-cta {
+    font-size: 12pt;
+    font-weight: 800;
+    margin: 0 0 2mm 0;
+}
+
+.pdf-agent-desc {
+    font-size: 9pt;
+    opacity: 0.9;
+    margin: 0 0 4mm 0;
+}
+
+.pdf-agent-details {
+    margin-bottom: 4mm;
+}
+
+.pdf-agent-name-large {
+    font-size: 14pt;
+    font-weight: 800;
+}
+
+.pdf-agent-role {
+    font-size: 9pt;
+    opacity: 0.8;
+}
+
+.pdf-agent-contacts {
+    display: flex;
+    justify-content: center;
+    gap: 4mm;
+    margin-top: 2mm;
+    font-size: 9pt;
+}
+
+.pdf-agent-badges {
+    display: flex;
+    justify-content: center;
+    gap: 3mm;
+    flex-wrap: wrap;
+}
+
+.pdf-agent-badge {
+    background: rgba(255, 255, 255, 0.15);
+    padding: 1mm 3mm;
+    border-radius: 1mm;
+    font-size: 7pt;
+    font-weight: 600;
+}
+
+/* Document Footer */
+.pdf-document-footer {
+    margin-top: 4mm;
+    padding-top: 3mm;
+    border-top: 0.3mm solid #e5e7eb;
+    text-align: center;
+}
+
+.pdf-document-footer p {
+    font-size: 7pt;
+    color: #9ca3af;
+    margin: 0;
+}
+
+.pdf-document-footer p+p {
+    margin-top: 1mm;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   CONDENSED MODE (when content overflows)
+   ═══════════════════════════════════════════════════════════════ */
+.pdf-condensed-mode .pdf-page,
+.pdf-condensed .pdf-page-content {
+    font-size: 10pt;
+}
+
+.pdf-condensed-mode .pdf-hero {
+    padding: 15mm 12mm;
+}
+
+.pdf-condensed-mode .pdf-hero-title {
+    font-size: 18pt;
+}
+
+.pdf-condensed-mode .pdf-summary-grid {
+    gap: 3mm;
+}
+
+.pdf-condensed-mode .pdf-summary-card {
+    padding: 3mm;
+}
+
+.pdf-condensed-mode .pdf-problems-grid,
+.pdf-condensed-mode .pdf-solutions-grid,
+.pdf-condensed-mode .pdf-plan-grid,
+.pdf-condensed-mode .pdf-guarantees-grid {
+    gap: 3mm;
+}
+
+.pdf-condensed-mode .pdf-problem-card,
+.pdf-condensed-mode .pdf-solution-card,
+.pdf-condensed-mode .pdf-plan-card,
+.pdf-condensed-mode .pdf-guarantee-card {
+    padding: 3mm;
+}
+
+.pdf-condensed-mode .pdf-section-heading {
+    font-size: 14pt;
+    margin-bottom: 4mm;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   CARD PROTECTION - Never split across pages
+   ═══════════════════════════════════════════════════════════════ */
+.pdf-card,
+.pdf-problem-card,
+.pdf-solution-card,
+.pdf-plan-card,
+.pdf-guarantee-card,
+.pdf-faq-item,
+.pdf-valuation-card,
+.pdf-section {
+    break-inside: avoid;
+    page-break-inside: avoid;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   TYPOGRAPHY PROTECTION
+   ═══════════════════════════════════════════════════════════════ */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    page-break-after: avoid;
+    break-after: avoid;
+}
+
+p,
+li {
+    orphans: 3;
+    widows: 3;
+}
