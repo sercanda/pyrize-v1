@@ -10,7 +10,7 @@ COPY package.json package-lock.json ./
 
 # Install ALL dependencies (including devDependencies for build)
 ENV NPM_CONFIG_PRODUCTION=false
-RUN npm ci --include=dev
+RUN npm install
 
 # ============================================
 # Stage 2: Build application
