@@ -1,6 +1,6 @@
 'use client';
 
-import React, { ReactNode, CSSProperties, useRef } from 'react';
+import React, { ReactNode, CSSProperties } from 'react';
 import { useInView } from '@/lib/hooks/useInView';
 
 interface SectionWrapperProps {
@@ -18,13 +18,12 @@ const SectionWrapper: React.FC<SectionWrapperProps> = ({
   style,
   breakAfter,
 }) => {
-  const sectionRef = useRef<HTMLElement | null>(null);
-  const [, isInView] = useInView(sectionRef, { threshold: 0.1 });
+  // HOOK KULLANIMI ESKİ HALİYLE
+  const [ref, isInView] = useInView<HTMLDivElement>({ threshold: 0.1 });
 
   return (
     <section
       id={id}
-      ref={sectionRef}
       data-pdf-section="true"
       style={{
         ...style,
@@ -40,7 +39,8 @@ const SectionWrapper: React.FC<SectionWrapperProps> = ({
         isInView ? 'opacity-100' : 'opacity-0'
       } ${className}`}
     >
-      <div className="pdf-page__content max-w-7xl mx-auto w-full">
+      {/* REF ARTIK BURADA */}
+      <div ref={ref} className="pdf-page__content max-w-7xl mx-auto w-full">
         {children}
       </div>
     </section>
