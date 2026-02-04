@@ -1,6 +1,6 @@
 'use client';
 
-import React, { ReactNode, CSSProperties } from 'react';
+import React, { ReactNode, CSSProperties, useRef } from 'react';
 import { useInView } from '@/lib/hooks/useInView';
 
 interface SectionWrapperProps {
@@ -18,13 +18,13 @@ const SectionWrapper: React.FC<SectionWrapperProps> = ({
   style,
   breakAfter,
 }) => {
-  // ⬇️ BURASI DÜZELTİLDİ
-  const [ref, isInView] = useInView<HTMLElement>({ threshold: 0.1 });
+  const sectionRef = useRef<HTMLElement | null>(null);
+  const [, isInView] = useInView(sectionRef, { threshold: 0.1 });
 
   return (
     <section
       id={id}
-      ref={ref}
+      ref={sectionRef}
       data-pdf-section="true"
       style={{
         ...style,
@@ -33,17 +33,14 @@ const SectionWrapper: React.FC<SectionWrapperProps> = ({
         width: '100%',
         pageBreakInside: 'avoid',
         breakInside: 'avoid',
-        pageBreakAfter: breakAfter ? 'always' : undefined,
-        breakAfter: breakAfter ? 'page' : undefined,
+        pageBreakAfter: breakAfter ? 'always' : 'auto',
+        breakAfter: breakAfter ? 'page' : 'auto',
       }}
       className={`pdf-page py-12 sm:py-16 md:py-24 px-4 sm:px-6 md:px-12 lg:px-24 transition-opacity duration-1000 pdf-avoid-break ${
         isInView ? 'opacity-100' : 'opacity-0'
       } ${className}`}
     >
-      <div
-        className="pdf-page__content max-w-7xl mx-auto"
-        style={{ maxWidth: '100%', width: '100%' }}
-      >
+      <div className="pdf-page__content max-w-7xl mx-auto w-full">
         {children}
       </div>
     </section>
