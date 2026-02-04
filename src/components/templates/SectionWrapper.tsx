@@ -18,7 +18,6 @@ const SectionWrapper: React.FC<SectionWrapperProps> = ({
   style,
   breakAfter,
 }) => {
-  // HOOK KULLANIMI ESKİ HALİYLE
   const [ref, isInView] = useInView<HTMLDivElement>({ threshold: 0.1 });
 
   return (
@@ -39,8 +38,12 @@ const SectionWrapper: React.FC<SectionWrapperProps> = ({
         isInView ? 'opacity-100' : 'opacity-0'
       } ${className}`}
     >
-      {/* REF ARTIK BURADA */}
-      <div ref={ref} className="pdf-page__content max-w-7xl mx-auto w-full">
+      <div
+        ref={(node) => {
+          if (node) ref.current = node;
+        }}
+        className="pdf-page__content max-w-7xl mx-auto w-full"
+      >
         {children}
       </div>
     </section>
