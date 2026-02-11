@@ -1,14 +1,7 @@
-const { startServer } = require("next/dist/server/lib/start-server");
+// server.js (repo root)
 
-const port = Number(process.env.PORT || 3000);
-const hostname = "0.0.0.0";
+process.env.HOSTNAME = "0.0.0.0";
+process.env.HOST = "0.0.0.0";
+process.env.PORT = process.env.PORT || "3000";
 
-startServer({
-  dir: __dirname,
-  isDev: false,
-  hostname,
-  port,
-  keepAliveTimeout: 60000,
-}).then(() => {
-  console.log(`✅ Next.js running on http://${hostname}:${port}`);
-});
+require("./.next/standalone/server.js");
