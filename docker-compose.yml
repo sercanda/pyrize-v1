@@ -1,18 +1,14 @@
-<<<<<<< HEAD
-version: '3.8'
+version: "3.8"
 
 services:
-  # Next.js Application
   app:
     build: .
     ports:
       - "3000:3000"
     environment:
       - NODE_ENV=production
-      - NEXT_PUBLIC_APP_URL=http://localhost:3000
-      # Gotenberg is accessible via internal Docker network
+      - NEXT_PUBLIC_APP_URL=https://pyrize.com
       - GOTENBERG_URL=http://gotenberg:3000
-      # PDF Rate Limiting and Concurrency
       - PDF_RATE_LIMIT=3
       - PDF_RATE_WINDOW_SECONDS=60
       - PDF_CONCURRENCY=2
@@ -24,22 +20,13 @@ services:
       - pyrize-network
     restart: unless-stopped
 
-  # Gotenberg PDF Generator (Chromium-based)
-  # Docs: https://gotenberg.dev/docs/getting-started/installation
   gotenberg:
     image: gotenberg/gotenberg:8
-    # Do NOT expose port in production - internal only
-    # Uncomment for local development testing:
-    # ports:
-    #   - "3001:3000"
     command:
       - "gotenberg"
-      # Enable JavaScript for dynamic content rendering
       - "--chromium-disable-javascript=false"
-      # Increase max concurrent requests
       - "--api-timeout=60s"
       - "--chromium-max-queue-size=10"
-      # Enable detailed logging
       - "--log-level=info"
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
@@ -50,136 +37,7 @@ services:
     networks:
       - pyrize-network
     restart: unless-stopped
-    # Performance optimization
-    deploy:
-      resources:
-        limits:
-          memory: 2G
-        reservations:
-          memory: 512M
 
 networks:
   pyrize-network:
     driver: bridge
-
-# ─────────────────────────────────────────────────────────────
-# USAGE INSTRUCTIONS
-# ─────────────────────────────────────────────────────────────
-# 
-# Development (Gotenberg only):
-#   docker compose up gotenberg
-#   npm run dev
-#   
-# Production (Full stack):
-#   docker compose up --build
-#
-# Test Gotenberg directly (only if ports exposed):
-#   curl -X POST http://localhost:3001/forms/chromium/convert/url \
-#     -F url="https://google.com" \
-#     -o test.pdf
-#
-# ─────────────────────────────────────────────────────────────
-# COOLIFY DEPLOYMENT NOTES
-# ─────────────────────────────────────────────────────────────
-# 
-# 1. In Coolify, deploy this as a Docker Compose project
-# 2. Set NEXT_PUBLIC_APP_URL to your public domain
-# 3. Gotenberg stays internal (no public exposure)
-# 4. Cloudflare proxies only the app container (port 3000)
-# 5. Environment variables can be set in Coolify dashboard
-#
-# ─────────────────────────────────────────────────────────────
-
-=======
-version: '3.8'
-
-services:
-  # Next.js Application
-  app:
-    build: .
-    ports:
-      - "3000:3000"
-    environment:
-      - NODE_ENV=production
-      - NEXT_PUBLIC_APP_URL=http://localhost:3000
-      # Gotenberg is accessible via internal Docker network
-      - GOTENBERG_URL=http://gotenberg:3000
-      # PDF Rate Limiting and Concurrency
-      - PDF_RATE_LIMIT=3
-      - PDF_RATE_WINDOW_SECONDS=60
-      - PDF_CONCURRENCY=2
-      - PDF_QUEUE_LIMIT=20
-    depends_on:
-      gotenberg:
-        condition: service_healthy
-    networks:
-      - pyrize-network
-    restart: unless-stopped
-
-  # Gotenberg PDF Generator (Chromium-based)
-  # Docs: https://gotenberg.dev/docs/getting-started/installation
-  gotenberg:
-    image: gotenberg/gotenberg:8
-    # Do NOT expose port in production - internal only
-    # Uncomment for local development testing:
-    # ports:
-    #   - "3001:3000"
-    command:
-      - "gotenberg"
-      # Enable JavaScript for dynamic content rendering
-      - "--chromium-disable-javascript=false"
-      # Increase max concurrent requests
-      - "--api-timeout=60s"
-      - "--chromium-max-queue-size=10"
-      # Enable detailed logging
-      - "--log-level=info"
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 10s
-    networks:
-      - pyrize-network
-    restart: unless-stopped
-    # Performance optimization
-    deploy:
-      resources:
-        limits:
-          memory: 2G
-        reservations:
-          memory: 512M
-
-networks:
-  pyrize-network:
-    driver: bridge
-
-# ─────────────────────────────────────────────────────────────
-# USAGE INSTRUCTIONS
-# ─────────────────────────────────────────────────────────────
-# 
-# Development (Gotenberg only):
-#   docker compose up gotenberg
-#   npm run dev
-#   
-# Production (Full stack):
-#   docker compose up --build
-#
-# Test Gotenberg directly (only if ports exposed):
-#   curl -X POST http://localhost:3001/forms/chromium/convert/url \
-#     -F url="https://google.com" \
-#     -o test.pdf
-#
-# ─────────────────────────────────────────────────────────────
-# COOLIFY DEPLOYMENT NOTES
-# ─────────────────────────────────────────────────────────────
-# 
-# 1. In Coolify, deploy this as a Docker Compose project
-# 2. Set NEXT_PUBLIC_APP_URL to your public domain
-# 3. Gotenberg stays internal (no public exposure)
-# 4. Cloudflare proxies only the app container (port 3000)
-# 5. Environment variables can be set in Coolify dashboard
-#
-# ─────────────────────────────────────────────────────────────
-
->>>>>>> 443061a79f7ac9272c9ca4805e98964e4cad8f67
