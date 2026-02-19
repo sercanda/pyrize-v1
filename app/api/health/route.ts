@@ -1,3 +1,9 @@
+export const runtime = "nodejs";
+export const dynamic = "force-dynamic";
+
 export async function GET() {
-  return new Response("OK", { status: 200 });
+  return Response.json(
+    { ok: true, ts: new Date().toISOString() },
+    { status: 200 }
+  );
 }
