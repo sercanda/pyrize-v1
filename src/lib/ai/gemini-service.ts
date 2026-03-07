@@ -13,6 +13,7 @@ import {
 import { generateSunumFromTemplate } from "@/lib/templates/funnel-templates";
 import { formatPriceRange } from "@/lib/utils/price";
 import { getKFEForProperty, formatKFEForPrompt } from "@/lib/utils/kfe";
+import { buildPresentationPrompt } from "@/lib/ai/prompts";
 
 // OpenRouter API key (öncelikli) - Grok 4.1 Fast kullanılıyor
 const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY || "";
@@ -675,7 +676,7 @@ Tüm başlıklar, içerikler ve açıklamalar ${mulkTurLabel} için özel yazıl
             },
             {
               role: 'user',
-              content: buildPrompt(istek, marketData)
+              content: buildPresentationPrompt(istek, marketData)
             }
           ],
           temperature: 0.7,

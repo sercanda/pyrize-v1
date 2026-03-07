@@ -1,14 +1,15 @@
-@media print {
-  * {
-    color: #000 !important;
-    background: transparent !important;
-    box-shadow: none !important;
-    text-shadow: none !important;
-    animation: none !important;
-    transition: none !important;
-    font-family: Arial, Helvetica, sans-serif !important;
-  }
+/**
+ * Global Print Styles
+ *
+ * These styles apply when printing from the browser (Ctrl+P).
+ * For PDF generation via Gotenberg, the /sunum/[id]/print route
+ * uses its own dedicated print.css with full color support.
+ *
+ * IMPORTANT: Do NOT add "background: transparent" or "color: #000" here.
+ * Those rules destroy all template colors and gradients in PDF output.
+ */
 
+@media print {
   @page {
     size: A4;
     margin: 0;
@@ -19,20 +20,39 @@
     margin: 0;
     padding: 0;
     width: 210mm;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
   }
 
-  /* Ana sunum kapsayıcısı A4 genişliğine sabitlensin */
+  /* Disable animations in print */
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+
+  /* Main presentation container */
   #sunum-icerik {
     width: 210mm !important;
     min-height: 297mm;
     margin: 0 auto;
   }
 
-  /* Her .page bloğu tam A4 sayfa olsun */
+  /* Each .page block = full A4 page */
   .page {
     page-break-after: always;
     width: 210mm;
     min-height: 297mm;
+  }
+
+  /* PDF pages */
+  .pdf-page {
+    width: 210mm;
+    height: 297mm;
+    overflow: hidden;
+    page-break-after: always;
+    page-break-inside: avoid;
   }
 
   .no-print {

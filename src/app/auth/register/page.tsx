@@ -3,7 +3,8 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Mail, Lock, User, AlertCircle, CheckCircle } from "lucide-react";
+import { Mail, Lock, User, AlertCircle } from "lucide-react";
+import { createSupabaseBrowserClient } from "@/lib/supabase/client";
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -37,8 +38,24 @@ export default function RegisterPage() {
     setLoading(true);
 
     try {
-      // TODO: Supabase kayıt entegrasyonu
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      const supabase = createSupabaseBrowserClient();
+      const { error: authError } = await supabase.auth.signUp({
+        email: formData.email,
+        password: formData.password,
+        options: {
+          data: { name: formData.name },
+        },
+      });
+
+      if (authError) {
+        if (authError.message.includes("already registered")) {
+          setError("Bu e-posta adresi zaten kayıtlı.");
+        } else {
+          setError(authError.message);
+        }
+        return;
+      }
+
       router.push("/onboarding");
     } catch (err) {
       setError("Kayıt başarısız. Lütfen tekrar deneyin.");

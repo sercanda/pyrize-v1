@@ -6,6 +6,11 @@ import Template2QuickSale from './Template2QuickSale';
 import Template3Premium from './Template3Premium';
 import Template4Trust from './Template4Trust';
 import Template5Minimal from './Template5Minimal';
+import TemplatePrestige from './TemplatePrestige';
+import TemplateMetro from './TemplateMetro';
+import TemplateYatirimci from './TemplateYatirimci';
+import TemplateSifirArazi from './TemplateSifirArazi';
+import TemplateDijitalNative from './TemplateDijitalNative';
 import WeeklyReportTemplate from './WeeklyReportTemplate';
 import { ZIP_TEMPLATES } from './zipTemplateRegistry';
 
@@ -51,7 +56,22 @@ export default function TemplateRenderer({ data }: Props) {
     
     case 'minimalist':
       return <Template5Minimal data={data} />;
-    
+
+    case 'prestij':
+      return <TemplatePrestige data={data} />;
+
+    case 'metro':
+      return <TemplateMetro data={data} />;
+
+    case 'yatirimci':
+      return <TemplateYatirimci data={data} />;
+
+    case 'sifir_arazi':
+      return <TemplateSifirArazi data={data} />;
+
+    case 'dijital_native':
+      return <TemplateDijitalNative data={data} />;
+
     default:
       return <Template1DetailedAnalysis data={data} />;
   }

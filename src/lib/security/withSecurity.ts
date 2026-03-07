@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { securityConfig, SecurityConfig } from './config';
 import { checkRateLimit } from './rateLimiter';
 import { reserveBudget } from './budgetTracker';
+import { sanitizeObject } from './sanitizer';
 
 type IdentifyUserFn = (params: {
   body: any;
@@ -18,6 +19,7 @@ export interface SecurityOptions {
   identifyUser?: IdentifyUserFn;
   estimateCost?: EstimateCostFn;
   configOverride?: Partial<SecurityConfig>;
+  sanitizeInput?: boolean;
 }
 
 export interface SecurityContext<TBody = any> {
@@ -108,6 +110,11 @@ export async function withSecurity<TBody = any>(
         },
         { status: 400 }
       );
+    }
+
+    // Sanitize input to prevent XSS
+    if (parsedBody && (options?.sanitizeInput !== false)) {
+      parsedBody = sanitizeObject(parsedBody as any) as TBody;
     }
   }
 

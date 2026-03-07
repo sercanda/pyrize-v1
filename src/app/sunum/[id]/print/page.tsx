@@ -103,7 +103,10 @@ export default async function PrintPage({ params, searchParams }: PageProps) {
                 <meta charSet="UTF-8" />
                 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
                 <title>{sunumData.baslik || 'Sunum'} - PDF</title>
-                <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+                <link
+                    href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=block"
+                    rel="stylesheet"
+                />
             </head>
             <body className={condensed ? 'pdf-condensed-mode' : ''}>
                 {isDebug && (
@@ -116,6 +119,33 @@ export default async function PrintPage({ params, searchParams }: PageProps) {
                 )}
 
                 <PdfDocument data={formattedData as any} condensed={condensed} />
+
+                {/* Signal to Gotenberg that the page is ready for PDF capture */}
+                <script
+                    dangerouslySetInnerHTML={{
+                        __html: `
+                            (function() {
+                                Promise.all([
+                                    document.fonts ? document.fonts.ready : Promise.resolve(),
+                                    new Promise(function(resolve) {
+                                        var images = document.querySelectorAll('img');
+                                        if (images.length === 0) return resolve();
+                                        var loaded = 0;
+                                        images.forEach(function(img) {
+                                            if (img.complete) { loaded++; if (loaded === images.length) resolve(); }
+                                            else {
+                                                img.onload = img.onerror = function() { loaded++; if (loaded === images.length) resolve(); };
+                                            }
+                                        });
+                                    })
+                                ]).then(function() {
+                                    window.pdfReady = true;
+                                });
+                                setTimeout(function() { window.pdfReady = true; }, 5000);
+                            })();
+                        `,
+                    }}
+                />
             </body>
         </html>
     );

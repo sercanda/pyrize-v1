@@ -25,6 +25,8 @@ const parseNumber = (value: string | undefined, fallback: number) => {
   return Number.isFinite(parsed) && parsed > 0 ? parsed : fallback;
 };
 
+import { getPlanLimits, type PlanType } from './planLimits';
+
 export const securityConfig: SecurityConfig = {
   ipRateLimit: {
     windowMs: parseNumber(process.env.API_RATE_LIMIT_WINDOW_MS, 60_000),
@@ -38,9 +40,27 @@ export const securityConfig: SecurityConfig = {
     maxBytes: parseNumber(process.env.API_MAX_PAYLOAD_BYTES, 280_000), // ~280 KB
   },
   budget: {
-    // Budget limit temporarily disabled - credit system will handle this
-    dailyLimit: parseNumber(process.env.API_DAILY_SPEND_LIMIT, 999999), // Very high limit (effectively disabled)
+    dailyLimit: parseNumber(process.env.API_DAILY_SPEND_LIMIT, 1), // Default: free plan ($1/day)
   },
   defaultRequestCost: parseNumber(process.env.API_DEFAULT_REQUEST_COST, 0.35),
 };
+
+export function getSecurityConfigForPlan(plan?: PlanType): SecurityConfig {
+  const limits = getPlanLimits(plan);
+  return {
+    ipRateLimit: {
+      windowMs: limits.rateLimit.windowMs,
+      max: limits.rateLimit.ipMax,
+    },
+    userRateLimit: {
+      windowMs: limits.rateLimit.windowMs,
+      max: limits.rateLimit.userMax,
+    },
+    payload: securityConfig.payload,
+    budget: {
+      dailyLimit: limits.dailyBudget,
+    },
+    defaultRequestCost: securityConfig.defaultRequestCost,
+  };
+}
 

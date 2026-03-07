@@ -1,12 +1,23 @@
 "use client";
 
-import { useState } from "react";
+import { useState, Suspense } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Mail, Lock, AlertCircle } from "lucide-react";
+import { createSupabaseBrowserClient } from "@/lib/supabase/client";
 
 export default function LoginPage() {
+  return (
+    <Suspense>
+      <LoginForm />
+    </Suspense>
+  );
+}
+
+function LoginForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const redirectTo = searchParams.get("redirect") || "/dashboard";
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -17,13 +28,24 @@ export default function LoginPage() {
     setError("");
     setLoading(true);
 
-    // TODO: Supabase authentication entegrasyonu
     try {
-      // Simüle edilmiş login - gerçek API çağrısı eklenecek
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      // Giriş sonrası dashboard'a yönlendir ve üst menüden anasayfaya kolay dönüş sağlanır
-      router.push("/dashboard");
+      const supabase = createSupabaseBrowserClient();
+      const { error: authError } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+
+      if (authError) {
+        if (authError.message.includes("Invalid login")) {
+          setError("E-posta veya şifre hatalı.");
+        } else {
+          setError(authError.message);
+        }
+        return;
+      }
+
+      router.push(redirectTo);
+      router.refresh();
     } catch (err) {
       setError("Giriş başarısız. Lütfen tekrar deneyin.");
     } finally {

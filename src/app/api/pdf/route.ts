@@ -78,7 +78,17 @@ export async function POST(request: NextRequest) {
 
     try {
         const body = await request.json();
-        const { id } = body;
+        const { id, method } = body;
+
+        // If react-pdf method requested, forward to react-pdf endpoint
+        if (method === 'react-pdf') {
+            const reactPdfUrl = new URL('/api/pdf/react-pdf', request.url);
+            return fetch(reactPdfUrl, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ id }),
+            });
+        }
 
         if (!id) {
             console.log(`[PDF ${requestId}] ❌ Missing ID`);
@@ -165,7 +175,8 @@ export async function POST(request: NextRequest) {
             formData.append('paperHeight', '11.69'); // A4 height in inches
             formData.append('preferCssPageSize', 'true');
             formData.append('waitDelay', '3s'); // Wait for fonts/images to load
-            formData.append('emulatedMediaType', 'print');
+            formData.append('waitForExpression', 'window.pdfReady === true'); // Wait for fonts+images ready signal
+            formData.append('emulatedMediaType', 'screen'); // Use screen media to preserve backgrounds and colors
 
             const gotenbergEndpoint = `${GOTENBERG_URL}/forms/chromium/convert/url`;
             console.log(`[PDF ${requestId}] Calling Gotenberg: ${gotenbergEndpoint}`);

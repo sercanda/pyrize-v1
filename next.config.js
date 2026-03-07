@@ -1,6 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // output: "standalone", // KAPAT
+  output: "standalone",
   images: {
     remotePatterns: [
       { protocol: "https", hostname: "i.ibb.co", pathname: "/**" },
@@ -11,6 +11,7 @@ const nextConfig = {
     ],
   },
   experimental: { optimizePackageImports: ["lucide-react"] },
+  serverExternalPackages: ["@react-pdf/renderer"],
 };
 
 module.exports = nextConfig;
