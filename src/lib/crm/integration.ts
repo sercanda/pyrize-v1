@@ -133,6 +133,18 @@ export const syncCrmWithPresentation = async ({
     console.warn("CRM sunum kaydı oluşturulamadı:", error);
   }
 
+  // Aktivite kaydı oluştur
+  try {
+    await supabase.from("activities").insert({
+      type: "presentation",
+      customer_id: customerId,
+      description: `Sunum oluşturuldu: ${presentationTitle}`,
+      date: createdAt,
+    });
+  } catch (error) {
+    console.warn("CRM aktivite kaydı oluşturulamadı:", error);
+  }
+
   return { customerId };
 };
 

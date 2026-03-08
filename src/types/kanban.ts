@@ -19,6 +19,11 @@ export interface Task {
   assignedUsers: AssignedUser[];
   createdAt: string;
   imageUrl?: string;
+  // CRM bağlantıları
+  customerId?: string;
+  customerName?: string;
+  dealId?: string;
+  dealTitle?: string;
 }
 
 export interface Column {

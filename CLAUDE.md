@@ -608,4 +608,58 @@ npm run lint
 
 ---
 
+## 16. CRM MODÜLÜ
+
+### 16.1 Supabase Tabloları
+
+| Tablo | Açıklama |
+|-------|----------|
+| `customers` | Müşteriler (mevcut, genişletildi: type, city, source, user_id) |
+| `properties` | Mülkler (satılık/kiralık, müşteriye bağlı) |
+| `deals` | Fırsatlar/Pipeline (lead → meeting → offer → contract → closed) |
+| `activities` | Aktiviteler (arama, email, görüşme, not, sunum) |
+| `todos` | Görevler (müşteri/fırsat/mülk bağlantılı) |
+| `presentations` | Sunumlar (mevcut, customer_id ile müşteriye bağlı) |
+
+Migration: `supabase/migrations/003_crm_integration.sql`
+Her tablo `user_id` ile kullanıcıya bağlı (RLS aktif).
+
+### 16.2 API Routes
+
+```
+GET/POST   /api/crm/customers         → Müşteri listele/oluştur
+GET/PUT/DEL /api/crm/customers/[id]   → Müşteri detay/güncelle/sil
+GET/POST   /api/crm/properties         → Mülk listele/oluştur
+GET/PUT/DEL /api/crm/properties/[id]   → Mülk detay/güncelle/sil
+GET/POST   /api/crm/deals              → Fırsat listele/oluştur
+GET/PUT/DEL /api/crm/deals/[id]        → Fırsat detay/güncelle/sil
+GET/POST   /api/crm/activities          → Aktivite listele/oluştur
+GET/POST   /api/crm/todos              → Görev listele/oluştur
+GET/PUT/DEL /api/crm/todos/[id]        → Görev detay/güncelle/sil
+GET        /api/crm/dashboard           → Dashboard istatistikleri
+GET        /api/crm/presentations       → Sunumları listele (customer_id filtreli)
+```
+
+### 16.3 Sayfa Yapısı
+
+- **CRM:** `/dashboard/crm` → Tab navigasyonlu tek sayfa
+  - Dashboard, Müşteriler, Mülkler, Fırsatlar (Pipeline), Aktiviteler
+- **Görevler:** `/dashboard/todo` → Mevcut kanban + CRM bağlantı alanları
+- Bileşenler: `src/components/crm-v2/`
+- Hooks: `src/hooks/useCRM*.ts`
+
+### 16.4 CRM-Sunum Entegrasyonu
+
+- Sunum oluşturulunca `customers` + `presentations` + `activities` tablosuna yazılır
+- `CustomerSlideOver` → "Sunumlar" sekmesinde bağlı sunumlar listelenir
+- `integration.ts` → Sunum oluşturulunca aktivite kaydı eklenir
+
+### 16.5 CRM-Todo Entegrasyonu
+
+- Görev eklerken müşteri ve fırsat seçilebilir
+- `TaskCard` üzerinde CRM bağlantı badge'leri gösterilir
+- CRM müşteri panelinde bağlı görevler listelenir
+
+---
+
 *Son Güncelleme: Mart 2026 | Proje: PYRIZE-V1*

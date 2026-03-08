@@ -3,7 +3,8 @@
 import { useState, useEffect, useCallback } from "react";
 import { Task, TaskPriority, TaskStatusColumn, PRIORITY_LABELS, COLUMNS } from "@/types/kanban";
 import { useKanban } from "@/contexts/KanbanContext";
-import { X, Plus, Image as ImageIcon, Link as LinkIcon, Upload } from "lucide-react";
+import { X, Plus, Image as ImageIcon, Link as LinkIcon, Upload, Users2, TrendingUp } from "lucide-react";
+import type { DBCustomer, DBDeal } from "@/types/crm";
 import { DanismanBilgileri } from "@/types";
 import { useDropzone } from "react-dropzone";
 import Image from "next/image";
@@ -36,6 +37,8 @@ export function TaskModal({ task, isOpen, onClose, defaultColumn }: TaskModalPro
   const [newUserName, setNewUserName] = useState("");
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [imageFile, setImageFile] = useState<File | null>(null);
+  const [crmCustomers, setCrmCustomers] = useState<DBCustomer[]>([]);
+  const [crmDeals, setCrmDeals] = useState<DBDeal[]>([]);
   const [formData, setFormData] = useState({
     title: "",
     description: "",
@@ -45,6 +48,10 @@ export function TaskModal({ task, isOpen, onClose, defaultColumn }: TaskModalPro
     labels: [] as string[],
     commentsCount: 0,
     assignedUsers: [] as Array<{ id: string; avatar: string; name: string }>,
+    customerId: "",
+    customerName: "",
+    dealId: "",
+    dealTitle: "",
   });
 
   useEffect(() => {
@@ -59,6 +66,13 @@ export function TaskModal({ task, isOpen, onClose, defaultColumn }: TaskModalPro
       }
     }
   }, []);
+
+  // CRM verilerini yükle
+  useEffect(() => {
+    if (!isOpen) return;
+    fetch("/api/crm/customers").then((r) => r.ok ? r.json() : []).then(setCrmCustomers).catch(() => {});
+    fetch("/api/crm/deals").then((r) => r.ok ? r.json() : []).then(setCrmDeals).catch(() => {});
+  }, [isOpen]);
 
   const onDrop = useCallback((acceptedFiles: File[]) => {
     const file = acceptedFiles[0];
@@ -132,6 +146,10 @@ export function TaskModal({ task, isOpen, onClose, defaultColumn }: TaskModalPro
           avatar: u.avatar,
           name: u.name || u.id,
         })),
+        customerId: task.customerId || "",
+        customerName: task.customerName || "",
+        dealId: task.dealId || "",
+        dealTitle: task.dealTitle || "",
       });
       setImageUrl(task.imageUrl || null);
     } else {
@@ -144,6 +162,10 @@ export function TaskModal({ task, isOpen, onClose, defaultColumn }: TaskModalPro
         labels: [],
         commentsCount: 0,
         assignedUsers: [],
+        customerId: "",
+        customerName: "",
+        dealId: "",
+        dealTitle: "",
       });
       setImageUrl(null);
       setImageFile(null);
@@ -169,6 +191,10 @@ export function TaskModal({ task, isOpen, onClose, defaultColumn }: TaskModalPro
         avatar: u.avatar,
       })),
       imageUrl: imageUrl || undefined,
+      customerId: formData.customerId || undefined,
+      customerName: formData.customerName || undefined,
+      dealId: formData.dealId || undefined,
+      dealTitle: formData.dealTitle || undefined,
     };
 
     if (task) {
@@ -390,6 +416,61 @@ export function TaskModal({ task, isOpen, onClose, defaultColumn }: TaskModalPro
               ))}
             </select>
           </div>
+
+          {/* CRM Bağlantısı */}
+          {(crmCustomers.length > 0 || crmDeals.length > 0) && (
+            <div className="rounded-xl border border-white/10 bg-white/[0.03] p-4 space-y-3">
+              <label className="block text-sm font-semibold text-slate-300">
+                CRM Bağlantısı
+              </label>
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="mb-1 block text-xs text-slate-500">
+                    <Users2 className="inline h-3 w-3 mr-1" />Müşteri
+                  </label>
+                  <select
+                    value={formData.customerId}
+                    onChange={(e) => {
+                      const customer = crmCustomers.find((c) => c.id === e.target.value);
+                      setFormData((prev) => ({
+                        ...prev,
+                        customerId: e.target.value,
+                        customerName: customer?.name || "",
+                      }));
+                    }}
+                    className="w-full rounded-lg border border-white/20 bg-white/5 px-3 py-2 text-sm text-white focus:border-cyan-400 focus:outline-none [&>option]:bg-[#050b1d] [&>option]:text-white"
+                  >
+                    <option value="">Seçiniz</option>
+                    {crmCustomers.map((c) => (
+                      <option key={c.id} value={c.id}>{c.name}</option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <label className="mb-1 block text-xs text-slate-500">
+                    <TrendingUp className="inline h-3 w-3 mr-1" />Fırsat
+                  </label>
+                  <select
+                    value={formData.dealId}
+                    onChange={(e) => {
+                      const deal = crmDeals.find((d) => d.id === e.target.value);
+                      setFormData((prev) => ({
+                        ...prev,
+                        dealId: e.target.value,
+                        dealTitle: deal?.title || "",
+                      }));
+                    }}
+                    className="w-full rounded-lg border border-white/20 bg-white/5 px-3 py-2 text-sm text-white focus:border-cyan-400 focus:outline-none [&>option]:bg-[#050b1d] [&>option]:text-white"
+                  >
+                    <option value="">Seçiniz</option>
+                    {crmDeals.map((d) => (
+                      <option key={d.id} value={d.id}>{d.title}</option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+            </div>
+          )}
 
           <div>
             <label className="mb-2 block text-sm font-semibold text-slate-300">Etiketler</label>

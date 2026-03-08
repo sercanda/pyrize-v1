@@ -1,0 +1,16 @@
+export { CRMLayout } from "./CRMLayout";
+export type { CRMTab } from "./CRMLayout";
+export { CRMDashboard } from "./CRMDashboard";
+export { CustomersTab } from "./CustomersTab";
+export { CustomerSlideOver } from "./CustomerSlideOver";
+export { CreateCustomerModal } from "./CreateCustomerModal";
+export { PropertiesTab } from "./PropertiesTab";
+export { PropertySlideOver } from "./PropertySlideOver";
+export { CreatePropertyModal } from "./CreatePropertyModal";
+export { DealsTab } from "./DealsTab";
+export { DealStageColumn } from "./DealStageColumn";
+export { DealCard } from "./DealCard";
+export { DealSlideOver } from "./DealSlideOver";
+export { CreateDealModal } from "./CreateDealModal";
+export { ActivitiesTab } from "./ActivitiesTab";
+export { SlideOver } from "./SlideOver";

@@ -79,6 +79,24 @@ export function TaskCard({ task, onClick }: TaskCardProps) {
 
         {task.labels.length > 0 && <TagList tags={task.labels} />}
 
+        {/* CRM Bağlantı Badge'i */}
+        {(task.customerName || task.dealTitle) && (
+          <div className="flex flex-wrap gap-1.5">
+            {task.customerName && (
+              <span className="inline-flex items-center gap-1 rounded-full bg-cyan-500/15 px-2 py-0.5 text-[10px] font-medium text-cyan-300">
+                <span className="h-1.5 w-1.5 rounded-full bg-cyan-400" />
+                {task.customerName}
+              </span>
+            )}
+            {task.dealTitle && (
+              <span className="inline-flex items-center gap-1 rounded-full bg-amber-500/15 px-2 py-0.5 text-[10px] font-medium text-amber-300">
+                <span className="h-1.5 w-1.5 rounded-full bg-amber-400" />
+                {task.dealTitle}
+              </span>
+            )}
+          </div>
+        )}
+
         <div className="flex items-center justify-between pt-1">
           <AvatarGroup users={task.assignedUsers} />
           {task.commentsCount > 0 && (
