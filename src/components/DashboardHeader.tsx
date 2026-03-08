@@ -1,24 +1,35 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { ProfileDropdown } from "@/components/ProfileDropdown";
-
-const PROFILE = {
-  name: "Ece Yılmaz",
-  email: "ece@pyrize.app",
-  role: "Broker Owner",
-  avatarUrl: "",
-};
+import { useAuthContext } from "@/components/AuthProvider";
 
 interface DashboardHeaderProps {
   sidebarWidth: number;
 }
 
 export function DashboardHeader({ sidebarWidth }: DashboardHeaderProps) {
+  const { user, signOut } = useAuthContext();
+  const router = useRouter();
+
+  const profile = {
+    name: user?.user_metadata?.name || user?.email?.split("@")[0] || "Kullanıcı",
+    email: user?.email || "",
+    role: user?.user_metadata?.role || "Danışman",
+    avatarUrl: user?.user_metadata?.avatar_url || "",
+  };
+
+  const handleLogout = async () => {
+    await signOut();
+    router.push("/auth/login");
+    router.refresh();
+  };
+
   return (
     <header
       className="fixed top-0 right-0 z-[999] h-16 border-b border-white/10 bg-[#050b1d]/95 backdrop-blur-md transition-all duration-300 ease-in-out"
-      style={{ 
+      style={{
         left: `${sidebarWidth}px`,
         width: sidebarWidth > 0 ? `calc(100% - ${sidebarWidth}px)` : "100%"
       }}
@@ -35,15 +46,15 @@ export function DashboardHeader({ sidebarWidth }: DashboardHeaderProps) {
         {/* Boş alan - Desktop'ta */}
         <div className="hidden flex-1 md:block" />
 
-        {/* Sağ taraf - Profil ve Yeni Sunum butonu - Her zaman görünür ve sabit */}
+        {/* Sağ taraf - Profil ve Yeni Sunum butonu */}
         <div className="flex flex-shrink-0 items-center gap-2 md:gap-3">
           <div className="flex-shrink-0">
             <ProfileDropdown
-              name={PROFILE.name}
-              email={PROFILE.email}
-              role={PROFILE.role}
-              avatarUrl={PROFILE.avatarUrl || undefined}
-              onLogout={() => console.log("logout")}
+              name={profile.name}
+              email={profile.email}
+              role={profile.role}
+              avatarUrl={profile.avatarUrl || undefined}
+              onLogout={handleLogout}
             />
           </div>
           <Link
@@ -58,4 +69,3 @@ export function DashboardHeader({ sidebarWidth }: DashboardHeaderProps) {
     </header>
   );
 }
-
