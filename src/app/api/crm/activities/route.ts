@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getSupabaseServiceClient } from "@/lib/supabase/server";
 
+const STUB_USER_ID = "00000000-0000-0000-0000-000000000001";
+
 export async function GET(req: NextRequest) {
   const supabase = getSupabaseServiceClient();
   if (!supabase) return NextResponse.json({ error: "Supabase bağlantısı kurulamadı" }, { status: 503 });
@@ -15,6 +17,7 @@ export async function GET(req: NextRequest) {
   let query = supabase
     .from("activities")
     .select("*, customer:customers(id, name), deal:deals(id, title)")
+    .eq("user_id", STUB_USER_ID)
     .order("date", { ascending: false })
     .limit(limit);
 
@@ -48,6 +51,7 @@ export async function POST(req: NextRequest) {
       deal_id: body.deal_id || null,
       description: body.description || null,
       date: body.date || new Date().toISOString(),
+      user_id: STUB_USER_ID,
     })
     .select("*, customer:customers(id, name), deal:deals(id, title)")
     .single();

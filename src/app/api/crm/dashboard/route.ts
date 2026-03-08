@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import { getSupabaseServiceClient } from "@/lib/supabase/server";
 
+const STUB_USER_ID = "00000000-0000-0000-0000-000000000001";
+
 export async function GET() {
   const supabase = getSupabaseServiceClient();
   if (!supabase) return NextResponse.json({ error: "Supabase bağlantısı kurulamadı" }, { status: 503 });
@@ -16,12 +18,12 @@ export async function GET() {
     propertiesRes,
     activitiesRes,
   ] = await Promise.all([
-    supabase.from("customers").select("id", { count: "exact", head: true }),
-    supabase.from("deals").select("id, value").not("stage", "in", "(closed,lost)"),
-    supabase.from("deals").select("id, value").eq("stage", "closed").gte("updated_at", startOfMonth),
-    supabase.from("todos").select("id", { count: "exact", head: true }).neq("status", "done").lte("due_date", new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000).toISOString()),
-    supabase.from("properties").select("id", { count: "exact", head: true }),
-    supabase.from("activities").select("*, customer:customers(id, name), deal:deals(id, title)").order("date", { ascending: false }).limit(5),
+    supabase.from("customers").select("id", { count: "exact", head: true }).eq("user_id", STUB_USER_ID),
+    supabase.from("deals").select("id, value").eq("user_id", STUB_USER_ID).not("stage", "in", "(closed,lost)"),
+    supabase.from("deals").select("id, value").eq("user_id", STUB_USER_ID).eq("stage", "closed").gte("updated_at", startOfMonth),
+    supabase.from("todos").select("id", { count: "exact", head: true }).eq("user_id", STUB_USER_ID).neq("status", "done").lte("due_date", new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000).toISOString()),
+    supabase.from("properties").select("id", { count: "exact", head: true }).eq("user_id", STUB_USER_ID),
+    supabase.from("activities").select("*, customer:customers(id, name), deal:deals(id, title)").eq("user_id", STUB_USER_ID).order("date", { ascending: false }).limit(5),
   ]);
 
   const openDeals = openDealsRes.data || [];

@@ -282,11 +282,11 @@ export function TaskModal({ task, isOpen, onClose, defaultColumn }: TaskModalPro
           <X className="h-5 w-5" />
         </button>
 
-        <h2 className="mb-6 text-2xl font-bold text-white">
+        <h2 className="mb-4 text-base font-semibold text-white">
           {task ? "Görevi Düzenle" : "Yeni Görev"}
         </h2>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-3">
           <div>
             <label className="mb-2 block text-sm font-semibold text-slate-300">Başlık *</label>
             <input

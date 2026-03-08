@@ -33,11 +33,11 @@ export interface Column {
 }
 
 export const COLUMNS: Column[] = [
-  { key: "overdue", title: "Süresi Geçti", color: "bg-red-500" },
-  { key: "today", title: "Bugün İçinde", color: "bg-blue-400" },
+  { key: "overdue", title: "Gecikmiş", color: "bg-red-500" },
+  { key: "today", title: "Bugün", color: "bg-blue-400" },
   { key: "tomorrow", title: "Yarın", color: "bg-green-500" },
-  { key: "nextWeek", title: "Gelecek Hafta", color: "bg-blue-500" },
-  { key: "nextMonth", title: "Gelecek Ay", color: "bg-sky-400" },
+  { key: "nextWeek", title: "Bu Hafta", color: "bg-blue-500" },
+  { key: "nextMonth", title: "Bu Ay", color: "bg-sky-400" },
 ];
 
 export const PRIORITY_COLORS: Record<TaskPriority, string> = {

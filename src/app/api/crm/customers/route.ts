@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getSupabaseServiceClient } from "@/lib/supabase/server";
 
+// Auth stub — gerçek auth entegre edilince kaldırılacak
+const STUB_USER_ID = "00000000-0000-0000-0000-000000000001";
+
 export async function GET(req: NextRequest) {
   const supabase = getSupabaseServiceClient();
   if (!supabase) {
@@ -15,6 +18,7 @@ export async function GET(req: NextRequest) {
   let query = supabase
     .from("customers")
     .select("*")
+    .eq("user_id", STUB_USER_ID)
     .order("updated_at", { ascending: false })
     .limit(limit);
 
@@ -51,6 +55,7 @@ export async function POST(req: NextRequest) {
       source: body.source || null,
       tags: body.tags || [],
       notes: body.notes || null,
+      user_id: STUB_USER_ID,
     })
     .select()
     .single();
