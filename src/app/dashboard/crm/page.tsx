@@ -1,11 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { CRMLayout, CRMDashboard, CustomersTab, PropertiesTab, DealsTab, ActivitiesTab } from "@/components/crm-v2";
 import type { CRMTab } from "@/components/crm-v2";
 
-export default function CRMPage() {
+function CRMPageContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const initialTab = (searchParams.get("tab") as CRMTab) || "dashboard";
@@ -26,5 +26,17 @@ export default function CRMPage() {
       {activeTab === "firsatlar" && <DealsTab />}
       {activeTab === "aktiviteler" && <ActivitiesTab />}
     </CRMLayout>
+  );
+}
+
+export default function CRMPage() {
+  return (
+    <Suspense fallback={
+      <div className="flex h-full items-center justify-center">
+        <div className="text-slate-400">Yükleniyor...</div>
+      </div>
+    }>
+      <CRMPageContent />
+    </Suspense>
   );
 }
