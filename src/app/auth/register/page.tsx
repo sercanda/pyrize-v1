@@ -74,8 +74,13 @@ export default function RegisterPage() {
         setRegisteredEmail(formData.email);
         setConfirmationSent(true);
       }
-    } catch {
-      setError("Kayıt başarısız. Lütfen tekrar deneyin.");
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : "";
+      if (msg.includes("Supabase URL") || msg.includes("Anon Key")) {
+        setError("Supabase yapılandırması eksik. Lütfen yöneticiyle iletişime geçin.");
+      } else {
+        setError("Kayıt başarısız: " + (msg || "Bilinmeyen hata. Lütfen tekrar deneyin."));
+      }
     } finally {
       setLoading(false);
     }

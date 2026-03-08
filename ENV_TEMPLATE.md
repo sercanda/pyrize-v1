@@ -2,11 +2,11 @@
 # =============================================================
 # SUPABASE CONFIGURATION
 # =============================================================
-SUPABASE_URL=your_supabase_project_url_here
-NEXT_PUBLIC_SUPABASE_URL=your_supabase_project_url_here
-SUPABASE_ANON_KEY=your_supabase_anon_key_here
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key_here
-SUPABASE_SERVICE_ROLE_KEY=your_supabase_service_role_key_here
+SUPABASE_URL=https://zocpqnvxdgjnemwwtguj.supabase.co
+NEXT_PUBLIC_SUPABASE_URL=https://zocpqnvxdgjnemwwtguj.supabase.co
+SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpvY3BxbnZ4ZGdqbmVtd3d0Z3VqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjI5NzAxMDEsImV4cCI6MjA3ODU0NjEwMX0.PhNMzRjYPIvRf2IVXpJ4Y9PXBn4e41tffPIvreFs86U
+NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpvY3BxbnZ4ZGdqbmVtd3d0Z3VqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjI5NzAxMDEsImV4cCI6MjA3ODU0NjEwMX0.PhNMzRjYPIvRf2IVXpJ4Y9PXBn4e41tffPIvreFs86U
+SUPABASE_SERVICE_ROLE_KEY=yeyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpvY3BxbnZ4ZGdqbmVtd3d0Z3VqIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc2Mjk3MDEwMSwiZXhwIjoyMDc4NTQ2MTAxfQ.UWctwxDQpStlv9-Tz5fUVCVvP75wdyeVpTIYbSVxT-M
 
 # =============================================================
 # AI API CONFIGURATION
