@@ -23,8 +23,8 @@ export function getPdfTemplate(istek: any, icerik: any): React.ReactElement {
     return React.createElement(QuickSalePdf, { istek, icerik });
   }
 
-  // Prestige presentation
-  if (sunumStili === 'prestij_sunum') {
+  // Premium presentation
+  if (sunumStili === 'premium_sunum') {
     return React.createElement(PrestigePdf, { istek, icerik });
   }
 

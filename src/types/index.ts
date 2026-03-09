@@ -23,7 +23,9 @@ export type TemaTuru =
 export type SunumStili =
   | "detayli_analiz"   // Analiz ve kapsamlı içerik
   | "hizli_satis"      // Hızlı karar odaklı içerik
-  | "prestij_sunum";   // Prestij ve güven odaklı içerik
+  | "premium_sunum"    // Premium, lüks sunum
+  | "guven_odakli"     // Güven ve danışman odaklı içerik
+  | "minimalist";      // Sade, öz, temiz sunum
 
 export type SunumTuru =
   | "normal_sunum"     // Normal portföy sunumu

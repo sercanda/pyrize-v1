@@ -1,16 +1,14 @@
 /**
- * PDF Print Route - PDF-First Layout for Gotenberg Rendering
- * 
- * This route renders the presentation in a deterministic PDF layout:
- * - Fixed 6 A4 pages for DetailedAnalysis template
- * - No dynamic page breaks - all content deterministically allocated
- * - Optimized for Chromium PDF rendering
- * - No interactive elements or animations
- * 
- * This page is NOT meant for web viewing - it's specifically for PDF generation.
+ * PDF Print Route - Renders the SAME template as web preview for Gotenberg
+ *
+ * This route renders the presentation using TemplateRenderer (same as web view)
+ * with PDF-optimized CSS applied via .pdf-render-mode class.
+ *
+ * Gotenberg captures this page with emulatedMediaType: 'screen' to preserve
+ * backgrounds, gradients, and visual effects.
  */
 import { getSupabaseServiceClient } from "@/lib/supabase/server";
-import PdfDocument from "@/components/pdf/PdfDocument";
+import TemplateRenderer from "@/components/templates/TemplateRenderer";
 import "./print.css";
 
 // Force dynamic rendering
@@ -62,13 +60,14 @@ export default async function PrintPage({ params, searchParams }: PageProps) {
     const { id } = await params;
     const queryParams = await searchParams;
     const isDebug = queryParams.debug === '1';
-    const condensed = queryParams.condensed === '1';
 
     if (!id) {
         return (
-            <div className="pdf-error">
-                <h1>Hata</h1>
-                <p>Sunum ID'si gerekli</p>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '100vh', textAlign: 'center', padding: '40px' }}>
+                <div>
+                    <h1 style={{ color: '#dc2626', fontSize: '24pt' }}>Hata</h1>
+                    <p>Sunum ID&apos;si gerekli</p>
+                </div>
             </div>
         );
     }
@@ -78,14 +77,16 @@ export default async function PrintPage({ params, searchParams }: PageProps) {
 
     if (!sunumData) {
         return (
-            <div className="pdf-error">
-                <h1>Hata</h1>
-                <p>Sunum bulunamadı: {id}</p>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '100vh', textAlign: 'center', padding: '40px' }}>
+                <div>
+                    <h1 style={{ color: '#dc2626', fontSize: '24pt' }}>Hata</h1>
+                    <p>Sunum bulunamadı: {id}</p>
+                </div>
             </div>
         );
     }
 
-    // Format data for PdfDocument
+    // Format data for TemplateRenderer (same format as web view)
     const formattedData = {
         id: sunumData.id,
         slug: sunumData.slug,
@@ -108,9 +109,14 @@ export default async function PrintPage({ params, searchParams }: PageProps) {
                     rel="stylesheet"
                 />
             </head>
-            <body className={condensed ? 'pdf-condensed-mode' : ''}>
+            <body>
                 {isDebug && (
-                    <div className="pdf-debug-banner">
+                    <div style={{
+                        position: 'fixed', top: 0, left: 0, right: 0,
+                        background: '#fef3c7', borderBottom: '2px solid #f59e0b',
+                        padding: '4px 10mm', fontSize: '8pt', fontFamily: 'monospace',
+                        color: '#92400e', zIndex: 9999
+                    }}>
                         <strong>DEBUG MODE</strong> |
                         ID: {sunumData.id?.slice(0, 8)}... |
                         Slug: {sunumData.slug} |
@@ -118,7 +124,10 @@ export default async function PrintPage({ params, searchParams }: PageProps) {
                     </div>
                 )}
 
-                <PdfDocument data={formattedData as any} condensed={condensed} />
+                {/* Render the SAME template as web preview, wrapped in pdf-render-mode */}
+                <div className="pdf-render-mode">
+                    <TemplateRenderer data={formattedData as any} />
+                </div>
 
                 {/* Signal to Gotenberg that the page is ready for PDF capture */}
                 <script

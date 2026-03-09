@@ -119,18 +119,28 @@ const STYLE_OPTIONS: StepOption<SunumStili>[] = [
   {
     value: 'detayli_analiz',
     label: 'Detaylı Analiz',
-    description: 'Rakam odaklı, analitik güven inşa eden format',
+    description: 'Rakam odaklı, analitik güven inşa eden format (5 sayfa)',
     badge: 'Favori'
   },
   {
     value: 'hizli_satis',
     label: 'Hızlı Satış',
-    description: 'Öne çıkan fırsatları anlatan hızlı akış'
+    description: 'Öne çıkan fırsatları anlatan hızlı akış (3 sayfa)'
   },
   {
-    value: 'prestij_sunum',
-    label: 'Prestij Sunum',
-    description: 'Lüks portföyler için özel tasarım'
+    value: 'premium_sunum',
+    label: 'Premium Sunum',
+    description: 'Lüks portföyler için zarif, geniş tasarım (5 sayfa)'
+  },
+  {
+    value: 'guven_odakli',
+    label: 'Güven Odaklı',
+    description: 'Danışman güvenini ön plana çıkaran format (4 sayfa)'
+  },
+  {
+    value: 'minimalist',
+    label: 'Minimalist',
+    description: 'Sade, temiz, sadece esansiyel bilgi (3 sayfa)'
   }
 ];
 
@@ -1284,7 +1294,7 @@ export default function DashboardOlusturPage() {
       targetAudience: targetAudienceCards,
       // Reklam Kanalları
       adChannels: adChannelsList,
-      template: 'detayli_analiz'
+      template: secenekler.sunumStili || 'detayli_analiz'
     };
 
     setIsGenerating(true);

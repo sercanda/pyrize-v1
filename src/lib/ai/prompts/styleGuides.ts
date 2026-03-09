@@ -42,8 +42,8 @@ export const sunumStiliBilgileri: Record<SunumStili, {
       'Kullanım potansiyeli bölümünü yatırım + yaşam senaryoları ile hızlı okunur formatta yaz.',
     ],
   },
-  prestij_sunum: {
-    ad: 'Prestij Sunum',
+  premium_sunum: {
+    ad: 'Premium Sunum',
     aciklama: 'Yüksek değerli portföyler için lüks algısı, sosyal kanıt ve elit hizmet yaklaşımını öne çıkar.',
     odaklar: [
       'Siyah/altın/beyaz kontrastlı lüks ton, seçkin dil',
@@ -51,9 +51,37 @@ export const sunumStiliBilgileri: Record<SunumStili, {
       'Kullanım potansiyeli, tanıtım stratejisi, tahmini değer & satım planı ve reklam kanalları bölümlerinde premium ton kullan',
     ],
     gorevler: [
-      'Prestij stilinde her bölümde seçkin müşterilere hitap eden dil kullan, referans ve sosyal kanıt ekle.',
+      'Premium stilinde her bölümde seçkin müşterilere hitap eden dil kullan, referans ve sosyal kanıt ekle.',
       'Tanıtım stratejisinde davet usulü etkinlikler ve network vurguları olsun.',
       'Reklam kanallarında lüks portföyler için uygun seçkin mecraları belirt (lux dergi, özel ağlar vb.).',
+    ],
+  },
+  guven_odakli: {
+    ad: 'Güven Odaklı',
+    aciklama: 'Danışman güvenini ve profesyonelliğini ön plana çıkaran, referans ve garanti odaklı sunum.',
+    odaklar: [
+      'Danışman profili ve başarı hikayesi erken gösterilmeli',
+      'Güven unsurları: garanti, referans, deneyim yılı, başarılı satış sayısı',
+      'FAQ bölümünde müşteri endişelerini giderecek detaylı yanıtlar',
+    ],
+    gorevler: [
+      'Her bölümde danışmanın uzmanlığına ve güvenilirliğine atıf yap.',
+      'FAQ bölümünde müşterinin endişelerini giderecek detaylı yanıtlar ver.',
+      'CTA bölümünde kişisel iletişim ve güven vurgusu ön planda olsun.',
+    ],
+  },
+  minimalist: {
+    ad: 'Minimalist',
+    aciklama: 'Sade, temiz, sadece esansiyel bilgiyi sunan kısa format.',
+    odaklar: [
+      'Sadece temel bilgiler: fiyat, konum, özellikler, iletişim',
+      'Kısa cümleler, net mesajlar, dekoratif öğe yok',
+      '3 sayfa: Hero + özet, avantajlar, danışman + CTA',
+    ],
+    gorevler: [
+      'Minimalist stilinde cümleleri çok kısa tut, gereksiz detay ekleme.',
+      'Her bölümde en fazla 3 madde veya kısa paragraf kullan.',
+      'Sadece en önemli avantajları ve iletişim bilgilerini sun.',
     ],
   },
 };
@@ -73,9 +101,15 @@ export function getStyleGuide(stil: SunumStili, tema: TemaTuru): string {
     'hizli_satis_modern': 'Dinamik ve aksiyon odaklı. "Hemen karar verin!", "Bu fırsat kaçmadan..." kısa cümleler.',
     'hizli_satis_kurumsal': 'Profesyonel ama ikna edici. "Veriler gösteriyor ki...", "Doğru zamanda doğru yatırım" vurgusu.',
     'hizli_satis_luks': 'Aciliyet + prestij. "Sınırlı sayıda...", "Ayrıcalıklı erişim..." lüks urgency.',
-    'prestij_sunum_modern': 'Modern lüks. "Premium yaşam deneyimi...", "Tasarım ve teknolojinin buluşması..."',
-    'prestij_sunum_kurumsal': 'Kurumsal prestij. "A sınıfı yatırım fırsatı...", "Portföyünüzün taç mücevheri..."',
-    'prestij_sunum_luks': 'Ultra lüks. "Benzersiz...", "Dünya standartlarında...", "Sadece seçkinlere özel..."',
+    'premium_sunum_modern': 'Modern lüks. "Premium yaşam deneyimi...", "Tasarım ve teknolojinin buluşması..."',
+    'premium_sunum_kurumsal': 'Kurumsal prestij. "A sınıfı yatırım fırsatı...", "Portföyünüzün taç mücevheri..."',
+    'premium_sunum_luks': 'Ultra lüks. "Benzersiz...", "Dünya standartlarında...", "Sadece seçkinlere özel..."',
+    'guven_odakli_modern': 'Güvenilir ve modern. "Yanınızda güçlü bir danışman...", "Şeffaf süreç garantisi..."',
+    'guven_odakli_kurumsal': 'Kurumsal güven. "Profesyonel deneyim...", "Kanıtlanmış başarı geçmişi..."',
+    'guven_odakli_luks': 'Elit güven. "Seçkin müşterilerimizin tercihi...", "Kişiye özel hizmet garantisi..."',
+    'minimalist_modern': 'Sade ve modern. Kısa, net cümleler. Gereksiz detay yok.',
+    'minimalist_kurumsal': 'Sade ve profesyonel. Sadece veriler ve sonuçlar.',
+    'minimalist_luks': 'Sade ama zarif. Minimal kelimeyle maksimum etki.',
   };
 
   const key = `${stil}_${tema}`;

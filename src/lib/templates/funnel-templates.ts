@@ -94,7 +94,9 @@ const getDanismanAdi = (danisman: any): string =>
 const SUNUM_STILI_BASLIKLARI: Record<SunumStili, string> = {
   detayli_analiz: "Detaylı Analiz Planı",
   hizli_satis: "Hızlı Satış Planı",
-  prestij_sunum: "Prestij Sunum Planı"
+  premium_sunum: "Premium Sunum Planı",
+  guven_odakli: "Güven Odaklı Plan",
+  minimalist: "Minimalist Plan"
 };
 
 const normalizeTextList = (value?: string, fallback: string[] = []): string[] => {

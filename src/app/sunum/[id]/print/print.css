@@ -960,3 +960,116 @@ li {
     orphans: 3;
     widows: 3;
 }
+
+/* ═══════════════════════════════════════════════════════════════
+   PDF RENDER MODE
+   Applied when TemplateRenderer is rendered inside .pdf-render-mode wrapper.
+   Gotenberg uses emulatedMediaType: 'screen' so Tailwind print: classes
+   do NOT activate. All PDF overrides must use .pdf-render-mode prefix.
+   ═══════════════════════════════════════════════════════════════ */
+
+/* Exact color printing for all elements */
+.pdf-render-mode * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+}
+
+/* Kill all animations and transitions */
+.pdf-render-mode *,
+.pdf-render-mode *::before,
+.pdf-render-mode *::after {
+    animation: none !important;
+    animation-delay: 0s !important;
+    animation-duration: 0s !important;
+    transition: none !important;
+    transition-delay: 0s !important;
+    transition-duration: 0s !important;
+}
+
+/* Force all sections visible (SectionWrapper uses opacity-0 + IntersectionObserver) */
+.pdf-render-mode section,
+.pdf-render-mode [data-pdf-section],
+.pdf-render-mode [data-pdf-page] {
+    opacity: 1 !important;
+    transform: none !important;
+    visibility: visible !important;
+}
+
+/* Page breaks on data-pdf-page attribute (unified templates) */
+.pdf-render-mode [data-pdf-page] {
+    break-after: page !important;
+    page-break-after: always !important;
+    min-height: auto !important;
+}
+
+/* Don't break after the last page */
+.pdf-render-mode [data-pdf-page]:last-child {
+    break-after: auto !important;
+    page-break-after: auto !important;
+}
+
+/* Page breaks on data-pdf-section (SectionWrapper) */
+.pdf-render-mode [data-pdf-section="true"] {
+    break-after: page !important;
+    page-break-after: always !important;
+    min-height: auto !important;
+}
+
+.pdf-render-mode [data-pdf-section="true"]:last-child {
+    break-after: auto !important;
+    page-break-after: auto !important;
+}
+
+/* Remove min-h-screen — viewport height is meaningless in PDF */
+.pdf-render-mode .min-h-screen {
+    min-height: auto !important;
+}
+
+/* Remove section gaps that cause blank space */
+.pdf-render-mode .gap-24 { gap: 0 !important; }
+.pdf-render-mode .gap-20 { gap: 0 !important; }
+.pdf-render-mode .gap-16 { gap: 0 !important; }
+
+/* Prevent cards from splitting across pages */
+.pdf-render-mode [data-pdf-section] > *,
+.pdf-render-mode [data-pdf-page] > * {
+    break-inside: avoid;
+    page-break-inside: avoid;
+}
+
+/* Hide screen-only decorative elements */
+.pdf-render-mode .no-print {
+    display: none !important;
+}
+
+/* Ensure backgrounds render on dark-themed templates */
+.pdf-render-mode .bg-slate-950,
+.pdf-render-mode .bg-stone-950 {
+    background-color: inherit;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+}
+
+/* Fix overflow hidden cutting content at page boundaries */
+.pdf-render-mode .overflow-hidden,
+.pdf-render-mode .overflow-x-hidden {
+    overflow: visible !important;
+}
+
+/* Keep the main container overflow hidden to prevent horizontal scroll */
+.pdf-render-mode > .overflow-x-hidden {
+    overflow-x: hidden !important;
+    overflow-y: visible !important;
+}
+
+/* Reduce excessive padding for PDF pages */
+.pdf-render-mode .py-12 { padding-top: 2rem !important; padding-bottom: 2rem !important; }
+.pdf-render-mode .py-16 { padding-top: 2.5rem !important; padding-bottom: 2.5rem !important; }
+.pdf-render-mode .py-24 { padding-top: 3rem !important; padding-bottom: 3rem !important; }
+.pdf-render-mode .py-32 { padding-top: 4rem !important; padding-bottom: 4rem !important; }
+
+/* Fixed/sticky elements should be static in PDF */
+.pdf-render-mode .fixed,
+.pdf-render-mode .sticky {
+    position: static !important;
+}
