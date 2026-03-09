@@ -21,6 +21,7 @@ export function CreateDealModal({ onClose, onCreate }: CreateDealModalProps) {
     notes: "",
   });
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     fetch("/api/crm/customers").then((r) => r.json()).then(setCustomers).catch(() => {});
@@ -31,6 +32,7 @@ export function CreateDealModal({ onClose, onCreate }: CreateDealModalProps) {
     e.preventDefault();
     if (!form.title.trim()) return;
     setLoading(true);
+    setError(null);
     try {
       await onCreate({
         title: form.title,
@@ -40,6 +42,8 @@ export function CreateDealModal({ onClose, onCreate }: CreateDealModalProps) {
         expected_close_date: form.expected_close_date || undefined,
         notes: form.notes || undefined,
       } as Partial<DBDeal>);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Fırsat kaydedilemedi. Lütfen tekrar deneyin.");
     } finally {
       setLoading(false);
     }
@@ -57,6 +61,11 @@ export function CreateDealModal({ onClose, onCreate }: CreateDealModalProps) {
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
+          {error && (
+            <div className="rounded-xl border border-red-500/20 bg-red-500/10 px-4 py-3 text-sm text-red-300">
+              {error}
+            </div>
+          )}
           <div>
             <label className="block text-xs font-medium text-slate-400 mb-1.5">Fırsat Başlığı *</label>
             <input

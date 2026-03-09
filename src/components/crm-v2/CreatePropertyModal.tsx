@@ -21,11 +21,13 @@ export function CreatePropertyModal({ onClose, onCreate }: CreatePropertyModalPr
     notes: "",
   });
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!form.title.trim()) return;
     setLoading(true);
+    setError(null);
     try {
       await onCreate({
         title: form.title,
@@ -37,6 +39,8 @@ export function CreatePropertyModal({ onClose, onCreate }: CreatePropertyModalPr
         area_sqm: Number(form.area_sqm) || undefined,
         notes: form.notes || undefined,
       } as Partial<DBProperty>);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Mülk kaydedilemedi. Lütfen tekrar deneyin.");
     } finally {
       setLoading(false);
     }
@@ -54,6 +58,11 @@ export function CreatePropertyModal({ onClose, onCreate }: CreatePropertyModalPr
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
+          {error && (
+            <div className="rounded-xl border border-red-500/20 bg-red-500/10 px-4 py-3 text-sm text-red-300">
+              {error}
+            </div>
+          )}
           <div>
             <label className="block text-xs font-medium text-slate-400 mb-1.5">Başlık *</label>
             <input

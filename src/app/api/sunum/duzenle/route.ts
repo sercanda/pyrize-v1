@@ -1,11 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
-import { GoogleGenerativeAI } from "@google/generative-ai";
 import { SunumIcerik, OlusturulanSunum } from "@/types";
 import { formatPriceRange } from "@/lib/utils/price";
 import { withSecurity } from "@/lib/security/withSecurity";
 import { securityConfig } from "@/lib/security/config";
-
-const GEMINI_API_KEY = process.env.GEMINI_API_KEY || "";
+import { callLLM, isLLMAvailable } from "@/lib/ai/fal-llm";
 
 type SunumDuzenleBody = {
   sunumData: OlusturulanSunum;
@@ -85,15 +83,12 @@ export async function POST(request: NextRequest) {
           });
         }
 
-        if (!GEMINI_API_KEY || GEMINI_API_KEY === "your_gemini_api_key_here") {
+        if (!isLLMAvailable()) {
           return NextResponse.json(
-            { error: "Gemini API anahtarı yapılandırılmamış" },
+            { error: "AI API anahtarı yapılandırılmamış (FAL_KEY gerekli)" },
             { status: 500 }
           );
         }
-
-        const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
-        const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash-exp" });
 
         // Mevcut sunum içeriğini JSON olarak hazırla
         const currentContent = sunumData.icerik;
@@ -154,9 +149,7 @@ Sadece güncellenmiş JSON içeriğini döndür. Başka açıklama ekleme.
 \`\`\`
 `;
 
-        const result = await model.generateContent(prompt);
-        const response = await result.response;
-        const text = response.text();
+        const text = await callLLM({ prompt, maxTokens: 4000 });
 
         // JSON'u parse et
         const jsonMatch = text.match(/```json\n([\s\S]*?)\n```/) || text.match(/\{[\s\S]*\}/);

@@ -4,6 +4,7 @@ import { MulkBilgileri, SunumAmaci, SunumStili, TemaTuru } from "@/types";
 import { withSecurity } from "@/lib/security/withSecurity";
 import { securityConfig } from "@/lib/security/config";
 import { getHedefKitleTemplates } from "@/lib/templates/default-sections";
+import { callLLM, isLLMAvailable } from "@/lib/ai/fal-llm";
 
 type TargetAudienceRequestBody = {
   mulk: Partial<MulkBilgileri> & { tur: MulkBilgileri["tur"]; konum: string };
@@ -25,11 +26,10 @@ export async function POST(request: NextRequest) {
           );
         }
 
-        // AI ile hedef kitle profili oluştur
-        const metreSqNote = body.mulk.metrekare && body.mulk.metrekare > 150 
-          ? `Bu büyüklükteki daireler (${body.mulk.metrekare}m²), standart dairelere göre farklı bir hedef kitleye hitap eder.` 
+        const metreSqNote = body.mulk.metrekare && body.mulk.metrekare > 150
+          ? `Bu büyüklükteki daireler (${body.mulk.metrekare}m²), standart dairelere göre farklı bir hedef kitleye hitap eder.`
           : '';
-        
+
         const priceNote = body.mulk.fiyatMax && body.mulk.fiyatMax > 5000000
           ? 'Yüksek fiyat aralığı, üst gelir grubu alıcıları hedefler.'
           : '';
@@ -63,62 +63,29 @@ ${body.mulk.odaSayisi === '4+1' || body.mulk.odaSayisi === '5+1' ? 'Geniş oda s
 ÇIKTI FORMATI:
 SADECE geçerli bir JSON dizisi döndür. Her öğe bir obje olmalı: {"baslik": "Başlık", "aciklama": "Açıklama"}
 
-ÖRNEK HEDEF KİTLELER:
-- Geniş Aileler: Çocukları için güvenli ve geniş yaşam alanı arayan aileler
-- Konfor Arayanlar: Lüks detaylara önem veren profesyoneller
-- Yatırımcılar: Bölgenin değer artışını değerlendirmek isteyen yatırımcılar
-- Güvenlik Odaklı: Kapalı site ve 7/24 güvenlik arayanlar
-
 Başka hiçbir açıklama, metin veya ek bilgi ekleme. Sadece JSON dizisi.
 `;
 
-        const runtimeOpenRouterKey = process.env.OPENROUTER_API_KEY || "";
-        const runtimeUseOpenRouter = runtimeOpenRouterKey && runtimeOpenRouterKey !== "your_openrouter_api_key_here" && runtimeOpenRouterKey !== "";
-
-        if (!runtimeUseOpenRouter) {
-          // Fallback
+        if (!isLLMAvailable()) {
           return NextResponse.json({
             success: true,
-            data: [
-              {
-                baslik: "Yatırımcılar",
-                aciklama: `${body.mulk.konum} bölgesindeki değer artışı ve kiralama potansiyelini değerlendirmek isteyen yatırımcılar.`
-              },
-              {
-                baslik: "Aileler",
-                aciklama: `${body.mulk.konum} çevresinde güvenli ve konforlu yaşam arayan aileler.`
-              }
-            ]
+            data: getHedefKitleTemplates({
+              mulkTur: body.mulk.tur,
+              konum: body.mulk.konum,
+              metrekare: body.mulk.metrekare,
+              odaSayisi: body.mulk.odaSayisi,
+              fiyat: body.mulk.fiyat || body.mulk.fiyatMax
+            })
           });
         }
 
-        const { OpenRouter } = await import("@openrouter/sdk");
-        const client = new OpenRouter({ apiKey: runtimeOpenRouterKey });
-
-        const response = await client.chat.send({
-          model: "x-ai/grok-4.1-fast:free",
+        const text = await callLLM({
+          systemPrompt: "Sen profesyonel bir emlak pazarlama uzmanısın. Hedef kitle profili oluşturuyorsun. Sadece geçerli JSON dizisi döndür.",
+          prompt,
           temperature: 0.7,
           maxTokens: 800,
-          messages: [
-            {
-              role: "system",
-              content: "Sen profesyonel bir emlak pazarlama uzmanısın. Hedef kitle profili oluşturuyorsun. Sadece geçerli JSON dizisi döndür.",
-            },
-            {
-              role: "user",
-              content: prompt,
-            },
-          ],
         });
 
-        let text = "";
-        if (typeof response === "string") {
-          text = response;
-        } else if (response && typeof response === "object") {
-          text = (response as any).choices?.[0]?.message?.content || (response as any).content || "";
-        }
-
-        // JSON parse
         let parsed: any[] = [];
         try {
           const cleaned = text.replace(/```json\s*/gi, "").replace(/```\s*/g, "").trim();
@@ -131,7 +98,6 @@ Başka hiçbir açıklama, metin veya ek bilgi ekleme. Sadece JSON dizisi.
         }
 
         if (parsed.length === 0) {
-          // Fallback şablonlar - formdan gelen bilgilere göre dinamik
           parsed = getHedefKitleTemplates({
             mulkTur: body.mulk.tur,
             konum: body.mulk.konum,
@@ -164,4 +130,3 @@ Başka hiçbir açıklama, metin veya ek bilgi ekleme. Sadece JSON dizisi.
     }
   );
 }
-

@@ -9,11 +9,10 @@ import {
   getKFEForProperty,
   formatKFEForPrompt
 } from "@/lib/utils/kfe";
-import { getGroqClient, isGroqAvailable } from "@/lib/ai/groq";
+import { callLLM, isLLMAvailable } from "@/lib/ai/fal-llm";
 
 export async function POST(request: NextRequest) {
   try {
-    // Parse request body first to get mulk data for fallback
     const { mulk, locationAnalysis } = await request.json();
 
     if (!mulk?.tur || !mulk?.konum) {
@@ -23,7 +22,6 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Fallback şablonlar - formdan gelen bilgilere göre dinamik
     const getFallbackTemplates = () => {
       return [
         {
@@ -55,25 +53,16 @@ export async function POST(request: NextRequest) {
       ];
     };
 
-    // Check if Groq is available (lazy check - no build-time crash)
-    if (!isGroqAvailable()) {
-      console.warn("⚠️ GROQ_API_KEY bulunamadı, fallback şablonları kullanılıyor");
+    if (!isLLMAvailable()) {
+      console.warn("⚠️ FAL_KEY bulunamadı, fallback şablonları kullanılıyor");
       return NextResponse.json({ success: true, data: getFallbackTemplates() });
     }
-
-    const groq = getGroqClient();
-    if (!groq) {
-      console.warn("⚠️ Groq client oluşturulamadı, fallback şablonları kullanılıyor");
-      return NextResponse.json({ success: true, data: getFallbackTemplates() });
-    }
-
 
     const locationName = mulk.konum.split(',')[0].trim();
     const mulkTurLabel = getMulkLabel(mulk.tur);
     const priceRange = formatPriceRange(mulk);
     const metrekare = mulk.metrekare ? `${mulk.metrekare} m²` : '';
 
-    // TÜİK/KFE verilerini al
     let kfeAnalysis = '';
     try {
       const kfeData = getKFEForProperty(mulk);
@@ -82,24 +71,16 @@ export async function POST(request: NextRequest) {
       console.warn('KFE verileri alınamadı:', error);
     }
 
-    const prompt = `Sen profesyonel bir emlak analisti ve değerleme uzmanısın. Bir gayrimenkul için "Konum Analizi & Değerleme" bölümü oluşturuyorsun.
+    const prompt = `Sen profesyonel bir emlak analisti ve değerleme uzmanısın.
 
 GÖREV:
 ${locationName} bölgesindeki bu ${mulkTurLabel} için detaylı konum analizi ve değerleme raporu oluştur.
 
-ÇOK ÖNEMLİ - BAŞLIK KURALLARI:
-1. Başlıklar MUTLAKA şu şekilde olmalı (kelime kelime aynı):
-   - "Nadir Fırsat" (risk veya dikkat kelimelerini içermeli)
-   - "Konum Primi" (primi veya avantaj kelimelerini içermeli)
-   - "Gelişim Potansiyeli" (gelişim veya trend kelimelerini içermeli)
-
-2. Her alt bölüm için:
-   - İçerik 2-3 cümle olsun (kısa ve öz)
-   - Profesyonel ve güven verici dil kullan
-   - Gerçekçi veriler ve analizler sun
-   - Konum ve mülk türüne özel içerik yaz
-
-3. Türkçe yaz ve profesyonel ton kullan.
+BAŞLIK KURALLARI:
+1. Başlıklar MUTLAKA: "Nadir Fırsat", "Konum Primi", "Gelişim Potansiyeli"
+2. Her alt bölüm 2-3 cümle (kısa ve öz)
+3. Profesyonel ve güven verici dil
+4. Türkçe yaz
 
 GİRDİLER:
 - Mülk türü: ${mulk.tur}
@@ -109,79 +90,53 @@ ${metrekare ? `- Metrekare: ${metrekare}` : ''}
 ${mulk.odaSayisi ? `- Oda Sayısı: ${mulk.odaSayisi}` : ''}
 ${locationAnalysis ? `- Bölge Analizi: ${locationAnalysis}` : ''}
 
-${kfeAnalysis ? `\n📊 TÜİK KONUT FİYAT ENDEKSİ (KFE) VERİLERİ:\n${kfeAnalysis}\n
-Bu verileri analizinde kullan. Özellikle:
-- Gelişim Potansiyeli bölümünde yıllık değişim oranlarını vurgula
-- Konum Primi bölümünde bölgesel performansı Türkiye ortalamasıyla karşılaştır
-- Nadir Fırsat bölümünde piyasa trendlerini referans göster\n` : ''}
+${kfeAnalysis ? `\n📊 TÜİK KONUT FİYAT ENDEKSİ (KFE) VERİLERİ:\n${kfeAnalysis}\n` : ''}
 
 ÇIKTI FORMATI:
 SADECE geçerli bir JSON dizisi döndür. Her öğe { "baslik": "...", "icerik": "..." } formatında olmalı.
-Örnek:
-[
-  {
-    "baslik": "Nadir Fırsat",
-    "icerik": "Bu ${mulkTurLabel}, ${locationName} bölgesinde nadiren bulunan özelliklere sahiptir. Piyasada benzer alternatiflerin sayısı oldukça sınırlıdır ve bu fiyat aralığında bu özellikleri bir arada sunan mülkler zordur."
-  },
-  {
-    "baslik": "Konum Primi",
-    "icerik": "${locationName} konumu, ulaşım ağlarına yakınlığı ve sosyal tesislere erişimi ile önemli bir konum primi sağlamaktadır. Bölgenin merkezi konumu ve gelişim potansiyeli, mülkün değerini artıran temel faktörlerdir."
-  },
-  {
-    "baslik": "Gelişim Potansiyeli",
-    "icerik": "${locationName} bölgesi hızlı bir gelişim göstermektedir. Yeni altyapı projeleri ve ticari yatırımlar, önümüzdeki 3-5 yıl içinde mülkün değer artış potansiyelini yükseltmektedir."
-  }
-]
 
-Başka hiçbir açıklama, metin veya ek bilgi ekleme. Sadece JSON dizisi.`;
+Başka hiçbir açıklama ekleme. Sadece JSON dizisi.`;
 
     let parsedContent;
     try {
-      const chatCompletion = await groq.chat.completions.create({
-        messages: [
-          {
-            role: "user",
-            content: prompt,
-          },
-        ],
-        model: "mixtral-8x7b-32768",
+      const content = await callLLM({
+        prompt,
         temperature: 0.7,
-        max_tokens: 800,
+        maxTokens: 800,
       });
 
-      const content = chatCompletion.choices[0]?.message?.content || "[]";
+      if (!content) {
+        parsedContent = getFallbackTemplates();
+      } else {
+        try {
+          const cleanedContent = content.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
+          parsedContent = JSON.parse(cleanedContent);
 
-      // JSON parse et
-      try {
-        // Markdown kod bloklarını temizle
-        const cleanedContent = content.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
-        parsedContent = JSON.parse(cleanedContent);
-
-        // Başlıkları kontrol et ve düzelt
-        if (Array.isArray(parsedContent) && parsedContent.length === 3) {
-          parsedContent = parsedContent.map((item, index) => {
-            const expectedTitles = ["Nadir Fırsat", "Konum Primi", "Gelişim Potansiyeli"];
-            return {
-              baslik: expectedTitles[index],
-              icerik: item.icerik || item.content || ""
-            };
-          });
-        } else {
-          console.warn("AI yanıtı beklenen formatta değil, fallback kullanılıyor");
+          if (Array.isArray(parsedContent) && parsedContent.length === 3) {
+            parsedContent = parsedContent.map((item, index) => {
+              const expectedTitles = ["Nadir Fırsat", "Konum Primi", "Gelişim Potansiyeli"];
+              return {
+                baslik: expectedTitles[index],
+                icerik: item.icerik || item.content || ""
+              };
+            });
+          } else {
+            console.warn("AI yanıtı beklenen formatta değil, fallback kullanılıyor");
+            parsedContent = getFallbackTemplates();
+          }
+        } catch (parseError) {
+          console.error("JSON parse hatası, fallback kullanılıyor:", parseError);
           parsedContent = getFallbackTemplates();
         }
-      } catch (parseError) {
-        console.error("JSON parse hatası, fallback kullanılıyor:", parseError);
-        parsedContent = getFallbackTemplates();
       }
     } catch (apiError) {
-      console.error("Groq API hatası, fallback kullanılıyor:", apiError);
+      console.error("AI API hatası, fallback kullanılıyor:", apiError);
       parsedContent = getFallbackTemplates();
     }
 
     return NextResponse.json({ success: true, data: parsedContent });
   } catch (error: any) {
-    console.error("Groq API hatası:", error);
+    console.error("Market Analysis API hatası:", error);
     return NextResponse.json(
       { error: error.message || "Konum analizi oluşturulurken bir hata meydana geldi." },
       { status: 500 }
@@ -209,4 +164,3 @@ function formatPriceRange(mulk: MulkBilgileri): string {
   }
   return '';
 }
-

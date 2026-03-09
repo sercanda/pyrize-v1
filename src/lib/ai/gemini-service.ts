@@ -1,5 +1,3 @@
-import { GoogleGenerativeAI } from "@google/generative-ai";
-import { OpenRouter } from "@openrouter/sdk";
 import {
   SunumOlusturmaIstegi,
   SunumIcerik,
@@ -14,45 +12,17 @@ import { generateSunumFromTemplate } from "@/lib/templates/funnel-templates";
 import { formatPriceRange } from "@/lib/utils/price";
 import { getKFEForProperty, formatKFEForPrompt } from "@/lib/utils/kfe";
 import { buildPresentationPrompt } from "@/lib/ai/prompts";
+import { callLLM, isLLMAvailable } from "@/lib/ai/fal-llm";
 
-// OpenRouter API key (öncelikli) - Grok 4.1 Fast kullanılıyor
-const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY || "";
-// Gemini API key (fallback)
-const GEMINI_API_KEY = process.env.GEMINI_API_KEY || "";
-
-// OpenRouter kullan (öncelikli)
-const useOpenRouter = OPENROUTER_API_KEY && OPENROUTER_API_KEY !== "your_openrouter_api_key_here" && OPENROUTER_API_KEY !== "";
-// Gemini kullan (fallback)
-const useGemini = !useOpenRouter && GEMINI_API_KEY && GEMINI_API_KEY !== "your_gemini_api_key_here" && GEMINI_API_KEY !== "";
-
-// API key yoksa mock data döndür
-const isMockMode = !useOpenRouter && !useGemini;
+// FAL AI üzerinden LLM kullan (OpenRouter Router → Gemini 2.5 Flash)
+const isMockMode = !isLLMAvailable();
 
 // Debug log
 console.log("🔑 API Key Durumu:", {
-  hasOpenRouterKey: !!OPENROUTER_API_KEY,
-  openRouterKeyLength: OPENROUTER_API_KEY?.length || 0,
-  hasGeminiKey: !!GEMINI_API_KEY,
-  useOpenRouter,
-  useGemini,
-  isMockMode
+  hasFalKey: isLLMAvailable(),
+  isMockMode,
+  provider: isMockMode ? "MOCK/Template" : "FAL AI → Gemini 2.5 Flash"
 });
-
-let genAI: GoogleGenerativeAI | null = null;
-if (useGemini && !isMockMode) {
-  genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
-}
-
-// OpenRouter SDK instance (lazy initialization)
-let openRouterClient: OpenRouter | null = null;
-function getOpenRouterClient(apiKey: string): OpenRouter {
-  // Bu projede tek bir OpenRouter API key'i kullanıyoruz,
-  // bu yüzden sadece bir client instance'ı yeterli.
-  if (!openRouterClient) {
-    openRouterClient = new OpenRouter({ apiKey });
-  }
-  return openRouterClient;
-}
 
 // Tema tonları ve açıklamaları
 const temaTanimlari: Record<TemaTuru, string> = {
@@ -301,7 +271,7 @@ export async function sunumOlustur(
   marketData?: import('@/lib/services/market-analysis/types').MarketAnalysisData | null
 ): Promise<SunumIcerik> {
   console.log("🚀 Sunum oluşturma başlatıldı");
-  console.log("📊 API Durumu:", { useOpenRouter, useGemini, isMockMode });
+  console.log("📊 API Durumu:", { isMockMode, provider: isMockMode ? "MOCK" : "FAL AI" });
 
   // KFE verilerini hesapla
   let kfeData: any = null;
@@ -334,7 +304,7 @@ export async function sunumOlustur(
   // API key yoksa hemen template döndür, AI çağrısı yapma
   if (isMockMode) {
     console.warn("⚠️⚠️⚠️ API Key bulunamadı - Template-Only Mode aktif ⚠️⚠️⚠️");
-    console.warn("⚠️ OPENROUTER_API_KEY veya GEMINI_API_KEY .env.local dosyasına ekleyin");
+    console.warn("⚠️ FAL_KEY .env.local dosyasına ekleyin");
     console.warn("⚠️ AI destekli içerik üretimi çalışmayacak - sadece template verisi kullanılacak");
     console.warn("⚠️ Kurulum talimatları için AI_API_SETUP.md dosyasına bakın");
 
@@ -545,29 +515,14 @@ export async function sunumOlustur(
   // Önce template yapısını al
   const baseTemplate = buildBaseTemplate();
 
-  // OpenRouter öncelikli
-  if (useOpenRouter) {
-    console.log("🤖 OpenRouter API kullanılıyor...");
+  // FAL AI → Gemini 2.5 Flash
+  if (!isMockMode) {
+    console.log("🤖 FAL AI → Gemini 2.5 Flash kullanılıyor...");
     try {
-      const prompt = buildEnhancementPrompt(istek, baseTemplate);
       const mulkTurLabel = istek.mulk.tur === "arsa" ? "Arsa" : istek.mulk.tur === "daire" ? "Daire" : istek.mulk.tur === "villa" ? "Villa" : istek.mulk.tur === "ticari" ? "Ticari Gayrimenkul" : istek.mulk.tur === "ofis" ? "Ofis" : "Kompleks";
 
-      const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${OPENROUTER_API_KEY}`,
-          'Content-Type': 'application/json',
-          'HTTP-Referer': 'https://pyrize.app',
-          'X-Title': 'PYRIZE - Emlak Funnel Builder'
-        },
-        body: JSON.stringify({
-          model: 'x-ai/grok-4.1-fast:free',
-          messages: [
-            {
-              role: 'system',
-              content: (() => {
-                const isModernTemplate = isModernZipTemplate;
-                const modernTemplateGuidelines = isModernTemplate ? `
+      const isModernTemplate = isModernZipTemplate;
+      const modernTemplateGuidelines = isModernTemplate ? `
 
 🎨 MODERN TEMPLATE ÖZEL KURALLARI (ÇOK ÖNEMLİ):
 
@@ -590,46 +545,23 @@ export async function sunumOlustur(
    - "cozum" bölümü → "Neden Biz?" section'ına dönüşüyor (StrategicAdvantage formatı)
      * Her alt bölge bir avantaj kartı olacak
      * Format: { title: "Başlık", description: "Kısa açıklama (1 cümle)", comparison: "Sonuç metni" }
-     * Örnek: { title: "Profesyonel Değerleme", description: "Doğru fiyat, maksimum gelir", comparison: "Bireysel satışa göre %15 daha yüksek değer" }
-   
    - "process" bölümü → "6 Adımlı Satış Sistemi" section'ına dönüşüyor (SalesSystemStep formatı)
-     * Her alt bölge bir adım olacak
      * Format: { baslik: "Adım başlığı", neYapiyoruz: ["Madde 1", "Madde 2"], kazanciniz: "Kazanç açıklaması" }
-     * "ne yapıyorum" veya "ne yapıyoruz" ifadelerini kullan
-     * "kazancınız" veya "sizin kazancınız" ifadelerini kullan
-   
    - "location_advantages" → Konum avantajları listesi (string array)
    - "usage_potential" → Kullanım potansiyeli listesi (string array)
    - "market_analysis" → Piyasa analizi bölümü (dark theme'e uygun)
    - "faq" → SSS bölümü (FAQItem formatı: { question: "...", answer: "..." })
 
-4. DİL VE TON:
-   - Modern, profesyonel, güven verici
-   - Kısa cümleler, etkileyici ifadeler
-   - Dark theme'e uygun, kontrastlı metinler
-   - Teknik jargon kullanma, anlaşılır dil
-   - Emoji kullanma, sadece metin
+4. DİL VE TON: Modern, profesyonel, güven verici. Kısa cümleler, etkileyici ifadeler. Emoji kullanma, sadece metin.
 
-5. İÇERİK UZUNLUĞU:
-   - Hero açıklama: 2-3 cümle (maksimum 150 karakter)
-   - Bölge içerikleri: 2-3 paragraf (her paragraf 2-3 cümle)
-   - Avantaj açıklamaları: 1 cümle (maksimum 100 karakter)
-   - Adım açıklamaları: 2-4 madde (her madde 1 cümle)
-   - FAQ cevapları: 2-3 cümle
+5. İÇERİK UZUNLUĞU: Hero açıklama 2-3 cümle, bölge içerikleri 2-3 paragraf, avantaj açıklamaları 1 cümle, FAQ cevapları 2-3 cümle.
 
-6. FOTOĞRAFLAR:
-   - Hero section'da fotograflar array'i kullanılacak
-   - Fotoğraf yoksa sadece metin gösterilecek
-   - Fotoğraf varsa modern, büyük görsel ön planda
+6. FOTOĞRAFLAR: Hero section'da fotograflar array'i kullanılacak.
 
-7. REGIONAL COMPARISON:
-   - Market snapshots: Kısa, öz, veri odaklı
-   - Comparables: Tablo formatında, temiz
-   - Estimated value range: Sadece varsa göster, yoksa gösterme
-
+7. REGIONAL COMPARISON: Market snapshots kısa ve veri odaklı, comparables tablo formatında.
 ` : '';
 
-                return `Sen profesyonel bir emlak sunum yazarlısın. Verilen funnel template'ini gayrimenkul bilgilerine göre özelleştiriyorsun. 
+      const systemPrompt = `Sen profesyonel bir emlak sunum yazarlısın. Verilen funnel template'ini gayrimenkul bilgilerine göre özelleştiriyorsun.
 
 ÇOK ÖNEMLİ KURALLAR:
 
@@ -639,31 +571,9 @@ export async function sunumOlustur(
 
 3. EK AÇIKLAMA: ${istek.mulk.aciklama ? `Kullanıcının ek açıklaması ("${istek.mulk.aciklama}") ÇOK ÖNEMLİ. Bu açıklamadaki HER DETAYI funnel içeriğine yansıt. Özel özellikler, durumlar, avantajlar varsa vurgula. Bu açıklama chatbot gibi çalışmalı - kullanıcı ne yazdıysa o içeriğe yansımalı.` : 'Ek açıklama yok, standart içerik kullan.'}
 
-4. AMAÇ ODAKLI: ${istek.amac === "portfoy_almak" ? "PORTFÖY ALMAK: Satıcıya güven verici dil kullan, profesyonelliği vurgula, doğru fiyat analizi yap. Problemler bölümünde bireysel satış sorunlarını, çözüm bölümünde profesyonel danışmanlık avantajlarını vurgula." : "PORTFÖY SATMAK: Müşteriye bilgilendirici ve satış odaklı dil kullan, yatırım fırsatını vurgula, FOMO yarat. Problemler bölümünde yanlış yatırım risklerini, çözüm bölümünde bu gayrimenkulün avantajlarını vurgula."}
+4. AMAÇ ODAKLI: ${istek.amac === "portfoy_almak" ? "PORTFÖY ALMAK: Satıcıya güven verici dil kullan, profesyonelliği vurgula, doğru fiyat analizi yap." : "PORTFÖY SATMAK: Müşteriye bilgilendirici ve satış odaklı dil kullan, yatırım fırsatını vurgula, FOMO yarat."}
 
-5. DETAYLI DEĞERLEME RAPORU (PİYASA ANALİZ RAPORU): ${(istek as any).detayliDegerlemeAktif && istek.detayliDegerleme ? `
-Kullanıcı form üzerinden "Piyasa Analiz Raporu" sekmesini doldurmuş. Bu verileri MUTLAKA kullan:
-
-📊 PİYASA GÖSTERGELERİ (marketSnapshots):
-- Verilen her bir göstergeyi kart formatında göster
-- Trend bilgisi varsa (up/down/stable) görsel olarak belirt
-- Trend label varsa ekle
-
-📋 EMSAL MÜLKLER (comparables):
-- Verilen emsal mülkleri tablo formatında göster
-- Adres, Durum (Satıldı/Satışta), Fiyat, Alan (m²), m² Fiyat bilgilerini içer
-- Satıldı olanları yeşil, Satışta olanları mavi renkle vurgula
-
-💰 TAHMİNİ DEĞER ARALIĞI (estimatedValueRange):
-- Bu değeri vurgulu ve büyük fontla göster
-- Değerleme raporunun ana sonucu olarak sun
-
-⚠️ ÖNEMLİ:
-- Bu bölüm "regional_comparison" tipinde bir bölge olarak funnel'a eklenmeli
-- Modern tema seçildiyse, bu bölüm hero bölümünden HEMEN SONRA gösterilmeli
-- Verileri olduğu gibi kullan, ekstra yorum ekleme
-- Profesyonel ve veri odaklı dil kullan
-` : 'Detaylı değerleme verisi yok, bu bölümü oluşturma.'}
+5. DETAYLI DEĞERLEME RAPORU: ${(istek as any).detayliDegerlemeAktif && istek.detayliDegerleme ? `Kullanıcı "Piyasa Analiz Raporu" sekmesini doldurmuş. marketSnapshots, comparables ve estimatedValueRange verilerini kullan. "regional_comparison" tipinde bölge olarak ekle.` : 'Detaylı değerleme verisi yok, bu bölümü oluşturma.'}
 
 ${modernTemplateGuidelines}
 
@@ -672,35 +582,24 @@ ${modernTemplateGuidelines}
 - DOĞRU: "${mulkTurLabel}nızı/nizi Satarken"
 
 Tüm başlıklar, içerikler ve açıklamalar ${mulkTurLabel} için özel yazılmalıdır.`;
-              })()
-            },
-            {
-              role: 'user',
-              content: buildPresentationPrompt(istek, marketData)
-            }
-          ],
-          temperature: 0.7,
-          max_tokens: 8000
-        })
-      });
 
-      if (!response.ok) {
-        console.error('❌ OpenRouter API hatası:', response.status, await response.text());
+      const userPrompt = buildPresentationPrompt(istek, marketData);
+      const text = await callLLM({ systemPrompt, prompt: userPrompt, maxTokens: 8000 });
+
+      if (!text) {
+        console.error('❌ FAL AI boş yanıt döndü');
         console.log("⚠️ Template ile devam ediliyor...");
         return baseTemplate;
       }
 
-      const data = await response.json();
-      const text = data.choices?.[0]?.message?.content || '';
-
-      console.log("📥 OpenRouter'dan yanıt alındı, uzunluk:", text.length, "karakter");
+      console.log("📥 FAL AI'dan yanıt alındı, uzunluk:", text.length, "karakter");
 
       // JSON parse et ve template ile birleştir
       const jsonMatch = text.match(/\{[\s\S]*\}/);
       if (jsonMatch) {
         try {
           const enhanced = JSON.parse(jsonMatch[0]);
-          console.log("✅ OpenRouter'dan başarılı veri geldi");
+          console.log("✅ FAL AI'dan başarılı veri geldi");
 
           // Template'in yapısını KORU, sadece içerikleri güncelle
           if (enhanced.baslik) baseTemplate.baslik = enhanced.baslik;
@@ -751,192 +650,8 @@ Tüm başlıklar, içerikler ve açıklamalar ${mulkTurLabel} için özel yazıl
       const enriched = await enrichTemplateWithAI(baseTemplate);
       return enriched;
     } catch (error) {
-      console.error("❌ OpenRouter API hatası:", error);
+      console.error("❌ FAL AI hatası:", error);
       console.log("⚠️ Template ile devam ediliyor...");
-      const enriched = await enrichTemplateWithAI(baseTemplate);
-      return enriched;
-    }
-  }
-
-  // Gemini fallback
-  if (useGemini && genAI) {
-    console.log("🤖 Gemini AI çağrılıyor...");
-    try {
-      const mulkTurLabel = istek.mulk.tur === "arsa" ? "Arsa" : istek.mulk.tur === "daire" ? "Daire" : istek.mulk.tur === "villa" ? "Villa" : istek.mulk.tur === "ticari" ? "Ticari Gayrimenkul" : istek.mulk.tur === "ofis" ? "Ofis" : "Kompleks";
-
-      // Modern template için özel prompt
-      const isModernTemplate = isModernZipTemplate;
-      const modernTemplateGuidelines = isModernTemplate ? `
-
-🎨 MODERN TEMPLATE ÖZEL KURALLARI (ÇOK ÖNEMLİ):
-
-1. UI TASARIMI:
-   - Bu template DARK THEME (slate-950, slate-900) kullanıyor
-   - Modern, minimal, temiz tasarım yaklaşımı
-   - Hero section'da FOTOĞRAFLAR ön planda (fotograflar array'i kullanılacak)
-   - Danışman bilgisi YOK - hero section'da sadece lokasyon ve mülk bilgileri
-   - Başlıklar büyük, bold, modern fontlar kullanıyor
-   - İçerikler kısa, öz, etkileyici olmalı
-
-2. HERO SECTION:
-   - Başlık: Maksimum 60 karakter, modern ve etkileyici
-   - Alt başlık: Konum, metrekare, fiyat bilgileri (opsiyonel)
-   - Hero açıklama: 2-3 cümle, mülkün özelliklerini vurgulayan
-   - DANIŞMAN ADI VE FOTOĞRAFI ASLA EKLEME
-   - Sadece mülk bilgileri ve konum göster
-
-3. BÖLGE YAPISI:
-   - "cozum" bölümü → "Neden Biz?" section'ına dönüşüyor (StrategicAdvantage formatı)
-     * Her alt bölge bir avantaj kartı olacak
-     * Format: { title: "Başlık", description: "Kısa açıklama (1 cümle)", comparison: "Sonuç metni" }
-     * Örnek: { title: "Profesyonel Değerleme", description: "Doğru fiyat, maksimum gelir", comparison: "Bireysel satışa göre %15 daha yüksek değer" }
-   
-   - "process" bölümü → "6 Adımlı Satış Sistemi" section'ına dönüşüyor (SalesSystemStep formatı)
-     * Her alt bölge bir adım olacak
-     * Format: { baslik: "Adım başlığı", neYapiyoruz: ["Madde 1", "Madde 2"], kazanciniz: "Kazanç açıklaması" }
-     * "ne yapıyorum" veya "ne yapıyoruz" ifadelerini kullan
-     * "kazancınız" veya "sizin kazancınız" ifadelerini kullan
-   
-   - "location_advantages" → Konum avantajları listesi (string array)
-   - "usage_potential" → Kullanım potansiyeli listesi (string array)
-   - "market_analysis" → Piyasa analizi bölümü (dark theme'e uygun)
-   - "faq" → SSS bölümü (FAQItem formatı: { question: "...", answer: "..." })
-
-4. DİL VE TON:
-   - Modern, profesyonel, güven verici
-   - Kısa cümleler, etkileyici ifadeler
-   - Dark theme'e uygun, kontrastlı metinler
-   - Teknik jargon kullanma, anlaşılır dil
-   - Emoji kullanma, sadece metin
-
-5. İÇERİK UZUNLUĞU:
-   - Hero açıklama: 2-3 cümle (maksimum 150 karakter)
-   - Bölge içerikleri: 2-3 paragraf (her paragraf 2-3 cümle)
-   - Avantaj açıklamaları: 1 cümle (maksimum 100 karakter)
-   - Adım açıklamaları: 2-4 madde (her madde 1 cümle)
-   - FAQ cevapları: 2-3 cümle
-
-6. FOTOĞRAFLAR:
-   - Hero section'da fotograflar array'i kullanılacak
-   - Fotoğraf yoksa sadece metin gösterilecek
-   - Fotoğraf varsa modern, büyük görsel ön planda
-
-7. REGIONAL COMPARISON:
-   - Market snapshots: Kısa, öz, veri odaklı
-   - Comparables: Tablo formatında, temiz
-   - Estimated value range: Sadece varsa göster, yoksa gösterme
-
-` : '';
-
-      const systemPrompt = `Sen profesyonel bir emlak sunum yazarlısın. Verilen funnel template'ini gayrimenkul bilgilerine göre özelleştiriyorsun. 
-
-ÇOK ÖNEMLİ KURALLAR:
-
-1. MÜLK TÜRÜ: Bu sunum "${mulkTurLabel}" için hazırlanıyor. "Arsa" kelimesini ASLA kullanma. Sadece "${mulkTurLabel}" kelimesini kullan. Tüm içeriği bu mülk türüne göre özelleştir.
-
-2. KONUM ANALİZİ: ${istek.locationAnalysis ? `Verilen bölge analizini ("${istek.locationAnalysis}") MUTLAKA funnel içeriğine entegre et. Konum analizi bölümünde kullan, bölgenin özelliklerini vurgula.` : 'Konum analizi mevcut değil, genel bölge bilgileri kullan.'}
-
-3. EK AÇIKLAMA: ${istek.mulk.aciklama ? `Kullanıcının ek açıklaması ("${istek.mulk.aciklama}") ÇOK ÖNEMLİ. Bu açıklamadaki HER DETAYI funnel içeriğine yansıt. Özel özellikler, durumlar, avantajlar varsa vurgula. Bu açıklama chatbot gibi çalışmalı - kullanıcı ne yazdıysa o içeriğe yansımalı.` : 'Ek açıklama yok, standart içerik kullan.'}
-
-4. AMAÇ ODAKLI: ${istek.amac === "portfoy_almak" ? "PORTFÖY ALMAK: Satıcıya güven verici dil kullan, profesyonelliği vurgula, doğru fiyat analizi yap. Problemler bölümünde bireysel satış sorunlarını, çözüm bölümünde profesyonel danışmanlık avantajlarını vurgula." : "PORTFÖY SATMAK: Müşteriye bilgilendirici ve satış odaklı dil kullan, yatırım fırsatını vurgula, FOMO yarat. Problemler bölümünde yanlış yatırım risklerini, çözüm bölümünde bu gayrimenkulün avantajlarını vurgula."}
-
-5. DETAYLI DEĞERLEME RAPORU (PİYASA ANALİZ RAPORU): ${(istek as any).detayliDegerlemeAktif && istek.detayliDegerleme ? `
-Kullanıcı form üzerinden "Piyasa Analiz Raporu" sekmesini doldurmuş. Bu verileri MUTLAKA kullan:
-
-📊 PİYASA GÖSTERGELERİ (marketSnapshots):
-- Verilen her bir göstergeyi kart formatında göster
-- Trend bilgisi varsa (up/down/stable) görsel olarak belirt
-- Trend label varsa ekle
-
-📋 EMSAL MÜLKLER (comparables):
-- Verilen emsal mülkleri tablo formatında göster
-- Adres, Durum (Satıldı/Satışta), Fiyat, Alan (m²), m² Fiyat bilgilerini içer
-- Satıldı olanları yeşil, Satışta olanları mavi renkle vurgula
-
-💰 TAHMİNİ DEĞER ARALIĞI (estimatedValueRange):
-- Bu değeri vurgulu ve büyük fontla göster
-- Değerleme raporunun ana sonucu olarak sun
-
-⚠️ ÖNEMLİ:
-- Bu bölüm "regional_comparison" tipinde bir bölge olarak funnel'a eklenmeli
-- Modern tema seçildiyse, bu bölüm hero bölümünden HEMEN SONRA gösterilmeli
-- Verileri olduğu gibi kullan, ekstra yorum ekleme
-- Profesyonel ve veri odaklı dil kullan
-` : 'Detaylı değerleme verisi yok, bu bölümü oluşturma.'}
-
-${modernTemplateGuidelines}
-
-Örnek:
-- YANLIŞ: "Arsanızı Satarken"
-- DOĞRU: "${mulkTurLabel}nızı/nizi Satarken"
-
-Tüm başlıklar, içerikler ve açıklamalar ${mulkTurLabel} için özel yazılmalıdır.`;
-
-      const model = genAI.getGenerativeModel({ model: "gemini-2.5-pro" });
-      const userPrompt = buildEnhancementPrompt(istek, baseTemplate, marketData);
-      const fullPrompt = `${systemPrompt}\n\n${userPrompt}`;
-
-      console.log("📤 Prompt gönderiliyor, uzunluk:", fullPrompt.length, "karakter");
-      const result = await model.generateContent(fullPrompt);
-      const response = await result.response;
-      const text = response.text();
-
-      console.log("📥 Gemini'den yanıt alındı, uzunluk:", text.length, "karakter");
-
-      const jsonMatch = text.match(/\{[\s\S]*\}/);
-      if (jsonMatch) {
-        try {
-          const enhanced = JSON.parse(jsonMatch[0]);
-          console.log("✅ Gemini'den başarılı veri geldi");
-
-          if (enhanced.baslik) baseTemplate.baslik = enhanced.baslik;
-          if (enhanced.altBaslik) baseTemplate.altBaslik = enhanced.altBaslik;
-          if (enhanced.heroAciklama) baseTemplate.heroAciklama = enhanced.heroAciklama;
-          if (enhanced.detayliDegerleme) baseTemplate.detayliDegerleme = enhanced.detayliDegerleme;
-
-          if (enhanced.bolgeler && Array.isArray(enhanced.bolgeler) && baseTemplate.bolgeler) {
-            baseTemplate.bolgeler = baseTemplate.bolgeler.map((templateBolge, index) => {
-              const enhancedBolge = enhanced.bolgeler[index];
-              if (enhancedBolge) {
-                const updatedBolge = {
-                  ...templateBolge,
-                  baslik: enhancedBolge.baslik || templateBolge.baslik,
-                  icerik: enhancedBolge.icerik || templateBolge.icerik
-                };
-
-                if (templateBolge.altBolge && Array.isArray(templateBolge.altBolge)) {
-                  updatedBolge.altBolge = templateBolge.altBolge.map((templateAlt, altIndex) => {
-                    const enhancedAlt = enhancedBolge.altBolge?.[altIndex];
-                    if (enhancedAlt) {
-                      return {
-                        ...templateAlt,
-                        baslik: enhancedAlt.baslik || templateAlt.baslik,
-                        icerik: enhancedAlt.icerik || templateAlt.icerik
-                      };
-                    }
-                    return templateAlt;
-                  });
-                }
-
-                return updatedBolge;
-              }
-              return templateBolge;
-            });
-          }
-
-          const enriched = await enrichTemplateWithAI(baseTemplate);
-          return enriched;
-        } catch (parseError) {
-          console.log("❌ JSON parse hatası:", parseError);
-          const enriched = await enrichTemplateWithAI(baseTemplate);
-          return enriched;
-        }
-      }
-
-      const enriched = await enrichTemplateWithAI(baseTemplate);
-      return enriched;
-    } catch (error) {
-      console.error("❌ Gemini API hatası:", error);
       const enriched = await enrichTemplateWithAI(baseTemplate);
       return enriched;
     }
@@ -1259,182 +974,62 @@ export async function generateFieldContent(options: FieldGenerationOptions): Pro
   const fallback = fallbackForField(options);
   console.log("📋 Fallback değerler:", fallback);
 
-  // API key kontrolü - runtime'da tekrar kontrol et
-  const runtimeOpenRouterKey = process.env.OPENROUTER_API_KEY || "";
-  const runtimeUseOpenRouter = runtimeOpenRouterKey && runtimeOpenRouterKey !== "your_openrouter_api_key_here" && runtimeOpenRouterKey !== "";
-
-  console.log("🔑 Runtime API Key Durumu:", {
-    hasKey: !!runtimeOpenRouterKey,
-    keyLength: runtimeOpenRouterKey?.length || 0,
-    keyPrefix: runtimeOpenRouterKey?.substring(0, 10) || "N/A",
-    useOpenRouter: runtimeUseOpenRouter,
-    isMockMode
-  });
-
-  if (isMockMode && !runtimeUseOpenRouter) {
-    console.warn("⚠️ Mock mode aktif - API key bulunamadı, fallback değerler kullanılıyor");
-    console.warn("⚠️ .env.local dosyasına OPENROUTER_API_KEY ekleyin ve sunucuyu yeniden başlatın");
+  if (isMockMode) {
+    console.warn("⚠️ Mock mode aktif - FAL_KEY bulunamadı, fallback değerler kullanılıyor");
     return fallback;
   }
 
   const prompt = buildFieldPrompt(options);
   console.log("📝 Prompt oluşturuldu, field:", options.field);
-  console.log("📝 Prompt uzunluğu:", prompt.length, "karakter");
-
-  // OpenRouter yanıt metni burada tutulacak
-  let text = "";
 
   try {
-    if (useOpenRouter || runtimeUseOpenRouter) {
-      const apiKeyToUse = runtimeUseOpenRouter ? runtimeOpenRouterKey : OPENROUTER_API_KEY;
-      console.log("🚀 OpenRouter SDK ile istek gönderiliyor...");
-      console.log("🔑 Kullanılan API key uzunluğu:", apiKeyToUse?.length || 0);
-      console.log("🔑 API key prefix:", apiKeyToUse?.substring(0, 15) || "N/A");
+    const text = await callLLM({
+      systemPrompt: "Sen profesyonel bir emlak içerik uzmanısın. KRİTİK: Cevabın MUTLAKA geçerli bir JSON dizisi olmalı. Sadece JSON dizisi döndür, başka hiçbir şey ekleme. Örnek: [\"✅ İlk madde buraya\", \"✅ İkinci madde buraya\"]",
+      prompt: prompt + "\n\nÖNEMLİ: Sadece JSON dizisi döndür. Başka hiçbir metin, açıklama veya ek bilgi ekleme.",
+      temperature: 0.3,
+      maxTokens: 800,
+    });
 
-      const client = getOpenRouterClient(apiKeyToUse);
-
-      try {
-        const response = await client.chat.send({
-          model: "x-ai/grok-4.1-fast:free",
-          temperature: 0.3,
-          maxTokens: 800,
-          messages: [
-            {
-              role: "system",
-              content:
-                "Sen profesyonel bir emlak içerik uzmanısın. KRİTİK: Cevabın MUTLAKA geçerli bir JSON dizisi olmalı. Sadece JSON dizisi döndür, başka hiçbir şey ekleme. Örnek: [\"✅ İlk madde buraya\", \"✅ İkinci madde buraya\"]",
-            },
-            {
-              role: "user",
-              content: prompt + "\n\nÖNEMLİ: Sadece JSON dizisi döndür. Başka hiçbir metin, açıklama veya ek bilgi ekleme.",
-            },
-          ],
-        });
-
-        // SDK response'u parse et
-        if (typeof response === "string") {
-          text = response;
-        } else if (response && typeof response === "object") {
-          // SDK response objesi
-          const messageContent =
-            (response as any).choices?.[0]?.message?.content ||
-            (response as any).content ||
-            (response as any).text ||
-            "";
-
-          if (typeof messageContent === "string") {
-            text = messageContent;
-          } else if (Array.isArray(messageContent)) {
-            text = messageContent
-              .map((part: any) => {
-                if (typeof part === "string") return part;
-                if (typeof part?.text === "string") return part.text;
-                if (part?.content) return String(part.content);
-                return "";
-              })
-              .filter(Boolean)
-              .join("\n");
-          }
-        }
-
-        console.log("🤖 AI'dan gelen ham yanıt (tam):", text);
-        console.log("🤖 AI'dan gelen ham yanıt (ilk 500 karakter):", text.substring(0, 500));
-      } catch (error: any) {
-        console.error("❌ OpenRouter SDK hatası:", {
-          message: error?.message,
-          name: error?.name,
-          stack: error?.stack
-        });
-        return fallback;
-      }
-
-      // Eğer text çok kısa veya ID benzeri görünüyorsa, direkt fallback döndür
-      const textWithoutEmoji = text.replace(/[✅✔✓✗✘●○■□▲△◆◇★☆]/g, '').trim();
-      if (text.length < 20 || /^[a-z0-9]{6,}$/i.test(textWithoutEmoji)) {
-        console.warn("⚠️ AI yanıtı geçersiz görünüyor (ID benzeri), fallback kullanılıyor");
-        console.warn("⚠️ Text:", text);
-        console.warn("⚠️ Text without emoji:", textWithoutEmoji);
-        return fallback;
-      }
-
-      const list = parseJsonArray(text);
-      console.log("📊 Parse sonucu:", { listLength: list.length, list });
-
-      if (list.length > 0) {
-        // Filtreleme: ID benzeri veya çok kısa string'leri çıkar
-        const filtered = list.filter(item => {
-          const trimmed = item.trim();
-
-          // Çok kısa kontrolü (en az 15 karakter - emoji'yi de sayarak)
-          if (trimmed.length < 15) {
-            console.warn("🔍 Filtrelendi (çok kısa):", trimmed);
-            return false;
-          }
-
-          // Emoji ve özel karakterleri kaldır, sadece metin kısmını kontrol et
-          const textOnly = trimmed.replace(/^[✅✔✓✗✘●○■□▲△◆◇★☆]/g, '').trim();
-
-          // Eğer emoji'den sonra çok az karakter kaldıysa, geçersiz
-          if (textOnly.length < 10) {
-            console.warn("🔍 Filtrelendi (emoji sonrası çok kısa):", trimmed);
-            return false;
-          }
-
-          // ID benzeri pattern kontrolü - emoji'den sonraki kısımda
-          // Sadece harf/rakam ve çok kısa ise ID benzeri olabilir
-          if (/^[a-z0-9]{6,}$/i.test(textOnly)) {
-            console.warn("🔍 Filtrelendi (ID benzeri - sadece harf/rakam):", trimmed);
-            return false;
-          }
-
-          // Anlamlı içerik kontrolü - en az 2 kelime veya uzun bir cümle olmalı
-          // Boşluk içermeli (kelimeler arası) veya çok uzun olmalı
-          const hasSpaces = /\s/.test(textOnly);
-          const isLongEnough = textOnly.length >= 20;
-
-          if (!hasSpaces && !isLongEnough) {
-            console.warn("🔍 Filtrelendi (kelime yok, çok kısa):", trimmed);
-            return false;
-          }
-
-          // Türkçe karakter veya anlamlı içerik kontrolü
-          // En az bir harf içermeli (Türkçe veya İngilizce)
-          if (!/[a-zğüşöçıİĞÜŞÖÇA-Z]/i.test(textOnly)) {
-            console.warn("🔍 Filtrelendi (harf yok):", trimmed);
-            return false;
-          }
-
-          console.log("✅ Geçerli öğe:", trimmed);
-          return true;
-        });
-
-        console.log("📊 Filtreleme sonucu:", { filteredLength: filtered.length, filtered });
-
-        if (filtered.length > 0) {
-          console.log("✅ Başarıyla parse edildi ve filtrelendi:", filtered);
-          return filtered;
-        }
-        console.warn("⚠️ Parse edildi ama filtreleme sonrası boş kaldı. Orijinal liste:", list);
-        // Filtreleme sonrası boş kaldıysa, orijinal listeyi döndür (güvenlik için)
-        return list;
-      }
-
-      console.warn("⚠️ Parse başarısız, fallback kullanılıyor:", fallback);
+    if (!text) {
+      console.warn("⚠️ FAL AI boş yanıt döndü, fallback kullanılıyor");
       return fallback;
     }
 
-    if (useGemini && genAI) {
-      const model = genAI.getGenerativeModel({ model: "gemini-2.5-pro" });
-      const result = await model.generateContent([
-        "Sen profesyonel bir emlak içerik uzmanısın.",
-        prompt,
-      ]);
-      const text = (await result.response.text()) || "";
-      const list = parseJsonArray(text);
-      if (list.length) {
-        return list;
-      }
+    console.log("🤖 AI'dan gelen ham yanıt (ilk 500 karakter):", text.substring(0, 500));
+
+    // Eğer text çok kısa veya ID benzeri görünüyorsa, direkt fallback döndür
+    const textWithoutEmoji = text.replace(/[✅✔✓✗✘●○■□▲△◆◇★☆]/g, '').trim();
+    if (text.length < 20 || /^[a-z0-9]{6,}$/i.test(textWithoutEmoji)) {
+      console.warn("⚠️ AI yanıtı geçersiz görünüyor, fallback kullanılıyor");
+      return fallback;
     }
+
+    const list = parseJsonArray(text);
+    console.log("📊 Parse sonucu:", { listLength: list.length, list });
+
+    if (list.length > 0) {
+      const filtered = list.filter(item => {
+        const trimmed = item.trim();
+        if (trimmed.length < 15) return false;
+        const textOnly = trimmed.replace(/^[✅✔✓✗✘●○■□▲△◆◇★☆]/g, '').trim();
+        if (textOnly.length < 10) return false;
+        if (/^[a-z0-9]{6,}$/i.test(textOnly)) return false;
+        const hasSpaces = /\s/.test(textOnly);
+        const isLongEnough = textOnly.length >= 20;
+        if (!hasSpaces && !isLongEnough) return false;
+        if (!/[a-zğüşöçıİĞÜŞÖÇA-Z]/i.test(textOnly)) return false;
+        return true;
+      });
+
+      if (filtered.length > 0) {
+        console.log("✅ Başarıyla parse edildi ve filtrelendi:", filtered);
+        return filtered;
+      }
+      return list;
+    }
+
+    console.warn("⚠️ Parse başarısız, fallback kullanılıyor");
+    return fallback;
   } catch (error) {
     console.error("Alan içeriği üretim hatası:", error);
   }
