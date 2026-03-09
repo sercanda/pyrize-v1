@@ -59,7 +59,7 @@ export const benefitIcon = (index: number) => BENEFIT_ICONS[index % BENEFIT_ICON
 // ─── Utility functions ────────────────────────────────────────────
 export const splitLines = (value?: string | null): string[] =>
   (value || '')
-    .split(/\r?\n||\u2028|\u2029/)
+    .split(/\r?\n|\u2028|\u2029/)
     .map((line) => line.replace(/^[•\-✅\s]+/, '').trim())
     .filter(Boolean);
 
