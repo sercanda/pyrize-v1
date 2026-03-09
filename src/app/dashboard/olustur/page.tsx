@@ -1361,9 +1361,8 @@ export default function DashboardOlusturPage() {
 
       alert(`HATA: ${errorMessage}\n\nÇözüm önerileri:\n` +
         `1. .env.local dosyasını kontrol edin\n` +
-        `2. OPENROUTER_API_KEY veya GEMINI_API_KEY ekleyin\n` +
-        `3. Dev server'ı yeniden başlatın (Ctrl+C sonra npm run dev)\n` +
-        `4. ENV_TEMPLATE.md dosyasına bakın`);
+        `2. FAL_KEY değerini doğru ayarlayın\n` +
+        `3. Dev server'ı yeniden başlatın (Ctrl+C sonra npm run dev)`);
     } finally {
       // CRITICAL: Loading state'i her durumda temizle
       setIsGenerating(false);

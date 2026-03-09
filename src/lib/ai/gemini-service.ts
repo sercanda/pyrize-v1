@@ -281,6 +281,8 @@ export async function sunumOlustur(
     console.warn("⚠️ KFE verileri hesaplanamadı:", error);
   }
 
+  const finalTemplateId = (templateId as any) || "detayli_analiz";
+
   const buildBaseTemplate = () =>
     generateSunumFromTemplate({
       mulk: istek.mulk,
@@ -300,23 +302,16 @@ export async function sunumOlustur(
       adChannels: (istek as any).adChannels,
     });
 
-  // 🚨 CRITICAL FIX: Mock mode kontrolü EN BAŞTA
-  // API key yoksa hemen template döndür, AI çağrısı yapma
+  // Mock mode kontrolü — API key yoksa hemen template döndür
   if (isMockMode) {
-    console.warn("⚠️⚠️⚠️ API Key bulunamadı - Template-Only Mode aktif ⚠️⚠️⚠️");
-    console.warn("⚠️ FAL_KEY .env.local dosyasına ekleyin");
-    console.warn("⚠️ AI destekli içerik üretimi çalışmayacak - sadece template verisi kullanılacak");
-    console.warn("⚠️ Kurulum talimatları için AI_API_SETUP.md dosyasına bakın");
+    console.warn("⚠️ FAL_KEY bulunamadı — Template-Only Mode aktif");
 
     const template = buildBaseTemplate();
     console.log("✅ Template-only sunum oluşturuldu (AI içeriği yok)");
-
-    // enrichTemplateWithAI burada çağrılmaz çünkü henüz tanımlanmadı
     return template;
   }
 
-  // Zip template kontrolü - eğer zip template kullanılacaksa AI çağrısı yapma
-  const finalTemplateId = (templateId as any) || "detayli_analiz";
+  // Zip template kontrolü
   const isCorporateZipTemplate =
     finalTemplateId === 'detayli_analiz' &&
     istek.sunumStili === 'detayli_analiz' &&
@@ -561,27 +556,32 @@ export async function sunumOlustur(
 7. REGIONAL COMPARISON: Market snapshots kısa ve veri odaklı, comparables tablo formatında.
 ` : '';
 
-      const systemPrompt = `Sen profesyonel bir emlak sunum yazarlısın. Verilen funnel template'ini gayrimenkul bilgilerine göre özelleştiriyorsun.
+      const systemPrompt = `Sen Türkiye'nin önde gelen emlak danışmanlık firmalarında 15 yıl deneyime sahip, profesyonel bir sunum yazarısın. Verilen funnel template'ini gayrimenkul bilgilerine göre özelleştiriyorsun.
 
-ÇOK ÖNEMLİ KURALLAR:
+TEMEL ROL: Müşterinin güvenini kazanan, veriyle desteklenmiş, ikna edici ve profesyonel içerik üret. Her cümle bir amaca hizmet etmeli — gereksiz dolgu cümle yazma.
 
-1. MÜLK TÜRÜ: Bu sunum "${mulkTurLabel}" için hazırlanıyor. "Arsa" kelimesini ASLA kullanma. Sadece "${mulkTurLabel}" kelimesini kullan. Tüm içeriği bu mülk türüne göre özelleştir.
+MUTLAK KURALLAR:
 
-2. KONUM ANALİZİ: ${istek.locationAnalysis ? `Verilen bölge analizini ("${istek.locationAnalysis}") MUTLAKA funnel içeriğine entegre et. Konum analizi bölümünde kullan, bölgenin özelliklerini vurgula.` : 'Konum analizi mevcut değil, genel bölge bilgileri kullan.'}
+1. MÜLK TÜRÜ: "${mulkTurLabel}" — Tüm başlık, içerik ve açıklamalar bu mülk türüne özel olmalı. Asla yanlış mülk türü kullanma.
+   Örnek: YANLIŞ → "Arsanızı Satarken" | DOĞRU → "${mulkTurLabel}nızı/nizi Satarken"
 
-3. EK AÇIKLAMA: ${istek.mulk.aciklama ? `Kullanıcının ek açıklaması ("${istek.mulk.aciklama}") ÇOK ÖNEMLİ. Bu açıklamadaki HER DETAYI funnel içeriğine yansıt. Özel özellikler, durumlar, avantajlar varsa vurgula. Bu açıklama chatbot gibi çalışmalı - kullanıcı ne yazdıysa o içeriğe yansımalı.` : 'Ek açıklama yok, standart içerik kullan.'}
+2. DİL & TON:
+   - Profesyonel ama samimi Türkçe — reklam dili değil, danışman dili
+   - Kısa, etkili cümleler. Paragraflar 2-4 cümle
+   - Klişe ifadelerden kaçın ("eşsiz fırsat", "kaçırılmaz" gibi)
+   - Somut veri ve bilgiyle destekle (konum, rakam, özellik)
 
-4. AMAÇ ODAKLI: ${istek.amac === "portfoy_almak" ? "PORTFÖY ALMAK: Satıcıya güven verici dil kullan, profesyonelliği vurgula, doğru fiyat analizi yap." : "PORTFÖY SATMAK: Müşteriye bilgilendirici ve satış odaklı dil kullan, yatırım fırsatını vurgula, FOMO yarat."}
+3. KONUM: ${istek.locationAnalysis ? `Bölge analizi mevcut: "${istek.locationAnalysis}". Bu bilgileri konum avantajları ve değerleme bölümlerinde aktif kullan.` : 'Konum analizi yok — mülk konumuna dayalı genel bilgi kullan.'}
 
-5. DETAYLI DEĞERLEME RAPORU: ${(istek as any).detayliDegerlemeAktif && istek.detayliDegerleme ? `Kullanıcı "Piyasa Analiz Raporu" sekmesini doldurmuş. marketSnapshots, comparables ve estimatedValueRange verilerini kullan. "regional_comparison" tipinde bölge olarak ekle.` : 'Detaylı değerleme verisi yok, bu bölümü oluşturma.'}
+4. EK AÇIKLAMA: ${istek.mulk.aciklama ? `Kullanıcı şunu yazdı: "${istek.mulk.aciklama}". Bu açıklamadaki her detayı içeriğe yansıt — özel durumlar, avantajlar, vurgular.` : ''}
+
+5. AMAÇ: ${istek.amac === "portfoy_almak" ? "PORTFÖY ALMAK → Satıcıya güven ver. Piyasa bilgisi, doğru fiyatlama, profesyonel süreç yönetimi vurgula. 'Neden benimle çalışmalısınız?' sorusuna cevap ver." : "PORTFÖY SATMAK → Alıcıya değer sun. Yatırım potansiyeli, yaşam kalitesi, bölge avantajları vurgula. Aciliyet hissi yarat ama baskıcı olma."}
+
+6. DETAYLI DEĞERLEME: ${(istek as any).detayliDegerlemeAktif && istek.detayliDegerleme ? `Piyasa Analiz Raporu verileri mevcut. marketSnapshots, comparables ve estimatedValueRange verilerini "regional_comparison" bölgesinde kullan.` : ''}
 
 ${modernTemplateGuidelines}
 
-Örnek:
-- YANLIŞ: "Arsanızı Satarken"
-- DOĞRU: "${mulkTurLabel}nızı/nizi Satarken"
-
-Tüm başlıklar, içerikler ve açıklamalar ${mulkTurLabel} için özel yazılmalıdır.`;
+ÇIKTI: Sadece geçerli JSON döndür, başka metin ekleme.`;
 
       const userPrompt = buildPresentationPrompt(istek, marketData);
       const text = await callLLM({ systemPrompt, prompt: userPrompt, maxTokens: 8000 });

@@ -147,37 +147,36 @@ export function buildPresentationPrompt(
   const stil = istek.sunumStili || 'detayli_analiz';
 
   const sections = [
-    `Sen profesyonel bir emlak sunum yazarlısın. Kullanıcı bir gayrimenkul sunumu oluşturmak istiyor.`,
+    `Aşağıdaki bilgilerle profesyonel bir gayrimenkul sunumu oluştur.`,
 
-    `DANİŞMAN BİLGİLERİ:
+    `━━━ DANİŞMAN ━━━
 - Ad: ${danisman.adSoyad}
 - Telefon: ${danisman.telefon}
 - Email: ${danisman.email}
 ${danisman.deneyim ? `- Deneyim: ${danisman.deneyim}` : ''}
 ${danisman.referans ? `- Referans: ${danisman.referans}` : ''}`,
 
-    `GAYRİMENKUL BİLGİLERİ:\n${buildPropertySection(mulk)}`,
+    `━━━ GAYRİMENKUL ━━━\n${buildPropertySection(mulk)}`,
 
     getPurposeGuide(amac),
 
     getStyleGuide(stil, tema),
 
-    `${mulkTuruAciklamalari[mulk.tur]}`,
+    `━━━ MÜLK TÜRÜ VURGULARI ━━━\n${mulkTuruAciklamalari[mulk.tur]}`,
 
     getLengthGuide(uzunluk),
 
-    `🚨 ÇOK ÖNEMLİ KURALLAR:\n\n${buildPropertyRules(mulk)}
+    `━━━ İÇERİK KURALLARI ━━━\n${buildPropertyRules(mulk)}
 
-3. DİĞER KURALLAR:
-   - ${amac === 'portfoy_almak' ? 'Gayrimenkulün değerini vurgula, güvenli iş ortağı olduğunuzu hissettir.' : 'Müşteriye çözüm sunan bir yaklaşım, yatırım fırsatları, avantajlar vurgulanmalı.'}
-   - AI tarafından üretildiği belli OLMAMALI, profesyonel danışman kaleminden çıkmış gibi olmalı.
-   - Rakamsal veriler varsa kullan, yoksa gerçekçi tahminler yap.
-   - Sunum "satış" değil "bilgilendirme ve güven" odaklı olmalı.
-   - Mevsimsel referans: Şu anda ${getMevsimText()}.`,
+3. KALİTE KURALLARI:
+   - Profesyonel danışman kaleminden yazılmış gibi olmalı
+   - Somut veriler kullan (fiyat, metrekare, mesafe, yüzde)
+   - Her bölüm farklı bir değer sunmalı — tekrar yapma
+   - Mevsimsel referans: ${getMevsimText()}`,
 
     OUTPUT_FORMAT,
 
-    `TOPLAM BÖLGE: ${uzunlukKonfig[uzunluk].bolgeSayisi}`,
+    `TOPLAM BÖLGE SAYISI: ${uzunlukKonfig[uzunluk].bolgeSayisi}`,
 
     buildKFESection(mulk),
 
