@@ -10,6 +10,7 @@ import { ConsultantTrustSection } from './portfoy-almak-detayli-analiz-modern-ne
 import { RegionalComparisonSection } from './portfoy-almak-detayli-analiz-modern-new/components/RegionalComparisonSection';
 import { FAQSection } from './portfoy-almak-detayli-analiz-modern-new/components/FAQSection';
 import type { Property, Consultant, StrategicAdvantage, SalesSystemStep, ValuationData, FAQItem } from './portfoy-almak-detayli-analiz-modern-new/types';
+import { THEME_MODERN } from './shared/themeConfig';
 
 const FALLBACK_IMAGE = 'https://images.unsplash.com/photo-1560518883-ce09059ee41f?q=80&w=1973&auto=format&fit=crop';
 
@@ -404,35 +405,36 @@ const TemplateModernDetailedAnalysisWithPhotos: React.FC<{ data: OlusturulanSunu
               <HeroSection
                 property={mapped.property}
                 heroDescription={mapped.heroDescription}
+                theme={THEME_MODERN}
               />
 
               {/* Valuation Section */}
               <div className="print:mt-8">
-                <RegionalComparisonSection valuationData={mapped.valuationData} property={mapped.property} />
+                <RegionalComparisonSection valuationData={mapped.valuationData} property={mapped.property} theme={THEME_MODERN} />
               </div>
             </div>
           </div>
 
           {/* PAGE 2: POTENTIAL & STRATEGY */}
           <PrintPageWrapper className="print:justify-start">
-            <PropertyPlanSection property={mapped.property} />
+            <PropertyPlanSection property={mapped.property} theme={THEME_MODERN} />
           </PrintPageWrapper>
 
           {/* PAGE 3: 6-STEP SALES SYSTEM */}
           <PrintPageWrapper className="print:justify-start">
-            <SalesProcessSection steps={mapped.salesSteps} />
+            <SalesProcessSection steps={mapped.salesSteps} theme={THEME_MODERN} />
           </PrintPageWrapper>
 
           {/* PAGE 4: BENEFITS (Neden Kurumsal?) */}
           <PrintPageWrapper className="print:justify-start">
-            <BenefitsSection benefits={mapped.salesBenefits} />
+            <BenefitsSection benefits={mapped.salesBenefits} theme={THEME_MODERN} />
           </PrintPageWrapper>
 
           {/* PAGE 5: TRUST, FAQ & CLOSING */}
           <PrintPageWrapper className="print:justify-start">
             <div className="space-y-16 print:space-y-12 flex-grow flex flex-col justify-start">
-              <FAQSection faqs={mapped.faqItems} />
-              <ConsultantTrustSection consultant={mapped.consultant} />
+              <FAQSection faqs={mapped.faqItems} theme={THEME_MODERN} />
+              <ConsultantTrustSection consultant={mapped.consultant} theme={THEME_MODERN} />
             </div>
 
             <footer className="border-t border-white/5 py-8 flex flex-col items-center text-center bg-slate-950 mt-auto print:py-6 print:bg-transparent print:border-slate-300 print:mt-8">

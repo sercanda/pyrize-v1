@@ -1,5 +1,6 @@
 import {
   SunumOlusturmaIstegi,
+  SunumStili,
   MulkTuru,
   MulkBilgileri,
 } from '@/types';
@@ -135,6 +136,105 @@ JSON formatında döndür. Yapı:
   }
 }`;
 
+function getStilBolgeTalimatlari(stil: SunumStili): string {
+  const talimatlar: Record<SunumStili, string> = {
+    detayli_analiz: `━━━ STİLE ÖZEL BÖLGE TALİMATLARI ━━━
+Bu sunum DETAYLI ANALİZ stilindedir. Aşağıdaki bölgeleri MUTLAKA oluştur:
+
+1. "location_analysis" bölgesi: Kapsamlı konum analizi. Bölge trendleri, emsal karşılaştırmaları, yatırım potansiyeli verileri.
+2. "location_advantages" bölgesi: En az 4 konum avantajı. Her biri somut veri içermeli.
+3. "usage_potential" bölgesi: Kullanım potansiyeli senaryoları — yatırım, yaşam, dönüşüm alternatifleri.
+4. "marketing_strategy" bölgesi: Dijital + kurumsal tanıtım stratejisi detaylı.
+5. "value_plan" bölgesi: Tahmini değer aralığı ve satım planı — süre, fiyat basamakları, revizyon noktaları.
+6. "ad_channels" bölgesi: Reklam kanalları — her kanal için beklenen sonuç metrikleri.
+7. "regional_comparison" bölgesi: Emsal karşılaştırma tablosu — satılmış ve satışta olan mülkler.
+
+Her bölgede SOMUT VERİLER kullan. Tahmin yapıyorsan "tahmini" belirt. Grafiksel düşün.`,
+
+    hizli_satis: `━━━ STİLE ÖZEL BÖLGE TALİMATLARI ━━━
+Bu sunum HIZLI SATIŞ stilindedir. Aciliyet ve hız odaklı yaz.
+
+ZORUNLU ek bölgeler:
+1. "urgency" bölgesi: Aciliyet/kıtlık mesajı. FOMO tetikleyicileri kullan:
+   - "Bu bölgede benzer mülkler X gün içinde satılıyor"
+   - "Son 30 günde Y adet talep geldi"
+   - "Bekleme = fiyat artışı riski"
+   İçeriği kısa, vurucu ve sayısal tut.
+
+2. "quick_highlights" bölgesi: 3-4 büyük vurgu kartı formatında.
+   Her kart: Tek satır başlık + tek satır açıklama.
+   Hızlı taranabilir, bullet-point tarzı.
+
+DİĞER BÖLGELERDE:
+- Cümleler KISA (max 15 kelime)
+- Her paragraf bir aksiyon çağrısı ile bitsin
+- "Hemen", "Bugün", "Şimdi" gibi aciliyet kelimeleri kullan
+- Avantajları madde madde listele, paragraf yazma
+- FAQ en fazla 3 soru olsun`,
+
+    premium_sunum: `━━━ STİLE ÖZEL BÖLGE TALİMATLARI ━━━
+Bu sunum PREMİUM stilindedir. Lüks, aspirasyonel ve seçkin bir ton kullan.
+
+ZORUNLU ek bölgeler:
+1. "lifestyle" bölgesi: Yaşam tarzı vizyonu.
+   - Aspirasyonel dil: "Hayal ettiğiniz yaşam burada başlıyor"
+   - Sosyal kanıt: Bölgedeki seçkin projeler, komşuluk profili
+   - Duygusal bağlantı: Yaşam senaryoları (sabah kahvesi, akşam yürüyüşü)
+   - "Bu sadece bir mülk değil, bir yaşam standardı" mesajı
+
+2. "exclusive_offer" bölgesi: VIP davet tonu.
+   - "Bu sunum sınırlı sayıda kişiye özel hazırlanmıştır"
+   - Özel gösterim daveti
+   - Kişiye özel finansman seçenekleri
+   - Gizlilik ve ayrıcalık vurgusu
+
+DİĞER BÖLGELERDE:
+- "Seçkin", "ayrıcalıklı", "benzersiz", "eşsiz" gibi premium kelimeler kullan
+- Referans ve sosyal kanıt her bölümde olsun
+- Sayısal veriler lüks tonda sunulsun ("₺2.5M değerinde portföy" yerine "2.5 milyon TL değerinde seçkin portföy")`,
+
+    guven_odakli: `━━━ STİLE ÖZEL BÖLGE TALİMATLARI ━━━
+Bu sunum GÜVEN ODAKLI stilindedir. Danışman güvenilirliği ve risk eliminasyonu ön planda.
+
+ZORUNLU ek bölgeler:
+1. "testimonials" bölgesi: Sosyal kanıt ve başarı hikayeleri.
+   - En az 2 müşteri referansı (gerçekçi, spesifik)
+   - Başarı istatistikleri: satış oranı, müşteri memnuniyeti, ortalama satış süresi
+   - "Birçok mülk sahibi bu sisteme güvendi" mesajı
+
+2. "guarantees" bölgesi: Açık garantiler ve sıfır risk mesajları.
+   - "Satış olmazsa 0₺" garantisi
+   - Şeffaf süreç detayları (haftalık raporlama, her gösterim sonrası bilgilendirme)
+   - Hukuki güvence
+   - Kurumsal güvence (varsa ofis adı ile)
+
+DİĞER BÖLGELERDE:
+- Her bölümde danışmanın uzmanlığına atıf yap
+- "Garantili", "şeffaf", "kanıtlanmış", "güvenli" kelimeleri sık kullan
+- Risk azaltma mesajları her yerde olsun
+- FAQ bölümünde müşteri endişelerini giderecek detaylı yanıtlar (en az 4 soru)`,
+
+    minimalist: `━━━ STİLE ÖZEL BÖLGE TALİMATLARI ━━━
+Bu sunum MİNİMALİST stilindedir. Sade, temiz, sadece esansiyel.
+
+KURALLAR:
+- Toplam en fazla 3-4 bölge oluştur
+- Her bölgede en fazla 3 madde
+- Cümleler en fazla 10 kelime
+- Dekoratif ifade KULLANMA
+- Sadece: Fiyat, konum, temel özellikler, iletişim
+- FAQ bölümü EKLEME
+- Tek CTA: Telefon numarası ve email
+
+FORMAT:
+Sayfa 1: Hero (fiyat + metrekare + konum)
+Sayfa 2: 3 avantaj (tek satır)
+Sayfa 3: Danışman bilgisi + iletişim`,
+  };
+
+  return talimatlar[stil] || '';
+}
+
 /**
  * Sunum oluşturma isteğine göre AI prompt'u inşa eder.
  * Stil, tema, amaç ve uzunluk kombinasyonuna göre özelleştirilmiş prompt döndürür.
@@ -161,6 +261,8 @@ ${danisman.referans ? `- Referans: ${danisman.referans}` : ''}`,
     getPurposeGuide(amac),
 
     getStyleGuide(stil, tema),
+
+    getStilBolgeTalimatlari(stil),
 
     `━━━ MÜLK TÜRÜ VURGULARI ━━━\n${mulkTuruAciklamalari[mulk.tur]}`,
 

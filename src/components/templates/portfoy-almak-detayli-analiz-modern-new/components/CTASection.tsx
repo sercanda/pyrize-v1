@@ -1,17 +1,19 @@
 
 import React from 'react';
 import { Consultant } from '../types';
+import { ThemeConfig } from '../../shared/themeConfig';
 
 interface CTASectionProps {
   consultant: Consultant;
+  theme: ThemeConfig;
 }
 
-export const CTASection: React.FC<CTASectionProps> = ({ consultant }) => {
+export const CTASection: React.FC<CTASectionProps> = ({ consultant, theme }) => {
   return (
-    <section id="cta" className="py-24 bg-white border-t border-slate-100">
+    <section id="cta" className={`py-24 ${theme.bgSurface} border-t ${theme.isDark ? 'border-slate-800' : 'border-slate-100'}`}>
       <div className="container mx-auto px-6 max-w-5xl">
-        
-        <div className="bg-slate-900 rounded-3xl p-8 md:p-16 text-center text-white shadow-2xl shadow-slate-900/20 relative overflow-hidden">
+
+        <div className={`${theme.bgPrimary} rounded-3xl p-8 md:p-16 text-center ${theme.isDark ? 'text-white' : 'text-slate-900'} shadow-2xl shadow-slate-900/20 relative overflow-hidden`}>
             {/* Decorative Background Elements */}
             <div className="absolute top-0 right-0 -mt-20 -mr-20 w-96 h-96 bg-blue-600/20 rounded-full blur-3xl"></div>
             <div className="absolute bottom-0 left-0 -mb-20 -ml-20 w-80 h-80 bg-purple-600/20 rounded-full blur-3xl"></div>
@@ -20,7 +22,7 @@ export const CTASection: React.FC<CTASectionProps> = ({ consultant }) => {
                 <h2 className="text-3xl md:text-5xl font-bold mb-6 tracking-tight">
                     Süreci Başlatmaya Hazır mısınız?
                 </h2>
-                <p className="text-slate-300 mb-12 max-w-2xl mx-auto text-lg leading-relaxed">
+                <p className={`${theme.textSecondary} mb-12 max-w-2xl mx-auto text-lg leading-relaxed`}>
                     Mülkünüzün gerçek değerini bulması ve profesyonel süreç yönetimi için ilk adımı atın. Size özel stratejimizi yüz yüze konuşalım.
                 </p>
 
@@ -45,9 +47,9 @@ export const CTASection: React.FC<CTASectionProps> = ({ consultant }) => {
                         <span className="mt-4 text-xs bg-emerald-100 text-emerald-800 px-3 py-1 rounded-full">Ort. Yanıt: 5 dk</span>
                     </a>
                 </div>
-                
-                <div className="mt-12 pt-8 border-t border-white/10">
-                    <p className="text-sm text-slate-400">
+
+                <div className={`mt-12 pt-8 border-t ${theme.borderColor}`}>
+                    <p className={`text-sm ${theme.textSecondary}`}>
                         © {new Date().getFullYear()} {consultant.ofisAdi}. Tüm süreç KVKK ve etik kurallar çerçevesinde yürütülür.
                     </p>
                 </div>

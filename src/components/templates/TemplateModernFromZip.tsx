@@ -11,6 +11,7 @@ import { PropertyPlanSection } from './portfoy-almak-detayli-analiz-modern-new/c
 import { UsagePotentialSection } from './portfoy-almak-detayli-analiz-modern-new/components/UsagePotentialSection';
 import { FAQSection } from './portfoy-almak-detayli-analiz-modern-new/components/FAQSection';
 import { ConsultantTrustSection } from './portfoy-almak-detayli-analiz-modern-new/components/ConsultantTrustSection';
+import { THEME_MODERN } from './shared/themeConfig';
 
 import type {
   Property,
@@ -600,35 +601,36 @@ const TemplateModernFromZip: React.FC<{ data: OlusturulanSunum }> = ({ data }) =
                 property={mapped.property}
                 heroDescription={mapped.heroDescription}
                 heroHighlight={mapped.heroHighlight}
+                theme={THEME_MODERN}
               />
 
               {/* Valuation Section */}
               <div className="print:mt-8">
-                <RegionalComparisonSection property={mapped.property} valuationData={mapped.valuation} />
+                <RegionalComparisonSection property={mapped.property} valuationData={mapped.valuation} theme={THEME_MODERN} />
               </div>
             </div>
           </div>
 
           {/* PAGE 2: POTENTIAL & STRATEGY */}
           <div className="w-full min-h-screen px-6 md:px-12 lg:px-16 py-24 flex flex-col print:block print:h-auto print:min-h-0 print:py-12 print:px-8 print:break-after-page">
-            <PropertyPlanSection property={mapped.property} />
+            <PropertyPlanSection property={mapped.property} theme={THEME_MODERN} />
           </div>
 
           {/* PAGE 3: 6-STEP SALES SYSTEM */}
           <div className="w-full min-h-screen px-6 md:px-12 lg:px-16 py-24 flex flex-col print:block print:h-auto print:min-h-0 print:py-12 print:px-8 print:break-after-page">
-            <SalesProcessSection steps={mapped.salesSteps} />
+            <SalesProcessSection steps={mapped.salesSteps} theme={THEME_MODERN} />
           </div>
 
           {/* PAGE 4: BENEFITS (Neden Kurumsal?) */}
           <div className="w-full min-h-screen px-6 md:px-12 lg:px-16 py-24 flex flex-col print:block print:h-auto print:min-h-0 print:py-12 print:px-8 print:break-after-page">
-            <BenefitsSection benefits={mapped.salesBenefits} />
+            <BenefitsSection benefits={mapped.salesBenefits} theme={THEME_MODERN} />
           </div>
 
           {/* PAGE 5: TRUST, FAQ & CLOSING */}
           <div className="w-full min-h-screen px-6 md:px-12 lg:px-16 py-24 flex flex-col print:block print:h-auto print:min-h-0 print:py-12 print:px-8 print:break-after-page">
             <div className="space-y-16 print:space-y-12 flex-grow flex flex-col justify-start">
-              <FAQSection faqs={mapped.faqs} />
-              <ConsultantTrustSection consultant={mapped.consultant} />
+              <FAQSection faqs={mapped.faqs} theme={THEME_MODERN} />
+              <ConsultantTrustSection consultant={mapped.consultant} theme={THEME_MODERN} />
             </div>
 
             <footer className="border-t border-white/5 py-8 flex flex-col items-center text-center bg-slate-950 mt-auto print:py-6 print:bg-transparent print:border-slate-300 print:mt-8">

@@ -1202,3 +1202,60 @@ li {
     max-height: none !important;
     overflow: visible !important;
 }
+
+/* ═══════════════════════════════════════════════════════════════
+   LIGHT THEME (KURUMSAL) PDF OVERRIDES
+   When .pdf-theme-light is present, the template uses a white/light
+   background. Override dark-theme PDF rules so light bg is preserved,
+   text stays dark, and opacity backgrounds stay transparent.
+   ═══════════════════════════════════════════════════════════════ */
+
+/* Backdrop blur: use light translucent fallback instead of dark */
+.pdf-render-mode.pdf-theme-light [class*="backdrop-blur"] {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    background-color: rgba(241, 245, 249, 0.9) !important; /* slate-100 */
+}
+
+/* Opacity backgrounds: keep them light, don't force dark solid */
+.pdf-render-mode.pdf-theme-light [class*="bg-slate-900\/"],
+.pdf-render-mode.pdf-theme-light [class*="bg-slate-950\/"],
+.pdf-render-mode.pdf-theme-light [class*="bg-stone-900\/"],
+.pdf-render-mode.pdf-theme-light [class*="bg-stone-950\/"] {
+    background-color: transparent !important;
+}
+
+/* White background containers should stay white */
+.pdf-render-mode.pdf-theme-light .bg-white,
+.pdf-render-mode.pdf-theme-light .bg-slate-50 {
+    background-color: inherit !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+}
+
+/* Ensure dark text is readable on light bg */
+.pdf-render-mode.pdf-theme-light .text-slate-900,
+.pdf-render-mode.pdf-theme-light .text-slate-800 {
+    color: rgb(15, 23, 42) !important;
+}
+
+/* Accent colors for light theme (blue tones) */
+.pdf-render-mode.pdf-theme-light .text-blue-700,
+.pdf-render-mode.pdf-theme-light .text-blue-600 {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+}
+
+/* Light theme borders should be visible */
+.pdf-render-mode.pdf-theme-light .border-slate-200,
+.pdf-render-mode.pdf-theme-light .border-blue-200 {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+}
+
+/* Blue accent background (buttons, badges) */
+.pdf-render-mode.pdf-theme-light .bg-blue-600,
+.pdf-render-mode.pdf-theme-light .bg-blue-700 {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+}

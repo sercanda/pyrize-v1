@@ -260,107 +260,149 @@ export const POST = withSecurity(handler, {
 
 ---
 
-## 7. ŞABLON SİSTEMİ
+## 7. ŞABLON SİSTEMİ (Unified Template Mimarisi)
 
-### 7.1 Şablon Yapısı
+### 7.1 Genel Mimari
 
-Her şablon bileşeni şu interface'i implement etmeli:
+Sistem **5 sunum stili × 3 tema** kombinasyonunu destekler. Her stil farklı funnel yapısına, pazarlama psikolojisine ve stile özel component'lere sahiptir. Temalar görsel katmandır — aynı stil farklı temalarda farklı renk/tipografi kullanır.
 
-```typescript
-interface PresentationTemplate {
-  id: string;
-  name: string;           // Türkçe ad
-  theme: ThemeConfig;     // Renkler, fontlar
-  sections: Section[];    // Funnel bölümleri
-  render: (data: PresentationData) => JSX.Element;
-  renderPDF: (data: PresentationData) => JSX.Element; // PDF özel render
-}
-
-interface Section {
-  id: string;
-  type: SectionType;      // hero | stats | features | gallery | cta | map | agent
-  pageBreak: boolean;     // PDF'de sayfa kırılımı burada mı?
-  minHeight: string;      // A4'te minimum yükseklik
-}
+**Temel Akış:**
+```
+Form → sunumStili + tema seçimi → AI prompt (stilGuides + bolgeTalimatlari)
+  → funnel-templates.ts (generateBolgeler) → mapSunumData.ts (theme inject)
+  → Unified Template (TemplateHizliSatis vb.) → Section Components (theme-aware)
+  → Web render + PDF render (.pdf-render-mode + .pdf-theme-light)
 ```
 
-### 7.2 Mevcut Şablonlar
+### 7.2 Temalar (ThemeConfig)
 
-| Şablon | Tema | Uygun Amaç |
-|---|---|---|
-| Modern | Koyu, minimal | Satış |
-| Kurumsal | Lacivert, profesyonel | Satış + Alım |
-| Lüks | Gold, premium | Yüksek değerli mülkler |
-| Sıcak&Samimi | Turuncu, davetkar | Portföy almak |
-| Minimalist | Beyaz, temiz | Tüm amaçlar |
+**Dosya:** `src/components/templates/shared/themeConfig.ts`
 
-### 7.3 Yeni Şablon Ekleme
+| Tema | isDark | Arka Plan | Başlıklar | Accent |
+|------|--------|-----------|-----------|--------|
+| **Modern** | true | slate-950 (koyu) | slate-200 | indigo-400 |
+| **Kurumsal** | false | white (açık) | slate-900 | blue-700 |
+| **Lüks** | true | stone-950 (koyu) | stone-200 | amber-400 |
+
+`ThemeConfig` interface: `isDark`, `bgPrimary`, `bgSurface`, `bgCard`, `bgOverlay`, `textPrimary`, `textSecondary`, `textAccent`, `accentText`, `accentBg`, `borderColor`, `borderAccent`, `gradientFrom/Via/To`, `selectionBg/Text`
+
+Tüm section component'leri `theme: ThemeConfig` prop alır, hardcoded renkler yerine `theme.bgCard`, `theme.textAccent` vb. kullanır. Koşullu stiller: `theme.isDark ? 'dark-class' : 'light-class'`
+
+### 7.3 Sunum Stilleri & Funnel Yapıları
+
+| Stil | Sayfa | Funnel Yapısı | Özel Component'ler | Pazarlama Psikolojisi |
+|------|-------|---------------|--------------------|-----------------------|
+| **Detaylı Analiz** | 5 | Hero+Değerleme → Konum → Satış Sistemi → Avantajlar → FAQ+Danışman | — | AIDA + Veri Otoritesi |
+| **Hızlı Satış** | 3 | Hero+Urgency+Highlights → Değerleme+Süreç(3) → Danışman+FAQ(3) | `UrgencyBannerSection`, `QuickHighlightsSection` | FOMO + Kayıp Korkusu |
+| **Premium** | 5 | Hero → Değerleme+Lifestyle → Konum+Avantaj(3) → ExclusiveOffer+Süreç → Danışman+FAQ | `LifestyleSection`, `ExclusiveOfferSection` | Aspirasyon + Elitizm |
+| **Güven Odaklı** | 4 | Hero+Danışman → Testimonial+Avantaj → Süreç+Değerleme → Garanti+FAQ | `TestimonialSection`, `GuaranteeSection` | Güven Piramidi + Risk Tersine Çevirme |
+| **Minimalist** | 3 | Hero+CompactSummary → Avantajlar(3) → Danışman | `CompactSummarySection` | Hick's Law + Netlik |
+
+### 7.4 Dosya Yapısı
 
 ```
-1. src/components/templates/[AdTemplate].tsx oluştur
-2. Template interface'ini implement et
-3. renderPDF() metodunu mutlaka yaz
-4. src/components/templates/index.ts'e kayıt et
-5. /dashboard/olustur formuna seçenek olarak ekle
+src/components/templates/
+├── shared/
+│   ├── themeConfig.ts              # ThemeConfig interface + 3 tema tanımı
+│   └── mapSunumData.ts             # DB verisi → MappedTemplateData (theme inject)
+├── unified/
+│   ├── TemplateDetayliAnaliz.tsx    # 5 sayfa, referans template
+│   ├── TemplateHizliSatis.tsx       # 3 sayfa, aciliyet odaklı
+│   ├── TemplatePremium.tsx          # 5 sayfa, lüks ton
+│   ├── TemplateGuvenOdakli.tsx      # 4 sayfa, güven öncelikli
+│   └── TemplateMinimalist.tsx       # 3 sayfa, sade
+├── portfoy-almak-detayli-analiz-modern-new/components/
+│   ├── HeroSection.tsx              # theme-aware
+│   ├── RegionalComparisonSection.tsx
+│   ├── PropertyFeaturesSection.tsx
+│   ├── SalesStrategySection.tsx
+│   ├── LocationAdvantagesSection.tsx
+│   ├── ConsultantTrustSection.tsx
+│   ├── FAQSection.tsx
+│   ├── CTASection.tsx
+│   ├── UsagePotentialSection.tsx
+│   ├── UrgencyBannerSection.tsx     # Hızlı Satış özel
+│   ├── QuickHighlightsSection.tsx   # Hızlı Satış özel
+│   ├── LifestyleSection.tsx         # Premium özel
+│   ├── ExclusiveOfferSection.tsx    # Premium özel
+│   ├── TestimonialSection.tsx       # Güven Odaklı özel
+│   ├── GuaranteeSection.tsx         # Güven Odaklı özel
+│   └── CompactSummarySection.tsx    # Minimalist özel
+└── TemplateRenderer.tsx             # Stil → unified template router
+
+src/lib/
+├── templates/
+│   └── funnel-templates.ts          # 5 template, generateBolgeler (stile özel bolge tipleri)
+├── ai/prompts/
+│   ├── styleGuides.ts               # Pazarlama psikolojisi + stil/tema kombinasyon rehberleri
+│   ├── presentationPrompts.ts       # AI prompt builder + stile özel bolge talimatları
+│   ├── purposeGuides.ts             # Amaç bazlı (portföy almak/satmak)
+│   └── lengthConfig.ts              # Uzunluk (kısa/orta/uzun)
+```
+
+### 7.5 Stile Özel Bolge Tipleri
+
+`BolgeTipi` (types/index.ts) — template'ler tarafından kullanılan bölge tipleri:
+
+| Bolge Tipi | Kullanıldığı Stil | Amaç |
+|-----------|-------------------|------|
+| `urgency` | Hızlı Satış | FOMO/kıtlık mesajı |
+| `quick_highlights` | Hızlı Satış | Tek bakışta avantaj kartları |
+| `lifestyle` | Premium | Aspirasyonel yaşam vizyonu |
+| `exclusive_offer` | Premium | VIP davet, özel gösterim |
+| `testimonials` | Güven Odaklı | Sosyal kanıt, başarı hikayeleri |
+| `guarantees` | Güven Odaklı | Sıfır risk garantileri |
+
+### 7.6 PDF Tema Desteği
+
+- Koyu temalar (modern, lüks): `.pdf-render-mode` kuralları uygulanır
+- Açık tema (kurumsal): Wrapper'a `pdf-theme-light` class eklenir
+- `.pdf-render-mode.pdf-theme-light` kuralları: opacity bg'ler transparan kalır, metin koyu kalır
+- CSS: `src/app/sunum/[id]/print/print.css`
+
+### 7.7 Yeni Component Ekleme
+
+```
+1. src/components/templates/.../components/[AdSection].tsx oluştur
+2. theme: ThemeConfig prop ekle, hardcoded renk KULLANMA
+3. İlgili unified template'e import et ve doğru sayfaya yerleştir
+4. types/index.ts'te BolgeTipi'ne yeni tip ekle (gerekiyorsa)
+5. mapSunumData.ts'te yeni bolge tipini extract et
+6. funnel-templates.ts'te ilgili template'in generateBolgeler'ine ekle
+7. presentationPrompts.ts'te AI talimatlarına ekle
 ```
 
 ---
 
-## 8. PDF EXPORT MİMARİSİ (HEDEF DURUM)
+## 8. PDF EXPORT MİMARİSİ
 
-### 8.1 Mevcut Sorunlu Akış
+### 8.1 Mevcut Çalışan Akış (Gotenberg)
 ```
-Kullanıcı → PDF butonu → /api/pdf → Puppeteer(URL'yi aç) → PDF → İndir
-                                     ↑ SORUN BURADA
-```
-
-### 8.2 Hedef Akış (Düzeltilmiş)
-
-**Seçenek A — Puppeteer Fix (Kısa Vadeli)**
-```
-Kullanıcı → PDF butonu
-  → Frontend: document.body.classList.add('pdf-mode')
-  → Animasyonlar durdur, WebGL kapat
-  → /api/pdf endpoint çağır
-  → Puppeteer: ?mode=pdf param ile sayfayı aç
-  → CSS: .pdf-mode bölümlere page-break uygula
-  → PDF generate, indir
+Kullanıcı → PDF butonu → /api/pdf → Gotenberg (headless Chromium)
+  → /sunum/[id]/print sayfasını render et (emulatedMediaType: 'screen')
+  → .pdf-render-mode wrapper → CSS page-break kuralları
+  → Koyu tema: standart kurallar | Açık tema: .pdf-theme-light kuralları
+  → PDF → İndir
 ```
 
-**Seçenek B — React PDF (Uzun Vadeli, Önerilen)**
-```
-Kullanıcı → PDF butonu
-  → /api/pdf/generate → PresentationData al
-  → @react-pdf/renderer ile PDF component render et
-  → Her Section = <Page> (A4)
-  → Stream olarak döndür → indir
-```
+### 8.2 PDF Print Route
+**Dosya:** `src/app/sunum/[id]/print/page.tsx`
+- Server-side Supabase fetch → `TemplateRenderer` render
+- `.pdf-render-mode` wrapper (tüm PDF CSS kuralları bu prefix ile)
+- Açık temada `.pdf-theme-light` class eklenir
 
-### 8.3 A4 Sayfa Şeması
+### 8.3 PDF CSS Kuralları
+**Dosya:** `src/app/sunum/[id]/print/print.css`
+- `@page { size: A4; margin: 0; }` — sayfa boyutu
+- `.pdf-render-mode [data-pdf-page]` — sayfa kırılımları (break-after: page)
+- `.pdf-render-mode.pdf-theme-light` — açık tema (kurumsal) için özel kurallar
+- Animasyonlar, backdrop-blur, opacity bg'ler, letter-spacing düzeltmeleri
 
-```
-┌─────────────────────────┐  ← Sayfa 1: Hero / Kapak
-│  Logo + Başlık          │  794px × 1123px
-│  Ana Görsel             │
-│  Mülk Özeti             │
-└─────────────────────────┘
-┌─────────────────────────┐  ← Sayfa 2: Mülk Detayları
-│  Özellikler Tablosu     │
-│  İstatistikler          │
-└─────────────────────────┘
-┌─────────────────────────┐  ← Sayfa 3: Piyasa Analizi
-│  Fiyat Karşılaştırması  │  (Kurumsal+Detaylı seçilmişse)
-│  Emsal Mülkler          │
-└─────────────────────────┘
-┌─────────────────────────┐  ← Sayfa 4: Neden Ben?
-│  Danışman Profili       │
-│  Referanslar            │
-└─────────────────────────┘
-┌─────────────────────────┐  ← Sayfa 5: CTA
-│  İletişim               │
-│  QR Kod (opsiyonel)     │
-└─────────────────────────┘
-```
+### 8.4 Önemli Notlar
+- Gotenberg `emulatedMediaType: 'screen'` kullanır → Tailwind `print:` class'ları aktif OLMAZ
+- Tüm PDF override'ları `.pdf-render-mode` prefix ile yapılmalı
+- `data-pdf-page` attribute'u sayfa kırılımlarını kontrol eder
+- Koyu temada opacity bg'ler solid'e çevrilir, açık temada transparan kalır
 
 ---
 

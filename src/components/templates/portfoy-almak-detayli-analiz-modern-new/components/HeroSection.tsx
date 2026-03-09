@@ -1,16 +1,18 @@
 
 import React from 'react';
 import { Property } from '../types';
+import { ThemeConfig } from '../../shared/themeConfig';
 
 interface HeroSectionProps {
   property: Property;
   heroDescription?: string;
   heroHighlight?: string;
+  theme: ThemeConfig;
 }
 
 const FALLBACK_IMAGE = 'https://images.unsplash.com/photo-1560518883-ce09059ee41f?q=80&w=1973&auto=format&fit=crop&ixlib=rb-4.0.3&auto=compress&fit=crop';
 
-export const HeroSection: React.FC<HeroSectionProps> = ({ property, heroDescription, heroHighlight }) => {
+export const HeroSection: React.FC<HeroSectionProps> = ({ property, heroDescription, heroHighlight, theme }) => {
   // Fotoğrafları al
   const fotograflar = (property as any)?.fotograflar || [];
   
@@ -39,30 +41,30 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ property, heroDescript
       {/* Items start ensures left alignment */}
       <div className="flex flex-col lg:flex-row justify-between items-start gap-6 mb-8 print:mb-12 relative z-10">
           <div className="max-w-4xl text-left">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-white/10 bg-white/5 mb-4 backdrop-blur-sm print:border-slate-800 print:bg-slate-100">
-                  <span className="w-1.5 h-1.5 rounded-full bg-indigo-400 animate-pulse shadow-[0_0_10px_rgba(129,140,248,0.5)] print:bg-indigo-900 print:shadow-none"></span>
-                  <span className="text-xs font-semibold text-indigo-200 uppercase tracking-wider print:text-indigo-900 print:font-bold">{konumLabel}</span>
+              <div className={`inline-flex items-center gap-2 px-3 py-1 rounded-full border ${theme.borderColor} ${theme.isDark ? 'bg-white/5' : 'bg-black/5'} mb-4 backdrop-blur-sm print:border-slate-800 print:bg-slate-100`}>
+                  <span className={`w-1.5 h-1.5 rounded-full ${theme.accentBg} animate-pulse print:bg-indigo-900 print:shadow-none`}></span>
+                  <span className={`text-xs font-semibold ${theme.textAccent} uppercase tracking-wider print:text-indigo-900 print:font-bold`}>{konumLabel}</span>
               </div>
-              
-              <h1 className="text-4xl lg:text-6xl font-bold text-white tracking-tighter leading-[1.1] mb-4 drop-shadow-2xl print:text-black print:text-5xl">
+
+              <h1 className={`text-4xl lg:text-6xl font-bold ${theme.isDark ? 'text-white' : 'text-slate-900'} tracking-tighter leading-[1.1] mb-4 drop-shadow-2xl print:text-black print:text-5xl`}>
                   {mainTitle}<br/>
-                  {subtitle && <span className="text-slate-300 font-light italic print:text-slate-800">{subtitle}</span>}
+                  {subtitle && <span className={`${theme.textSecondary} font-light italic print:text-slate-800`}>{subtitle}</span>}
               </h1>
-              
-              <p className="text-lg text-slate-300 max-w-2xl font-light leading-relaxed print:text-black print:text-base print:font-medium">
+
+              <p className={`text-lg ${theme.textSecondary} max-w-2xl font-light leading-relaxed print:text-black print:text-base print:font-medium`}>
                   {heroDescription || property.planAltBaslik || 'Mülkünüzün piyasa değerini, konum avantajlarını ve satış stratejisini veri odaklı analizlerle sunuyoruz.'}
               </p>
           </div>
 
-          <div className="w-full lg:w-auto border-l border-white/10 pl-6 hidden lg:block print:hidden">
+          <div className={`w-full lg:w-auto border-l ${theme.borderColor} pl-6 hidden lg:block print:hidden`}>
               <div className="space-y-4">
                   <div>
-                      <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Lokasyon</p>
-                      <p className="text-base font-medium text-slate-200">{property.konumAnalizi.ilIlce || property.konumAnalizi.mahalle || 'Belirtilmemiş'}</p>
+                      <p className={`text-[10px] font-bold ${theme.textSecondary} uppercase tracking-widest mb-1`}>Lokasyon</p>
+                      <p className={`text-base font-medium ${theme.textPrimary}`}>{property.konumAnalizi.ilIlce || property.konumAnalizi.mahalle || 'Belirtilmemiş'}</p>
                   </div>
                   <div>
-                      <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Özellik</p>
-                      <p className="text-base font-medium text-slate-200">{property.konumAnalizi.ozellik || property.konumAnalizi.mevcutYapi || 'Belirtilmemiş'}</p>
+                      <p className={`text-[10px] font-bold ${theme.textSecondary} uppercase tracking-widest mb-1`}>Özellik</p>
+                      <p className={`text-base font-medium ${theme.textPrimary}`}>{property.konumAnalizi.ozellik || property.konumAnalizi.mevcutYapi || 'Belirtilmemiş'}</p>
                   </div>
               </div>
           </div>
@@ -70,7 +72,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ property, heroDescript
 
       {/* Hero Image Collage - Sadece gerçek fotoğraf varsa göster */}
       {hasRealPhotos && (
-        <div className="relative w-full h-auto md:h-[450px] print:h-[400px] rounded-3xl overflow-hidden border border-white/5 bg-slate-900/50 print:border-none print:bg-transparent">
+        <div className={`relative w-full h-auto md:h-[450px] print:h-[400px] rounded-3xl overflow-hidden border ${theme.borderColor} ${theme.bgCard} print:border-none print:bg-transparent`}>
           <div className="grid grid-cols-2 md:grid-cols-12 md:grid-rows-2 h-full gap-2 p-2 print:gap-4 print:p-0">
               
               {/* Main Image - Left */}
@@ -112,9 +114,9 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ property, heroDescript
                     alt="Özellik" 
                     className="w-full h-full object-cover opacity-90 group-hover/img:opacity-100 hover:scale-105 transition-all duration-700 print:opacity-100"
                   />
-                  <div className="absolute inset-0 bg-indigo-900/80 flex flex-col items-center justify-center text-center p-2 print:bg-indigo-100/90">
+                  <div className={`absolute inset-0 ${theme.isDark ? 'bg-indigo-900/80' : 'bg-indigo-600/80'} flex flex-col items-center justify-center text-center p-2 print:bg-indigo-100/90`}>
                       <p className="text-xl md:text-2xl font-bold text-white print:text-indigo-900">{property.konumAnalizi.mevcutYapi || property.planAltBaslik?.split('|')[0] || ''}</p>
-                      <p className="text-[10px] md:text-xs uppercase tracking-widest text-indigo-200 print:text-indigo-900">{property.planAltBaslik || ''}</p>
+                      <p className={`text-[10px] md:text-xs uppercase tracking-widest ${theme.isDark ? 'text-indigo-200' : 'text-indigo-100'} print:text-indigo-900`}>{property.planAltBaslik || ''}</p>
                   </div>
               </div>
 

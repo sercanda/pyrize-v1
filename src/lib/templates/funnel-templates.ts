@@ -1597,6 +1597,45 @@ const hizliSatisTemplate: FunnelTemplate = {
         ]
       },
       {
+        tip: "urgency",
+        baslik: "Bu Fırsat Hızla Kapanıyor",
+        icerik: `${mulk.konum} bölgesinde benzer ${getMulkLabel(mulk.tur).toLowerCase()}lere yoğun ilgi var. Bekleme süresi = fiyat artışı.`,
+        altBolge: [
+          {
+            baslik: "Piyasa Gerçeği",
+            icerik: `Son 30 günde bölgede ${getMulkLabel(mulk.tur).toLowerCase()} fiyatları yükselişte | Talep arzın önünde | Her geçen hafta yeni alıcılar listeye ekleniyor`,
+            tip: "stats"
+          },
+          {
+            baslik: "Zaman Faktörü",
+            icerik: "Erken hareket edenler en iyi fiyatı alır. Bugün adım atın, yarın çok geç olabilir.",
+            tip: "quote"
+          }
+        ]
+      },
+      {
+        tip: "quick_highlights",
+        baslik: "Neden Bu Gayrimenkul?",
+        icerik: "Tek bakışta öne çıkan avantajlar.",
+        altBolge: [
+          {
+            baslik: konumAvantajlariList[0] || "Stratejik Konum",
+            icerik: konumAvantajlariList.slice(0, 2).join(" • ") || "Merkezi konum, kolay ulaşım",
+            tip: "text"
+          },
+          {
+            baslik: "Yatırım Potansiyeli",
+            icerik: kullanimPotansiyeliList.slice(0, 2).join(" • ") || "Değer artışı potansiyeli yüksek",
+            tip: "text"
+          },
+          {
+            baslik: "Hızlı Karar Avantajı",
+            icerik: "İlk gelen en iyi koşulları yakalar. Profesyonel süreç, hızlı sonuç.",
+            tip: "text"
+          }
+        ]
+      },
+      {
         tip: "cozum",
         baslik: "Neden Hızlı Sonuç Alıyorum?",
         icerik: "İlk 7 günde maksimum görünürlük, 30 günde teklif hedefi.",
@@ -1886,6 +1925,23 @@ const premiumSunumTemplate: FunnelTemplate = {
         ]
       },
       {
+        tip: "lifestyle",
+        baslik: "Ayrıcalıklı Yaşam Vizyonu",
+        icerik: `${mulk.konum} sadece bir adres değil, bir yaşam standardı. Bu ${getMulkLabel(mulk.tur).toLowerCase()} size sunduğu deneyimle fark yaratıyor.`,
+        altBolge: [
+          {
+            baslik: "Yaşam Kalitesi",
+            icerik: konumAvantajlariList.slice(0, 3).join(" • ") || "Seçkin çevre, prestijli yaşam alanları, özel sosyal imkanlar",
+            tip: "text"
+          },
+          {
+            baslik: "Statü & Prestij",
+            icerik: `Bu ${getMulkLabel(mulk.tur).toLowerCase()} sahipleri arasında olmak, sadece bir yatırım değil — bir yaşam tarzı beyanıdır.`,
+            tip: "quote"
+          }
+        ]
+      },
+      {
         tip: "cozum",
         baslik: "Neden Prestij Sunum?",
         icerik: "Lüks alıcıların beklentilerine uygun şekilde itibar, güven ve seçkinlik odaklı sunum.",
@@ -2101,6 +2157,23 @@ const premiumSunumTemplate: FunnelTemplate = {
         ]
       },
       {
+        tip: "exclusive_offer",
+        baslik: "Özel Davet — Sınırlı Erişim",
+        icerik: `Bu sunum, ${getDanismanAdi(danisman)} tarafından seçilmiş kişilere özel hazırlanmıştır.`,
+        altBolge: [
+          {
+            baslik: "VIP Gösterim",
+            icerik: `Özel randevu ile birebir gösterim\nProfesyonel sunum dosyası\nGizlilik garantisi`,
+            tip: "list"
+          },
+          {
+            baslik: "Ayrıcalıklı Süreç",
+            icerik: `${getDanismanAdi(danisman)} ile doğrudan, aracısız iletişim. Kişiye özel finansman danışmanlığı.`,
+            tip: "text"
+          }
+        ]
+      },
+      {
         tip: "cta",
         baslik: "Portföyünüzü Özel Sunumla Tanıtalım",
         icerik: "Lansman tarihini planlamak için VIP görüşme talep edin.",
@@ -2133,55 +2206,117 @@ const guvenOdakliTemplate: FunnelTemplate = {
   id: "guven_odakli",
   name: "Güven Odaklı Funneli",
   description: "Güven inşası, sosyal kanıt, şeffaflık",
-  generateBolgeler: ({ mulk, danisman, targetAudience, adChannels }) => {
-    return [
+  generateBolgeler: ({
+    mulk,
+    danisman,
+    tema,
+    uzunluk,
+    amac,
+    locationAnalysis,
+    targetAudience,
+    adChannels,
+  }) => {
+    const ofisIcerik = getOfisIcerik(danisman.ofisAdi);
+    const konumAvantajlariFallback = buildLocationAdvantagesFallback(
+      mulk,
+      locationAnalysis,
+      [
+        "{{LOKASYON}} güvenilir ve kanıtlanmış bir gayrimenkul bölgesi.",
+        "{{LOKASYON}} çevresinde istikrarlı değer artışı gösteren bir pazar.",
+        "{{LOKASYON}} bölgesi yüzlerce başarılı satışla kendini kanıtladı."
+      ]
+    );
+    const konumAvantajlariList = normalizeTextList(
+      mulk.konumAvantajlari,
+      konumAvantajlariFallback
+    );
+    const kullanimPotansiyeliList = normalizeTextList(
+      mulk.kullanimPotansiyeli,
+      [
+        "Kanıtlanmış yatırım getirisi",
+        "Güvenli ve şeffaf satış süreci",
+        "Risk minimizasyonu ile portföy yönetimi"
+      ]
+    );
+
+    const bolgeler: Bolge[] = [
       {
         tip: "hero",
-        baslik: "Sıfır Stres & Risk",
-        icerik: "Ben her şeyi hallederken, siz arkanıza yaslanın.\nSatış olmazsa tek kuruş ödemezsiniz."
-      },
-      {
-        tip: "testimonial",
-        baslik: `Birçok ${getMulkLabel(mulk.tur)} Sahibi Bu Sisteme Güvendi`,
-        icerik: "Hepsi başarıyla sattı.",
+        baslik: `${mulk.konum} — Güvenle Satış`,
+        icerik: `${getDanismanAdi(danisman)} olarak ${mulk.konum} bölgesinde ${getMulkLabel(mulk.tur).toLowerCase()} satışında şeffaf ve güvenilir bir süreç sunuyorum. Satış olmazsa tek kuruş ödemezsiniz.`,
         altBolge: [
           {
-            baslik: "Güven Unsuru",
-            icerik: `Birçok ${getMulkOwner(mulk.tur)} → Hepsi başarıyla sattı`,
+            baslik: "Güven Taahhüdü",
+            icerik: "Şeffaf süreç • Sıfır risk • Kanıtlanmış başarı",
             tip: "quote"
           }
         ]
       },
       {
-        tip: "guarantee",
-        baslik: "Hiçbir Risk Almıyorsunuz",
-        icerik: "Şeffaf ve güvenli işlem garantisi.",
+        tip: "testimonials",
+        baslik: `Başarı Hikayeleri — ${getMulkLabel(mulk.tur)} Sahipleri Anlatıyor`,
+        icerik: `${getDanismanAdi(danisman)} ile çalışan ${getMulkOwner(mulk.tur)}lerinin deneyimleri.`,
         altBolge: [
           {
-            baslik: "Sıfır Ön Ödeme",
-            icerik: `${getMulkLabelPossessive(mulk.tur)} listelemek için tek kuruş ödemezsiniz.\n\nDeğerleme: Ücretsiz\nDrone Çekimi: Ücretsiz\nPazarlama: Ücretsiz\n\nHizmet bedeli sadece satış gerçekleşirse!`,
-            tip: "list"
+            baslik: "Müşteri Deneyimi",
+            icerik: `"Süreç boyunca her adımda bilgilendirildim. ${getDanismanAdi(danisman)} gerçekten işinin ehli." — Memnun ${getMulkOwner(mulk.tur)}`,
+            tip: "quote"
           },
           {
-            baslik: "RE/MAX Garantisi",
-            icerik: "Dünyanın en büyük emlak ağının güvencesi.\n\nSigortalı İşlemler\nHukuki Destek\nKurumsal Sorumluluk",
-            tip: "list"
+            baslik: "Rakamlarla Güven",
+            icerik: `Başarılı satış oranı: %95+ | Ortalama satış süresi: 45 gün | Müşteri memnuniyeti: %98`,
+            tip: "stats"
           }
         ]
       },
       {
-        tip: "cta",
-        baslik: "Güvenilir Çözüm İçin İletişime Geçin",
-        icerik: "Şeffaf işlem garantisiyle.",
+        tip: "location_advantages",
+        baslik: `${extractMainLocation(mulk?.konum)} — Konum Avantajları`,
+        icerik: `${mulk.konum} bölgesinin kanıtlanmış avantajları.`,
+        altBolge: konumAvantajlariList.slice(0, 4).map((item: string) => ({
+          baslik: item.split(" ")[0] || "Avantaj",
+          icerik: item,
+          tip: "text" as const
+        }))
+      },
+      {
+        tip: "guarantees",
+        baslik: "Sıfır Risk Garantisi",
+        icerik: `${getDanismanAdi(danisman)} ile çalışmanın güvenceleri.`,
         altBolge: [
           {
-            baslik: "Garantiler",
-            icerik: "24 saat geri dönüş\nHiçbir bağlayıcılık yok\n100% gizlilik",
+            baslik: "Sıfır Ön Ödeme",
+            icerik: `${getMulkLabelPossessive(mulk.tur)} listelemek için hiçbir ödeme yapmazsınız. Tüm hizmetler satış gerçekleşene kadar ücretsiz.`,
+            tip: "list"
+          },
+          {
+            baslik: "Şeffaf Süreç",
+            icerik: "Haftalık raporlama | Her gösterim sonrası bilgilendirme | Fiyat güncelleme önerileri | Hukuki süreç desteği",
+            tip: "list"
+          },
+          {
+            baslik: "Kurumsal Güvence",
+            icerik: ofisIcerik.icerik,
+            tip: "list"
+          }
+        ]
+      },
+      buildFaqSection(danisman),
+      {
+        tip: "cta",
+        baslik: "Güvenli Satış Süreciniz Başlasın",
+        icerik: `${getDanismanAdi(danisman)} ile ücretsiz değerleme görüşmesi yapın.`,
+        altBolge: [
+          {
+            baslik: "Güvence Sözümüz",
+            icerik: "24 saat içinde geri dönüş\nHiçbir bağlayıcılık yok\n%100 gizlilik garantisi\nSatış olmazsa 0₺ ödeme",
             tip: "list"
           }
         ]
       }
     ];
+
+    return bolgeler;
   }
 };
 
@@ -2190,48 +2325,38 @@ const minimalistTemplate: FunnelTemplate = {
   id: "minimalist",
   name: "Minimalist Funneli",
   description: "Sade, net, öz bilgi",
-  generateBolgeler: ({ mulk, danisman }) => {
+  generateBolgeler: ({ mulk, danisman, locationAnalysis }) => {
+    const konumAvantajlariList = normalizeTextList(
+      mulk.konumAvantajlari,
+      buildLocationAdvantagesFallback(mulk, locationAnalysis, [
+        "{{LOKASYON}} konumu avantajlı.",
+        "{{LOKASYON}} ulaşım ağlarına yakın.",
+      ])
+    );
+
     return [
       {
         tip: "hero",
-        baslik: `${mulk.konum} - Profesyonel Satış`,
+        baslik: `${mulk.konum}`,
         icerik: joinLines([
           formatPriceRange(mulk),
-          mulk.metrekare ? `${mulk.metrekare} m²` : undefined
+          mulk.metrekare ? `${mulk.metrekare} m²` : undefined,
+          mulk.odaSayisi ? `${mulk.odaSayisi}` : undefined
         ])
       },
       {
-        tip: "cozum",
-        baslik: "3 Adımda Çözüm",
-        icerik: "Basit ve etkili sistem.",
-        altBolge: [
-          {
-            baslik: "Adımlar",
-            icerik: "Değerleme → Pazarlama → Satış",
-            tip: "list"
-          }
-        ]
-      },
-      {
-        tip: "guarantee",
-        baslik: "Garantiler",
-        icerik: "Sıfır risk, ücretsiz hizmet.",
-        altBolge: [
-          {
-            baslik: "Özellikler",
-            icerik: "Satış olmazsa 0₺\nÜcretsiz tanıtım\n45 günde satış",
-            tip: "list"
-          }
-        ]
+        tip: "location_advantages",
+        baslik: "Öne Çıkanlar",
+        icerik: konumAvantajlariList.slice(0, 3).join("\n"),
       },
       {
         tip: "cta",
-        baslik: "İletişime Geçin",
-        icerik: `${danisman.telefon}`,
+        baslik: "İletişim",
+        icerik: `${getDanismanAdi(danisman)}`,
         altBolge: [
           {
-            baslik: "İletişim",
-            icerik: `${danisman.email}\n24 saat geri dönüş`,
+            baslik: "Bilgi",
+            icerik: joinLines([danisman.telefon, danisman.email]),
             tip: "list"
           }
         ]

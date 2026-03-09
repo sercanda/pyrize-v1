@@ -15,9 +15,11 @@ import type {
   FAQItem,
   Consultant,
 } from './types';
+import { getThemeConfig, type ThemeConfig } from './themeConfig';
 
 // ─── Exported mapped data interface ───────────────────────────────
 export interface MappedTemplateData {
+  theme: ThemeConfig;
   property: Property & { fotograflar?: string[] };
   valuation: ValuationData;
   salesBenefits: StrategicAdvantage[];
@@ -29,6 +31,13 @@ export interface MappedTemplateData {
   faqBolge?: Bolge;
   faqs: FAQItem[];
   consultant: Consultant;
+  // Style-specific optional data
+  urgency?: { text: string; scarcityNote: string };
+  quickHighlights?: { icon: string; title: string; value: string; subtitle: string }[];
+  lifestyle?: { text: string; aspirationPoints: string[]; socialProof: string };
+  exclusiveOffer?: { title: string; details: string[] };
+  testimonials?: { quote: string; author: string; role?: string }[];
+  guarantees?: { title: string; description: string }[];
 }
 
 // ─── Fallback image ───────────────────────────────────────────────
@@ -218,6 +227,7 @@ const DEFAULT_FAQS: FAQItem[] = [
 export function mapSunumToTemplateData(data: OlusturulanSunum): MappedTemplateData {
   const { icerik } = data;
   const bolgeler = icerik.bolgeler || [];
+  const theme = getThemeConfig(data.istek?.tema);
 
   const locationAdvantagesBolge = findBolge(bolgeler, 'location_advantages');
   const usagePotentialBolge = findBolge(bolgeler, 'usage_potential');
@@ -409,7 +419,44 @@ export function mapSunumToTemplateData(data: OlusturulanSunum): MappedTemplateDa
     referans: danisman?.referans,
   };
 
+  // Style-specific bolge extraction
+  const urgencyBolge = findBolge(bolgeler, 'urgency');
+  const quickHighlightsBolge = findBolge(bolgeler, 'quick_highlights');
+  const lifestyleBolge = findBolge(bolgeler, 'lifestyle');
+  const exclusiveOfferBolge = findBolge(bolgeler, 'exclusive_offer');
+  const testimonialsBolge = findBolge(bolgeler, 'testimonials');
+  const guaranteesBolge = findBolge(bolgeler, 'guarantees');
+
+  const urgency = urgencyBolge ? {
+    text: urgencyBolge.icerik || 'Bu fırsat sınırlı süre geçerli',
+    scarcityNote: urgencyBolge.altBolge?.[0]?.icerik || 'Bölgede benzer mülk sayısı azalıyor',
+  } : undefined;
+
+  const quickHighlights = quickHighlightsBolge?.altBolge?.map((alt) => ({
+    icon: '✦', title: alt.baslik, value: alt.icerik.split('\n')[0] || '', subtitle: alt.icerik.split('\n')[1] || '',
+  }));
+
+  const lifestyle = lifestyleBolge ? {
+    text: lifestyleBolge.icerik || '',
+    aspirationPoints: lifestyleBolge.altBolge?.map((alt) => alt.icerik) || splitLines(lifestyleBolge.icerik),
+    socialProof: lifestyleBolge.altBolge?.find((alt) => /sosyal|kanıt|proof/i.test(alt.baslik))?.icerik || '',
+  } : undefined;
+
+  const exclusiveOffer = exclusiveOfferBolge ? {
+    title: exclusiveOfferBolge.baslik || 'Özel Davet',
+    details: exclusiveOfferBolge.altBolge?.map((alt) => alt.icerik) || splitLines(exclusiveOfferBolge.icerik),
+  } : undefined;
+
+  const testimonials = testimonialsBolge?.altBolge?.map((alt) => ({
+    quote: alt.icerik, author: alt.baslik, role: alt.tip === 'text' ? undefined : alt.tip,
+  }));
+
+  const guarantees = guaranteesBolge?.altBolge?.map((alt) => ({
+    title: alt.baslik, description: alt.icerik,
+  }));
+
   return {
+    theme,
     property,
     valuation,
     salesBenefits,
@@ -421,5 +468,11 @@ export function mapSunumToTemplateData(data: OlusturulanSunum): MappedTemplateDa
     faqBolge,
     faqs,
     consultant,
+    urgency,
+    quickHighlights,
+    lifestyle,
+    exclusiveOffer,
+    testimonials,
+    guarantees,
   };
 }

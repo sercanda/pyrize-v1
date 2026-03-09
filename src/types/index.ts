@@ -171,7 +171,13 @@ export type BolgeTipi =
   | "timing"
   | "cta"
   | "regional_comparison" // Detaylı Değerleme Raporu
-  | "market_analysis"; // Veriye Dayalı Piyasa Analizi
+  | "market_analysis" // Veriye Dayalı Piyasa Analizi
+  | "urgency" // Aciliyet/FOMO mesajı (hızlı satış)
+  | "quick_highlights" // Hızlı vurgu noktaları (hızlı satış)
+  | "lifestyle" // Yaşam tarzı vizyonu (premium)
+  | "exclusive_offer" // VIP/özel teklif (premium)
+  | "testimonials" // Sosyal kanıt/referanslar (güven odaklı)
+  | "guarantees"; // Garantiler (güven odaklı)
 
 export interface Bolge {
   tip: BolgeTipi;

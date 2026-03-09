@@ -8,6 +8,7 @@ import { ConsultantTrustSection } from './components/ConsultantTrustSection';
 import { RegionalComparisonSection } from './components/RegionalComparisonSection';
 import { FAQSection } from './components/FAQSection';
 import { PROPERTY_DATA, SALES_BENEFITS, SALES_SYSTEM_STEPS, CONSULTANT_DATA, VALUATION_DATA, FAQ_DATA } from './constants';
+import { THEME_MODERN } from '../shared/themeConfig';
 
 const Navbar = () => (
   // Removed print:static to allow default flow, added print:mb-8 to ensure gap.
@@ -73,35 +74,35 @@ const App: React.FC = () => {
                 {/* Content Wrapper */}
                 <div className="flex-1 flex flex-col justify-center gap-12 px-6 md:px-12 lg:px-16 print:px-0 print:gap-8 print:block">
                     {/* Hero Section */}
-                    <HeroSection property={PROPERTY_DATA} />
-                    
+                    <HeroSection property={PROPERTY_DATA} theme={THEME_MODERN} />
+
                     {/* Valuation Section */}
                     <div className="print:mt-8">
-                        <RegionalComparisonSection valuationData={VALUATION_DATA} property={PROPERTY_DATA} />
+                        <RegionalComparisonSection valuationData={VALUATION_DATA} property={PROPERTY_DATA} theme={THEME_MODERN} />
                     </div>
                 </div>
             </div>
 
             {/* PAGE 2: POTENTIAL & STRATEGY */}
             <PrintPageWrapper className="print:justify-start">
-                <PropertyPlanSection property={PROPERTY_DATA} />
+                <PropertyPlanSection property={PROPERTY_DATA} theme={THEME_MODERN} />
             </PrintPageWrapper>
 
             {/* PAGE 3: 6-STEP SALES SYSTEM */}
             <PrintPageWrapper className="print:justify-start">
-                <SalesProcessSection steps={SALES_SYSTEM_STEPS} />
+                <SalesProcessSection steps={SALES_SYSTEM_STEPS} theme={THEME_MODERN} />
             </PrintPageWrapper>
 
             {/* PAGE 4: BENEFITS (Neden Kurumsal?) */}
             <PrintPageWrapper className="print:justify-start">
-                <BenefitsSection benefits={SALES_BENEFITS} />
+                <BenefitsSection benefits={SALES_BENEFITS} theme={THEME_MODERN} />
             </PrintPageWrapper>
 
             {/* PAGE 5: TRUST, FAQ & CLOSING */}
             <PrintPageWrapper className="print:justify-start">
                 <div className="space-y-16 print:space-y-12 flex-grow flex flex-col justify-start">
-                  <FAQSection faqs={FAQ_DATA} />
-                  <ConsultantTrustSection consultant={CONSULTANT_DATA} />
+                  <FAQSection faqs={FAQ_DATA} theme={THEME_MODERN} />
+                  <ConsultantTrustSection consultant={CONSULTANT_DATA} theme={THEME_MODERN} />
                 </div>
 
                 <footer className="border-t border-white/5 py-8 flex flex-col items-center text-center bg-slate-950 mt-auto print:py-6 print:bg-transparent print:border-slate-300 print:mt-8">
