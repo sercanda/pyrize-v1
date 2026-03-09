@@ -1042,10 +1042,24 @@ li {
     display: none !important;
 }
 
+/* Backdrop blur doesn't work in headless Chromium — use solid fallback */
+.pdf-render-mode [class*="backdrop-blur"] {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    background-color: rgba(15, 23, 42, 0.85) !important;
+}
+
+/* Opacity backgrounds are too faint in PDF — make them solid */
+.pdf-render-mode [class*="bg-slate-900\/"] {
+    background-color: rgb(15, 23, 42) !important;
+}
+.pdf-render-mode [class*="bg-slate-950\/"] {
+    background-color: rgb(2, 6, 23) !important;
+}
+
 /* Ensure backgrounds render on dark-themed templates */
 .pdf-render-mode .bg-slate-950,
 .pdf-render-mode .bg-stone-950 {
-    background-color: inherit;
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
 }
@@ -1063,10 +1077,24 @@ li {
 }
 
 /* Reduce excessive padding for PDF pages */
-.pdf-render-mode .py-12 { padding-top: 2rem !important; padding-bottom: 2rem !important; }
-.pdf-render-mode .py-16 { padding-top: 2.5rem !important; padding-bottom: 2.5rem !important; }
-.pdf-render-mode .py-24 { padding-top: 3rem !important; padding-bottom: 3rem !important; }
-.pdf-render-mode .py-32 { padding-top: 4rem !important; padding-bottom: 4rem !important; }
+.pdf-render-mode .py-12 { padding-top: 1rem !important; padding-bottom: 1rem !important; }
+.pdf-render-mode .py-16 { padding-top: 1.5rem !important; padding-bottom: 1.5rem !important; }
+.pdf-render-mode .py-24 { padding-top: 1.5rem !important; padding-bottom: 1.5rem !important; }
+.pdf-render-mode .py-32 { padding-top: 2rem !important; padding-bottom: 2rem !important; }
+.pdf-render-mode .pt-16 { padding-top: 1rem !important; }
+.pdf-render-mode .pb-16 { padding-bottom: 1rem !important; }
+
+/* Reduce horizontal padding */
+.pdf-render-mode .px-16,
+.pdf-render-mode .lg\:px-16 {
+    padding-left: 1.5rem !important;
+    padding-right: 1.5rem !important;
+}
+
+/* Reduce font sizes slightly for better fit */
+.pdf-render-mode .text-4xl { font-size: 1.75rem !important; }
+.pdf-render-mode .text-3xl { font-size: 1.5rem !important; }
+.pdf-render-mode .text-2xl { font-size: 1.25rem !important; }
 
 /* Fixed/sticky elements should be static in PDF */
 .pdf-render-mode .fixed,
@@ -1136,7 +1164,7 @@ li {
    DECORATIVE BACKGROUND ELEMENTS
    Hide radial gradient overlays, grid patterns etc. for PDF.
    ═══════════════════════════════════════════════════════════════ */
-.pdf-render-mode .pointer-events-none.absolute.inset-0 {
+.pdf-render-mode .pointer-events-none.absolute.inset-0[style*="backgroundImage"] {
     display: none !important;
 }
 
@@ -1158,6 +1186,19 @@ li {
    SPACE/GAP INSIDE PDF PAGES
    Reduce spacing to fit A4 page height.
    ═══════════════════════════════════════════════════════════════ */
-.pdf-render-mode [data-pdf-page] .gap-12 { gap: 1.5rem !important; }
-.pdf-render-mode [data-pdf-page] .space-y-16 > * + * { margin-top: 2rem !important; }
-.pdf-render-mode [data-pdf-page] .space-y-12 > * + * { margin-top: 1.5rem !important; }
+.pdf-render-mode [data-pdf-page] .gap-12 { gap: 1rem !important; }
+.pdf-render-mode [data-pdf-page] .space-y-16 > * + * { margin-top: 1.5rem !important; }
+.pdf-render-mode [data-pdf-page] .space-y-12 > * + * { margin-top: 1rem !important; }
+.pdf-render-mode [data-pdf-page] .space-y-8 > * + * { margin-top: 1rem !important; }
+.pdf-render-mode .gap-12 { gap: 1rem !important; }
+.pdf-render-mode .space-y-8 > * + * { margin-top: 1rem !important; }
+
+/* Constrain PDF pages to A4 height and hide overflow */
+.pdf-render-mode [data-pdf-page] {
+    overflow: hidden !important;
+    max-height: 297mm !important;
+}
+.pdf-render-mode [data-pdf-page]:last-child {
+    max-height: none !important;
+    overflow: visible !important;
+}
