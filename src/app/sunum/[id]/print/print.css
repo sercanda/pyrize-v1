@@ -1073,3 +1073,91 @@ li {
 .pdf-render-mode .sticky {
     position: static !important;
 }
+
+/* ═══════════════════════════════════════════════════════════════
+   FLEX → BLOCK CONVERSION
+   Tailwind print:block doesn't activate (emulatedMediaType: 'screen').
+   Force block layout on PDF pages and main container.
+   ═══════════════════════════════════════════════════════════════ */
+.pdf-render-mode [data-pdf-page] {
+    display: block !important;
+    height: auto !important;
+    min-height: auto !important;
+    flex: none !important;
+}
+
+.pdf-render-mode main.flex,
+.pdf-render-mode main.flex-col {
+    display: block !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   LETTER-SPACING RESET
+   tracking-widest/tracking-tighter cause letter-by-letter splitting
+   in headless Chromium at A4 width (794px).
+   ═══════════════════════════════════════════════════════════════ */
+.pdf-render-mode .tracking-tighter { letter-spacing: -0.02em !important; }
+.pdf-render-mode .tracking-tight { letter-spacing: -0.01em !important; }
+.pdf-render-mode .tracking-wider { letter-spacing: 0.025em !important; }
+.pdf-render-mode .tracking-widest { letter-spacing: 0.05em !important; }
+
+/* ═══════════════════════════════════════════════════════════════
+   WORD BREAK SAFETY
+   Prevent individual letter splitting on long Turkish words.
+   ═══════════════════════════════════════════════════════════════ */
+.pdf-render-mode {
+    word-break: break-word !important;
+    overflow-wrap: break-word !important;
+}
+
+.pdf-render-mode * {
+    word-break: break-word !important;
+    overflow-wrap: break-word !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   DROP SHADOW & FILTER CLEANUP
+   Complex filters can render incorrectly in headless Chromium PDF.
+   ═══════════════════════════════════════════════════════════════ */
+.pdf-render-mode .drop-shadow-2xl,
+.pdf-render-mode .drop-shadow-xl {
+    filter: none !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   CONTAINER WIDTH
+   max-w-[1440px] can cause content to be wider than A4 (794px).
+   ═══════════════════════════════════════════════════════════════ */
+.pdf-render-mode [class*="max-w-["] {
+    max-width: 100% !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   DECORATIVE BACKGROUND ELEMENTS
+   Hide radial gradient overlays, grid patterns etc. for PDF.
+   ═══════════════════════════════════════════════════════════════ */
+.pdf-render-mode .pointer-events-none.absolute.inset-0 {
+    display: none !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   FLEX-1 AND FLEX-GROW INSIDE PDF PAGES
+   Flex-grow has no meaning in block layout. Reset to prevent
+   content stretching across multiple pages.
+   ═══════════════════════════════════════════════════════════════ */
+.pdf-render-mode [data-pdf-page] .flex-1,
+.pdf-render-mode [data-pdf-page] .flex-grow {
+    flex: none !important;
+}
+
+.pdf-render-mode [data-pdf-page] .justify-center {
+    justify-content: flex-start !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   SPACE/GAP INSIDE PDF PAGES
+   Reduce spacing to fit A4 page height.
+   ═══════════════════════════════════════════════════════════════ */
+.pdf-render-mode [data-pdf-page] .gap-12 { gap: 1.5rem !important; }
+.pdf-render-mode [data-pdf-page] .space-y-16 > * + * { margin-top: 2rem !important; }
+.pdf-render-mode [data-pdf-page] .space-y-12 > * + * { margin-top: 1.5rem !important; }

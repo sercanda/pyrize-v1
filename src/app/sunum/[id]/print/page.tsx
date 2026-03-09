@@ -1,14 +1,13 @@
 /**
  * PDF Print Route - Renders the SAME template as web preview for Gotenberg
  *
- * This route renders the presentation using TemplateRenderer (same as web view)
- * with PDF-optimized CSS applied via .pdf-render-mode class.
- *
- * Gotenberg captures this page with emulatedMediaType: 'screen' to preserve
- * backgrounds, gradients, and visual effects.
+ * Uses .pdf-render-mode CSS wrapper to override screen styles for PDF output.
+ * Root layout provides <html>/<body> — this page only renders content.
+ * Gotenberg captures with emulatedMediaType: 'screen'.
  */
 import { getSupabaseServiceClient } from "@/lib/supabase/server";
 import TemplateRenderer from "@/components/templates/TemplateRenderer";
+import PdfReadySignal from "@/components/templates/PdfReadySignal";
 import "./print.css";
 
 // Force dynamic rendering
@@ -99,63 +98,28 @@ export default async function PrintPage({ params, searchParams }: PageProps) {
     };
 
     return (
-        <html lang="tr">
-            <head>
-                <meta charSet="UTF-8" />
-                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-                <title>{sunumData.baslik || 'Sunum'} - PDF</title>
-                <link
-                    href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=block"
-                    rel="stylesheet"
-                />
-            </head>
-            <body>
-                {isDebug && (
-                    <div style={{
-                        position: 'fixed', top: 0, left: 0, right: 0,
-                        background: '#fef3c7', borderBottom: '2px solid #f59e0b',
-                        padding: '4px 10mm', fontSize: '8pt', fontFamily: 'monospace',
-                        color: '#92400e', zIndex: 9999
-                    }}>
-                        <strong>DEBUG MODE</strong> |
-                        ID: {sunumData.id?.slice(0, 8)}... |
-                        Slug: {sunumData.slug} |
-                        Created: {sunumData.created_at}
-                    </div>
-                )}
-
-                {/* Render the SAME template as web preview, wrapped in pdf-render-mode */}
-                <div className="pdf-render-mode">
-                    <TemplateRenderer data={formattedData as any} />
+        <>
+            {isDebug && (
+                <div style={{
+                    position: 'fixed', top: 0, left: 0, right: 0,
+                    background: '#fef3c7', borderBottom: '2px solid #f59e0b',
+                    padding: '4px 10mm', fontSize: '8pt', fontFamily: 'monospace',
+                    color: '#92400e', zIndex: 9999
+                }}>
+                    <strong>DEBUG MODE</strong> |
+                    ID: {sunumData.id?.slice(0, 8)}... |
+                    Slug: {sunumData.slug} |
+                    Created: {sunumData.created_at}
                 </div>
+            )}
 
-                {/* Signal to Gotenberg that the page is ready for PDF capture */}
-                <script
-                    dangerouslySetInnerHTML={{
-                        __html: `
-                            (function() {
-                                Promise.all([
-                                    document.fonts ? document.fonts.ready : Promise.resolve(),
-                                    new Promise(function(resolve) {
-                                        var images = document.querySelectorAll('img');
-                                        if (images.length === 0) return resolve();
-                                        var loaded = 0;
-                                        images.forEach(function(img) {
-                                            if (img.complete) { loaded++; if (loaded === images.length) resolve(); }
-                                            else {
-                                                img.onload = img.onerror = function() { loaded++; if (loaded === images.length) resolve(); };
-                                            }
-                                        });
-                                    })
-                                ]).then(function() {
-                                    window.pdfReady = true;
-                                });
-                                setTimeout(function() { window.pdfReady = true; }, 5000);
-                            })();
-                        `,
-                    }}
-                />
-            </body>
-        </html>
+            {/* Render the SAME template as web preview, wrapped in pdf-render-mode */}
+            <div className="pdf-render-mode">
+                <TemplateRenderer data={formattedData as any} />
+            </div>
+
+            {/* Signal to Gotenberg that the page is ready for PDF capture */}
+            <PdfReadySignal />
+        </>
     );
 }
