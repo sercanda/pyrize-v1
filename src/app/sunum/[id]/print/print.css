@@ -1049,19 +1049,82 @@ li {
     background-color: rgba(15, 23, 42, 0.85) !important;
 }
 
-/* Opacity backgrounds are too faint in PDF — make them solid */
-.pdf-render-mode [class*="bg-slate-900\/"] {
-    background-color: rgb(15, 23, 42) !important;
-}
-.pdf-render-mode [class*="bg-slate-950\/"] {
-    background-color: rgb(2, 6, 23) !important;
-}
+/* Opacity backgrounds → see stronger rules below in dark theme section */
 
 /* Ensure backgrounds render on dark-themed templates */
-.pdf-render-mode .bg-slate-950,
-.pdf-render-mode .bg-stone-950 {
+.pdf-render-mode .bg-slate-950 {
+    background-color: rgb(2, 6, 23) !important;
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
+}
+.pdf-render-mode .bg-stone-950 {
+    background-color: rgb(12, 10, 9) !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+}
+.pdf-render-mode .bg-slate-900 {
+    background-color: rgb(15, 23, 42) !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+}
+.pdf-render-mode .bg-stone-900 {
+    background-color: rgb(28, 25, 23) !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+}
+
+/* Accent colors for dark themes */
+.pdf-render-mode .bg-indigo-500,
+.pdf-render-mode .bg-indigo-600 {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+}
+.pdf-render-mode .bg-amber-400,
+.pdf-render-mode .bg-amber-500 {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+}
+
+/* Gradient backgrounds for dark themes */
+.pdf-render-mode [class*="from-slate-950"],
+.pdf-render-mode [class*="from-stone-950"] {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+}
+
+/* Text colors in dark themes */
+.pdf-render-mode .text-slate-200,
+.pdf-render-mode .text-slate-100,
+.pdf-render-mode .text-stone-200,
+.pdf-render-mode .text-stone-100 {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+}
+.pdf-render-mode .text-indigo-400,
+.pdf-render-mode .text-amber-400 {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+}
+
+/* Card backgrounds in dark themes */
+.pdf-render-mode [class*="bg-slate-900\/"] {
+    background-color: rgba(15, 23, 42, 0.95) !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+}
+.pdf-render-mode [class*="bg-stone-900\/"] {
+    background-color: rgba(28, 25, 23, 0.95) !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+}
+
+/* Light theme: white/light background for kurumsal */
+.pdf-render-mode.pdf-theme-light {
+    background-color: white !important;
+    color: rgb(15, 23, 42) !important;
+}
+.pdf-render-mode.pdf-theme-light [data-pdf-page] {
+    background-color: white !important;
 }
 
 /* Fix overflow hidden cutting content at page boundaries */

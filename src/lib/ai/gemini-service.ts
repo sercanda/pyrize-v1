@@ -527,8 +527,10 @@ export async function sunumOlustur(
       const path = require('path');
       const templatePath = path.join(process.cwd(), 'src', 'components', 'templates', ...check.path);
       if (fs.existsSync(templatePath)) {
-        console.log(`📦 ${check.label} zip template bulundu, AI çağrısı atlanıyor`);
-        return buildBaseTemplate();
+        console.log(`📦 ${check.label} zip template bulundu, ana AI içerik üretimi atlanıyor ama zenginleştirme yapılacak`);
+        const baseTemplate = buildBaseTemplate();
+        const enriched = await enrichTemplateWithAI(baseTemplate);
+        return enriched;
       }
     } catch (error) {
       console.log(`📦 ${check.label} zip template kontrolünde sorun:`, error);
@@ -635,10 +637,17 @@ ${modernTemplateGuidelines}
           if (enhanced.heroAciklama) baseTemplate.heroAciklama = enhanced.heroAciklama;
           if (enhanced.detayliDegerleme) baseTemplate.detayliDegerleme = enhanced.detayliDegerleme;
 
-          // Bolgeler'i GÜVENLİ şekilde güncelle
+          // Bolgeler'i TİP BAZLI güncelle (index yerine tip eşleştirmesi)
           if (enhanced.bolgeler && Array.isArray(enhanced.bolgeler) && baseTemplate.bolgeler) {
+            // AI'dan gelen bolgeleri tip'e göre map'le
+            const enhancedByTip = new Map<string, typeof enhanced.bolgeler[0]>();
+            for (const eb of enhanced.bolgeler) {
+              if (eb.tip) enhancedByTip.set(eb.tip, eb);
+            }
+
             baseTemplate.bolgeler = baseTemplate.bolgeler.map((templateBolge, index) => {
-              const enhancedBolge = enhanced.bolgeler[index];
+              // Önce tip bazlı eşleştir, bulamazsa index bazlı fallback
+              const enhancedBolge = (templateBolge.tip && enhancedByTip.get(templateBolge.tip)) || enhanced.bolgeler[index];
               if (enhancedBolge) {
                 const updatedBolge = {
                   ...templateBolge,
@@ -664,6 +673,13 @@ ${modernTemplateGuidelines}
               }
               return templateBolge;
             });
+
+            // AI'dan gelen ama base template'te olmayan yeni bolgeleri ekle
+            for (const eb of enhanced.bolgeler) {
+              if (eb.tip && !baseTemplate.bolgeler.find(b => b.tip === eb.tip)) {
+                baseTemplate.bolgeler.push(eb);
+              }
+            }
           }
 
           const enriched = await enrichTemplateWithAI(baseTemplate);
