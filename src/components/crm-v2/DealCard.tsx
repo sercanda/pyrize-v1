@@ -1,16 +1,21 @@
 "use client";
 
 import { useDraggable } from "@dnd-kit/core";
-import { User2, Calendar } from "lucide-react";
+import { User2, Calendar, Edit, Copy, Archive, Trash2 } from "lucide-react";
 import type { DBDeal } from "@/types/crm";
+import { AppMenu } from "@/components/ui/AppMenu";
 
 interface DealCardProps {
   deal: DBDeal;
   onClick?: () => void;
   isDragging?: boolean;
+  onEdit?: () => void;
+  onDuplicate?: () => void;
+  onArchive?: () => void;
+  onDelete?: () => void;
 }
 
-export function DealCard({ deal, onClick, isDragging }: DealCardProps) {
+export function DealCard({ deal, onClick, isDragging, onEdit, onDuplicate, onArchive, onDelete }: DealCardProps) {
   const { attributes, listeners, setNodeRef, transform } = useDraggable({
     id: deal.id,
   });
@@ -30,7 +35,19 @@ export function DealCard({ deal, onClick, isDragging }: DealCardProps) {
         isDragging ? "opacity-80 rotate-2 shadow-xl" : ""
       }`}
     >
-      <p className="text-sm font-medium text-white line-clamp-1">{deal.title}</p>
+      <div className="flex items-start justify-between gap-1">
+        <p className="text-sm font-medium text-white line-clamp-1 flex-1">{deal.title}</p>
+        {(onEdit || onDuplicate || onArchive || onDelete) && (
+          <AppMenu
+            items={[
+              ...(onEdit ? [{ label: "Düzenle", icon: Edit, onClick: onEdit }] : []),
+              ...(onDuplicate ? [{ label: "Kopyala", icon: Copy, onClick: onDuplicate }] : []),
+              ...(onArchive ? [{ label: "Arşivle", icon: Archive, onClick: onArchive }] : []),
+              ...(onDelete ? [{ label: "Sil", icon: Trash2, onClick: onDelete, destructive: true }] : []),
+            ]}
+          />
+        )}
+      </div>
 
       {deal.customer && (
         <div className="flex items-center gap-1.5 mt-2">

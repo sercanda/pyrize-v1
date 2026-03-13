@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { X } from "lucide-react";
 import type { DBDeal, DBCustomer, DBProperty } from "@/types/crm";
+import { AppListbox } from "@/components/ui/AppListbox";
 
 interface CreateDealModalProps {
   onClose: () => void;
@@ -24,8 +25,13 @@ export function CreateDealModal({ onClose, onCreate }: CreateDealModalProps) {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    fetch("/api/crm/customers").then((r) => r.json()).then(setCustomers).catch(() => {});
-    fetch("/api/crm/properties").then((r) => r.json()).then(setProperties).catch(() => {});
+    Promise.all([
+      fetch("/api/crm/customers").then((r) => r.json()),
+      fetch("/api/crm/properties").then((r) => r.json()),
+    ]).then(([customersData, propertiesData]) => {
+      setCustomers(customersData);
+      setProperties(propertiesData);
+    }).catch(() => {});
   }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -81,29 +87,21 @@ export function CreateDealModal({ onClose, onCreate }: CreateDealModalProps) {
           <div className="grid grid-cols-2 gap-3">
             <div>
               <label className="block text-xs font-medium text-slate-400 mb-1.5">Müşteri</label>
-              <select
+              <AppListbox<string>
                 value={form.customer_id}
-                onChange={(e) => setForm((f) => ({ ...f, customer_id: e.target.value }))}
-                className="w-full rounded-xl border border-white/[0.08] bg-white/[0.04] px-4 py-2.5 text-sm text-white focus:border-cyan-500/30 focus:outline-none focus:ring-2 focus:ring-cyan-500/20"
-              >
-                <option value="">Seçiniz</option>
-                {customers.map((c) => (
-                  <option key={c.id} value={c.id}>{c.name}</option>
-                ))}
-              </select>
+                onChange={(v) => setForm((f) => ({ ...f, customer_id: v }))}
+                options={[{ value: '', label: 'Seçiniz' }, ...customers.map((c) => ({ value: c.id, label: c.name }))]}
+                placeholder="Seçiniz"
+              />
             </div>
             <div>
               <label className="block text-xs font-medium text-slate-400 mb-1.5">Mülk</label>
-              <select
+              <AppListbox<string>
                 value={form.property_id}
-                onChange={(e) => setForm((f) => ({ ...f, property_id: e.target.value }))}
-                className="w-full rounded-xl border border-white/[0.08] bg-white/[0.04] px-4 py-2.5 text-sm text-white focus:border-cyan-500/30 focus:outline-none focus:ring-2 focus:ring-cyan-500/20"
-              >
-                <option value="">Seçiniz</option>
-                {properties.map((p) => (
-                  <option key={p.id} value={p.id}>{p.title}</option>
-                ))}
-              </select>
+                onChange={(v) => setForm((f) => ({ ...f, property_id: v }))}
+                options={[{ value: '', label: 'Seçiniz' }, ...properties.map((p) => ({ value: p.id, label: p.title }))]}
+                placeholder="Seçiniz"
+              />
             </div>
           </div>
 

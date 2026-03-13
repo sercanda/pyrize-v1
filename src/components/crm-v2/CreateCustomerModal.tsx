@@ -3,6 +3,14 @@
 import { useState } from "react";
 import { X } from "lucide-react";
 import type { DBCustomer, ContactType } from "@/types/crm";
+import { AppListbox } from "@/components/ui/AppListbox";
+
+const CONTACT_TYPE_OPTIONS: { value: ContactType; label: string }[] = [
+  { value: "buyer", label: "Alıcı" },
+  { value: "seller", label: "Satıcı" },
+  { value: "tenant", label: "Kiracı" },
+  { value: "investor", label: "Yatırımcı" },
+];
 
 interface CreateCustomerModalProps {
   onClose: () => void;
@@ -90,16 +98,11 @@ export function CreateCustomerModal({ onClose, onCreate }: CreateCustomerModalPr
           <div className="grid grid-cols-2 gap-3">
             <div>
               <label className="block text-xs font-medium text-slate-400 mb-1.5">Tip</label>
-              <select
+              <AppListbox<ContactType>
                 value={form.type}
-                onChange={(e) => setForm((f) => ({ ...f, type: e.target.value as ContactType }))}
-                className="w-full rounded-xl border border-white/[0.08] bg-white/[0.04] px-4 py-2.5 text-sm text-white focus:border-cyan-500/30 focus:outline-none focus:ring-2 focus:ring-cyan-500/20"
-              >
-                <option value="buyer">Alıcı</option>
-                <option value="seller">Satıcı</option>
-                <option value="tenant">Kiracı</option>
-                <option value="investor">Yatırımcı</option>
-              </select>
+                onChange={(v) => setForm((f) => ({ ...f, type: v }))}
+                options={CONTACT_TYPE_OPTIONS}
+              />
             </div>
             <div>
               <label className="block text-xs font-medium text-slate-400 mb-1.5">Şehir</label>

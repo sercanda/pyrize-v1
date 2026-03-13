@@ -3,6 +3,12 @@
 import { useState } from "react";
 import { X } from "lucide-react";
 import type { DBProperty, PropertyType } from "@/types/crm";
+import { AppListbox } from "@/components/ui/AppListbox";
+
+const PROPERTY_TYPE_OPTIONS: { value: PropertyType; label: string }[] = [
+  { value: "sale", label: "Satılık" },
+  { value: "rent", label: "Kiralık" },
+];
 
 interface CreatePropertyModalProps {
   onClose: () => void;
@@ -88,14 +94,11 @@ export function CreatePropertyModal({ onClose, onCreate }: CreatePropertyModalPr
             </div>
             <div>
               <label className="block text-xs font-medium text-slate-400 mb-1.5">Tip</label>
-              <select
+              <AppListbox<PropertyType>
                 value={form.type}
-                onChange={(e) => setForm((f) => ({ ...f, type: e.target.value as PropertyType }))}
-                className="w-full rounded-xl border border-white/[0.08] bg-white/[0.04] px-4 py-2.5 text-sm text-white focus:border-cyan-500/30 focus:outline-none focus:ring-2 focus:ring-cyan-500/20"
-              >
-                <option value="sale">Satılık</option>
-                <option value="rent">Kiralık</option>
-              </select>
+                onChange={(v) => setForm((f) => ({ ...f, type: v }))}
+                options={PROPERTY_TYPE_OPTIONS}
+              />
             </div>
           </div>
 

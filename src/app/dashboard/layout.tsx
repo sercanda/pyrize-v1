@@ -19,6 +19,7 @@ import {
   TrendingUp,
 } from "lucide-react";
 import { DashboardHeader } from "@/components/DashboardHeader";
+import { ConfettiButton } from "@/components/ui/ConfettiButton";
 import { ReactNode } from "react";
 
 const NAV_ITEMS = [
@@ -136,12 +137,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
         {/* Bottom Section */}
         <div className={`px-4 pb-8 pt-4 transition-all duration-300 ${collapsed && !hovered ? "px-2" : ""}`}>
           {isExpanded && (
-            <Link
-              href="/dashboard/olustur"
-              className="inline-flex w-full items-center justify-center rounded-xl bg-[#24d6a4] px-4 py-3 text-sm font-semibold text-page-bg shadow-[0_0_24px_rgba(36,214,164,0.35)] transition-all duration-200 hover:opacity-90 hover:scale-[1.02]"
-            >
-              Yeni Sunum Oluştur
-            </Link>
+            <ConfettiButton />
           )}
           {collapsed && !hovered && (
             <button

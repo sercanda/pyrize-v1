@@ -15,6 +15,7 @@ import {
   ExternalLink,
 } from "lucide-react";
 import { SlideOver } from "./SlideOver";
+import { SlideOverTabs } from "@/components/ui/AppTabGroup";
 import { CONTACT_TYPE_LABELS } from "@/types/crm";
 import type { DBCustomer, DBDeal, DBProperty, DBActivity, DBTodo, DBPresentation } from "@/types/crm";
 
@@ -85,25 +86,12 @@ export function CustomerSlideOver({ customer, onClose, onUpdate, onDelete }: Cus
       width="max-w-xl"
     >
       {/* Tabs */}
-      <div className="flex gap-1 overflow-x-auto pb-4 mb-4 -mx-6 px-6 border-b border-white/10">
-        {SLIDE_TABS.map((tab) => {
-          const Icon = tab.icon;
-          const isActive = activeTab === tab.key;
-          return (
-            <button
-              key={tab.key}
-              onClick={() => setActiveTab(tab.key)}
-              className={`flex items-center gap-1.5 whitespace-nowrap rounded-lg px-3 py-2 text-xs font-medium transition-all ${
-                isActive
-                  ? "bg-cyan-500/20 text-cyan-300"
-                  : "text-slate-500 hover:bg-white/5 hover:text-slate-300"
-              }`}
-            >
-              <Icon className="h-3.5 w-3.5" />
-              {tab.label}
-            </button>
-          );
-        })}
+      <div className="pb-4 mb-4 -mx-6 px-6 border-b border-white/10">
+        <SlideOverTabs
+          tabs={SLIDE_TABS}
+          activeTab={activeTab}
+          onTabChange={setActiveTab}
+        />
       </div>
 
       {/* Tab Content */}

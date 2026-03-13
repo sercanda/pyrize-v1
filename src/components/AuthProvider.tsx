@@ -1,6 +1,7 @@
 'use client';
 
 import { createContext, useContext } from 'react';
+import { HeroUIProvider } from '@heroui/react';
 import { useAuth } from '@/hooks/useAuth';
 import type { User, Session } from '@supabase/supabase-js';
 
@@ -20,7 +21,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   return (
     <AuthContext.Provider value={auth}>
-      {children}
+      <HeroUIProvider>
+        {children}
+      </HeroUIProvider>
     </AuthContext.Provider>
   );
 }
