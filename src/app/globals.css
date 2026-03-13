@@ -13,6 +13,22 @@
   --card-dark: #141414;
   --brand-blue: #4F46E5;
   --page-bg: var(--background-blue);
+
+  /* PYRIZE Brand Palette */
+  --midnight: #001F3F;
+  --spring: #DBE64C;
+  --praxeti: #F6F7ED;
+  --nuit: #1E488F;
+  --mantis: #74C365;
+  --book-green: #00804C;
+}
+
+.font-instrument {
+  font-family: var(--font-instrument), Georgia, "Times New Roman", serif;
+}
+
+.font-dm-sans {
+  font-family: var(--font-dm-sans), system-ui, sans-serif;
 }
 
 @keyframes marquee {
