@@ -20,7 +20,7 @@ import {
 
 // 5 Farklı Funnel Template
 export const FANNEL_TEMPLATES = {
-  template_1: "detayli_analiz",     // Bedirhan Hacı gibi - çok detaylı
+  template_1: "detayli_analiz",     // Kapsamlı, veri odaklı sunum
   template_2: "hizli_satis",        // Hızlı karar odaklı
   template_3: "premium_sunum",      // Lüks hissi
   template_4: "guven_odakli",       // Güven vurgusu
@@ -1231,7 +1231,7 @@ const applyTemaVeAmacVaryasyon = (
   });
 };
 
-// TEMPLATE 1: Detaylı Analiz (Bedirhan Hacı gibi)
+// TEMPLATE 1: Detaylı Analiz — Kapsamlı, veri odaklı kurumsal sunum
 const detayliAnalizTemplate: FunnelTemplate = {
   id: "detayli_analiz",
   name: "Detaylı Analiz Funneli",

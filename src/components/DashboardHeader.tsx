@@ -46,7 +46,7 @@ export function DashboardHeader({ sidebarWidth }: DashboardHeaderProps) {
         {/* Boş alan - Desktop'ta */}
         <div className="hidden flex-1 md:block" />
 
-        {/* Sağ taraf - Profil ve Yeni Sunum butonu */}
+        {/* Sağ taraf - Profil */}
         <div className="flex flex-shrink-0 items-center gap-2 md:gap-3">
           <div className="flex-shrink-0">
             <ProfileDropdown
@@ -57,13 +57,6 @@ export function DashboardHeader({ sidebarWidth }: DashboardHeaderProps) {
               onLogout={handleLogout}
             />
           </div>
-          <Link
-            href="/dashboard/olustur"
-            className="inline-flex flex-shrink-0 items-center whitespace-nowrap rounded-full bg-[#24d6a4] px-3 py-2 text-xs font-semibold text-page-bg shadow-[0_0_18px_rgba(36,214,164,0.35)] transition hover:opacity-90 md:px-4 md:text-sm"
-          >
-            <span className="hidden sm:inline">Yeni Sunum</span>
-            <span className="sm:hidden">Yeni</span>
-          </Link>
         </div>
       </div>
     </header>

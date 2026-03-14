@@ -878,40 +878,6 @@ export default function HaftalikRaporOlusturPage() {
                 </div>
               </div>
 
-              {/* API Entegrasyonu */}
-              <div className="space-y-6 rounded-xl border border-amber-500/20 bg-amber-500/5 p-6">
-                <h3 className="text-lg font-semibold text-white flex items-center gap-2">
-                  <BarChart3 className="h-5 w-5 text-amber-400" />
-                  API Entegrasyonu (İleride Otomatik Veri Çekimi İçin)
-                </h3>
-                <div className="grid gap-4 md:grid-cols-2">
-                  <div className="space-y-2">
-                    <label className="text-xs uppercase tracking-[0.3em] text-slate-400">
-                      Google Ads Campaign ID
-                    </label>
-                    <input
-                      type="text"
-                      value={formData.googleAdsCampaignId}
-                      onChange={(e) => handleInputChange('googleAdsCampaignId', e.target.value)}
-                      className="w-full rounded-lg border border-white/10 bg-white/5 px-4 py-3 text-white placeholder:text-slate-500 focus:border-amber-500/50 focus:outline-none focus:ring-2 focus:ring-amber-500/20"
-                      placeholder="Örn: 1234567890"
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <label className="text-xs uppercase tracking-[0.3em] text-slate-400">
-                      Meta Ads Campaign ID
-                    </label>
-                    <input
-                      type="text"
-                      value={formData.metaAdsCampaignId}
-                      onChange={(e) => handleInputChange('metaAdsCampaignId', e.target.value)}
-                      className="w-full rounded-lg border border-white/10 bg-white/5 px-4 py-3 text-white placeholder:text-slate-500 focus:border-amber-500/50 focus:outline-none focus:ring-2 focus:ring-amber-500/20"
-                      placeholder="Örn: 9876543210"
-                    />
-                  </div>
-                </div>
-              </div>
-
               <div className="flex justify-between pt-6">
                 <button
                   type="button"

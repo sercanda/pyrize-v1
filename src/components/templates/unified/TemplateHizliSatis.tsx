@@ -129,7 +129,7 @@ export default function TemplateHizliSatis({ data }: Props) {
             </div>
             <div className="space-y-16 print:space-y-8">
               <RegionalComparisonSection property={mapped.property} valuationData={mapped.valuation} theme={theme} />
-              <SalesProcessSection steps={quickSteps} theme={theme} />
+              <SalesProcessSection steps={quickSteps} theme={theme} variant="compact" />
             </div>
           </div>
 

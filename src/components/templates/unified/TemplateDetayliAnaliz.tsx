@@ -91,7 +91,7 @@ export default function TemplateDetayliAnaliz({ data }: Props) {
           {/* PAGE 3: SALES PROCESS */}
           <div data-pdf-page="3" className="w-full min-h-screen px-6 md:px-12 lg:px-16 py-16 flex flex-col border-b border-dashed border-white/5 print:border-none print:block print:h-auto print:min-h-0 print:py-10 print:px-10 print:break-after-page">
             <PageHeader num="03" title="Satış Sistemi & Süreç Haritası" />
-            <SalesProcessSection steps={mapped.salesSteps} theme={theme} />
+            <SalesProcessSection steps={mapped.salesSteps} theme={theme} variant="numbered" />
           </div>
 
           {/* PAGE 4: BENEFITS */}

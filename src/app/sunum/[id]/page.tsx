@@ -110,7 +110,7 @@ function SunumPageContent() {
           <div className="text-red-500 text-6xl mb-4">❌</div>
           <h1 className="text-2xl font-bold text-white mb-2">Hata</h1>
           <p className="text-gray-300 mb-6">{pageError}</p>
-          <a href="/dashboard" className="inline-block px-6 py-3 bg-[#57B6B2] text-white rounded-lg hover:bg-[#4a9e9a] transition">
+          <a href="/dashboard" className="inline-block px-6 py-3 bg-[#DBE64C] text-white rounded-lg hover:bg-[#4a9e9a] transition">
             Dashboard'a Dön
           </a>
         </div>
@@ -123,7 +123,7 @@ function SunumPageContent() {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#0a0a0a] via-[#1a1a2e] to-[#16213e]">
         <div className="text-center">
-          <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-[#57B6B2]" />
+          <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-[#DBE64C]" />
           <p className="mt-4 text-gray-300">Sunum yükleniyor...</p>
         </div>
       </div>
@@ -221,7 +221,7 @@ function SunumPageContent() {
           <div className="flex items-center justify-between">
             <Link
               href="/dashboard"
-              className="flex items-center gap-2 text-gray-700 hover:text-[#57B6B2] transition-colors"
+              className="flex items-center gap-2 text-gray-700 hover:text-[#DBE64C] transition-colors"
             >
               <ArrowLeft className="w-5 h-5" />
               <span className="text-sm sm:text-base font-medium">Geri</span>
@@ -232,7 +232,7 @@ function SunumPageContent() {
               <div className="flex items-center gap-1 bg-gray-100 rounded-lg p-1">
                 <button
                   onClick={() => setViewMode("mobile")}
-                  className={`p-2 rounded transition-colors ${viewMode === "mobile" ? "bg-[#57B6B2] text-white" : "text-gray-700"
+                  className={`p-2 rounded transition-colors ${viewMode === "mobile" ? "bg-[#DBE64C] text-white" : "text-gray-700"
                     }`}
                   title="Mobil Görünüm"
                 >
@@ -240,7 +240,7 @@ function SunumPageContent() {
                 </button>
                 <button
                   onClick={() => setViewMode("desktop")}
-                  className={`p-2 rounded transition-colors ${viewMode === "desktop" ? "bg-[#57B6B2] text-white" : "text-gray-700"
+                  className={`p-2 rounded transition-colors ${viewMode === "desktop" ? "bg-[#DBE64C] text-white" : "text-gray-700"
                     }`}
                   title="Masaüstü Görünüm"
                 >
@@ -267,18 +267,18 @@ function SunumPageContent() {
               <button
                 onClick={handleDownload}
                 disabled={pdfLoading || !params.id}
-                className="p-2 bg-[#57B6B2] rounded-lg hover:bg-[#4a9d99] transition-colors flex items-center gap-1 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="p-2 bg-[#DBE64C] rounded-lg hover:bg-[#c9d340] transition-colors flex items-center gap-1 disabled:opacity-50 disabled:cursor-not-allowed"
                 title={params.id ? "PDF İndir" : "PDF indirme için sunum ID'si gerekli"}
               >
                 {pdfLoading ? (
                   <>
-                    <div className="w-4 h-4 sm:w-5 sm:h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                    <span className="hidden sm:inline text-white text-sm font-medium">Oluşturuluyor...</span>
+                    <div className="w-4 h-4 sm:w-5 sm:h-5 border-2 border-[#001F3F] border-t-transparent rounded-full animate-spin" />
+                    <span className="hidden sm:inline text-[#001F3F] text-sm font-medium">Oluşturuluyor...</span>
                   </>
                 ) : (
                   <>
-                    <Download className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
-                    <span className="hidden sm:inline text-white text-sm font-medium">PDF</span>
+                    <Download className="w-4 h-4 sm:w-5 sm:h-5 text-[#001F3F]" />
+                    <span className="hidden sm:inline text-[#001F3F] text-sm font-medium">PDF</span>
                   </>
                 )}
               </button>

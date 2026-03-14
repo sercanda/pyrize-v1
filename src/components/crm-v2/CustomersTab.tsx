@@ -8,6 +8,7 @@ import { CONTACT_TYPE_LABELS } from "@/types/crm";
 import type { DBCustomer } from "@/types/crm";
 import { CustomerSlideOver } from "./CustomerSlideOver";
 import { CreateCustomerModal } from "./CreateCustomerModal";
+import { CreatePropertyModal } from "./CreatePropertyModal";
 
 function timeAgo(dateStr: string) {
   const diff = Date.now() - new Date(dateStr).getTime();
@@ -25,6 +26,7 @@ export function CustomersTab() {
   const [filterType, setFilterType] = useState<string>("");
   const [selectedCustomer, setSelectedCustomer] = useState<DBCustomer | null>(null);
   const [showCreateModal, setShowCreateModal] = useState(false);
+  const [addPropertyForCustomerId, setAddPropertyForCustomerId] = useState<string | null>(null);
 
   const filtered = useMemo(() => {
     let result = customers;
@@ -164,13 +166,26 @@ export function CustomersTab() {
         />
       )}
 
-      {/* Create Modal */}
+      {/* Create Customer Modal */}
       {showCreateModal && (
         <CreateCustomerModal
           onClose={() => setShowCreateModal(false)}
           onCreate={async (data) => {
-            await createCustomer(data);
+            const created = await createCustomer(data);
             setShowCreateModal(false);
+            return created;
+          }}
+          onAddProperty={(customerId) => setAddPropertyForCustomerId(customerId)}
+        />
+      )}
+
+      {/* Add Property for newly created customer */}
+      {addPropertyForCustomerId && (
+        <CreatePropertyModal
+          defaultCustomerId={addPropertyForCustomerId}
+          onClose={() => setAddPropertyForCustomerId(null)}
+          onCreate={async () => {
+            setAddPropertyForCustomerId(null);
           }}
         />
       )}

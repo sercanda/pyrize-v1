@@ -82,7 +82,7 @@ const painCards = [
   {
     icon: "🎨",
     title: "Amatör görünüm",
-    desc: "Word, PowerPoint, Canva arasında gidip gelen düzensiz sunumlar. Marka tutarlılığı sıfır.",
+    desc: "Tutarsız, markanıza uymayan sunumlar alıcıda güvensizlik yaratır. Her mülk için sıfırdan başlamak zaman ve fırsat kaybıdır.",
   },
   {
     icon: "📉",
@@ -90,9 +90,9 @@ const painCards = [
     desc: "Müşteri sunumdan etkilenmezse, toplantı sonrası sesini duymuyor. Rakip kazanıyor.",
   },
   {
-    icon: "🚫",
-    title: "FSBO dezavantajı",
-    desc: "Sahibinden satanlar profesyonel sunum yapamıyor. Alıcılar ciddiye almıyor, pazarlık gücü düşük.",
+    icon: "🏠",
+    title: "FSBO fırsatı",
+    desc: "Sahibinden satan portföylere profesyonel sunum hazırlayan danışman rakiplerinden sıyrılır. Alıcı güveni ve pazarlık gücü fark yaratır.",
   },
 ];
 
@@ -110,15 +110,15 @@ const steps = [
   {
     num: "03",
     title: "Gönder & Kapat",
-    desc: "PDF indir veya mobil link gönder. Müşterinin sunumu ne zaman açtığını takip et.",
+    desc: "PDF indir veya mobil link paylaş. Sunum anında hazır — dakikalar içinde müşterine ulaş.",
   },
 ];
 
 const funnelSteps = [
   { emoji: "📸", title: "Mülk Bilgileri & Fotoğraflar", sub: "Temel veriler girilir", width: "100%" },
   { emoji: "🤖", title: "AI İçerik Üretimi", sub: "Satış metni, analiz, karşılaştırma", width: "84%" },
-  { emoji: "🎨", title: "Profesyonel Sunum", sub: "PDF + Mobil link hazır", width: "68%" },
-  { emoji: "📊", title: "Müşteri Takip", sub: "Kim açtı, ne kadar baktı", width: "52%" },
+  { emoji: "🎨", title: "Profesyonel Sunum", sub: "Sunum hazır", width: "68%" },
+  { emoji: "📊", title: "Paylaş & Kapanışa Hazırlan", sub: "Link, PDF veya doğrudan gönder", width: "52%" },
   { emoji: "✅", title: "Satış Kapama", sub: "Teklif toplama & onay", width: "40%", highlight: true },
 ];
 
@@ -146,8 +146,8 @@ const features = [
   },
   {
     icon: Eye,
-    title: "Müşteri Takibi",
-    desc: "Kim sunumu açtı, hangi bölüme ne kadar baktı? \"Ahmet Bey fiyat bölümünde 3dk harcadı\" — artık biliyorsun.",
+    title: "Sunum Performansı",
+    desc: "Sunumunuzu kaç potansiyel alıcının incelediğini görün. Hangi mülkler daha çok ilgi çekiyor, analiz edin.",
     tag: "İÇGÖRÜ",
     large: false,
   },
@@ -169,12 +169,12 @@ const features = [
 
 const objections = [
   {
-    q: "Ben zaten Canva kullanıyorum, niye değiştireyim?",
-    a: "Canva genel amaçlı bir tasarım aracı. Her mülk için sıfırdan başlıyorsun. Pyrize'da mülk bilgilerini giriyorsun, AI satışa özel metin + tasarım + funnel üretiyor. Canva'da 45dk, Pyrize'da 2dk. Matematik bu.",
+    q: "Zaten sunum araçları kullanıyorum, neden değiştireyim?",
+    a: "Genel tasarım araçları emlak satışı için optimize değil. Her mülk için sıfırdan başlıyorsun, satış metni yazıyorsun, düzen oluşturuyorsun. Pyrize'da mülk bilgilerini giriyorsun — AI satışa özel metin, bölge analizi ve tasarımı 2 dakikada üretiyor.",
   },
   {
     q: "Müşterilerim sunuma bakmıyor ki",
-    a: "Çünkü sunumun mobilde açılmıyor, 10 sayfalık PDF'i kimse indirmiyor. Pyrize sunumları mobil öncelikli, tek linkle açılıyor. Ve kimin açtığını takip ediyorsun.",
+    a: "Çünkü sunumun mobilde açılmıyor, 10 sayfalık PDF'i kimse indirmiyor. Pyrize sunumları mobil öncelikli, tek linkle açılıyor. İkna gücü yüksek, okunabilir format satış fırsatını kaçırmana izin vermiyor.",
   },
   {
     q: "AI sunumlar yapay görünüyor",
@@ -467,10 +467,10 @@ export default function LandingPage() {
           {/* H1 */}
           <BlurFade delay={0.15} inView>
             <h1
-              className="font-bold leading-[1.05] mb-6"
+              className="font-extrabold tracking-tight leading-[1.08] mb-4"
               style={{
-                fontFamily: "var(--font-instrument), Georgia, serif",
-                fontSize: "clamp(2.8rem, 7.5vw, 6rem)",
+                fontFamily: "var(--font-montserrat), system-ui, sans-serif",
+                fontSize: "clamp(2.6rem, 7vw, 5.5rem)",
                 color: "#F6F7ED",
               }}
             >
@@ -478,23 +478,25 @@ export default function LandingPage() {
               <br />
               Sunum Yüzünden
               <br />
-              <em style={{ color: "#DBE64C", fontStyle: "italic" }}>
-                Satış Kaybediyor.
-              </em>
+              Satış Kaybediyor.
             </h1>
+            <div
+              className="h-1 w-20 rounded-full mb-6"
+              style={{ background: "#DBE64C" }}
+            />
           </BlurFade>
 
           {/* Subtitle */}
           <BlurFade delay={0.3} inView>
             <p
-              className="mb-10 max-w-[580px] leading-relaxed"
+              className="mb-10 max-w-[560px] leading-relaxed"
               style={{ color: "#8A9BB5", fontSize: "1.1rem" }}
             >
               Mülk bilgilerini gir.{" "}
               <strong style={{ color: "#F6F7ED" }}>
                 AI satışa özel sunum ve funnel üretsin.
               </strong>{" "}
-              2 dakikada profesyonel PDF ve mobil link hazır. Gönder, kapat.
+              2 dakikada profesyonel sunum hazır. Gönder, kapat.
             </p>
           </BlurFade>
 
@@ -631,15 +633,14 @@ export default function LandingPage() {
           <BlurFade inView delay={0}>
             <SectionLabel>GERÇEK</SectionLabel>
             <h2
-              className="text-4xl md:text-5xl font-bold leading-tight mb-6"
-              style={{ fontFamily: "var(--font-instrument), Georgia, serif" }}
+              className="text-4xl md:text-5xl font-extrabold tracking-tight leading-tight mb-6"
+              style={{ fontFamily: "var(--font-montserrat), system-ui, sans-serif", color: "#F6F7ED" }}
             >
-              Canva&apos;da 45 dakika
+              Dakikalar içinde
               <br />
-              harcayıp{" "}
-              <em style={{ color: "#DBE64C" }}>amatör</em>
+              <span style={{ color: "#DBE64C" }}>profesyonel sunum.</span>
               <br />
-              mü görünüyorsun?
+              Her mülke özel.
             </h2>
             <p className="text-base leading-relaxed" style={{ color: "#8A9BB5" }}>
               Müşterin karşına profesyonel bir sunumla çıkan rakibini seçiyor.
@@ -1154,9 +1155,9 @@ export default function LandingPage() {
             >
               <Shield size={16} style={{ color: "#DBE64C" }} />
               <p className="text-sm">
-                <strong style={{ color: "#DBE64C" }}>Risk sıfır:</strong>{" "}
+                <strong style={{ color: "#DBE64C" }}>30 gün iade garantisi:</strong>{" "}
                 <span style={{ color: "#8A9BB5" }}>
-                  İlk sunumun seni ikna etmezse, 1 kuruş ödemezsin. Para iade garantisi.
+                  Pyrize&apos;dan memnun kalmazsan, ödediğin tutarı iade ediyoruz — soru sormadan.
                 </span>
               </p>
             </div>

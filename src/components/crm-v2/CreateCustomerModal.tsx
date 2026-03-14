@@ -14,10 +14,11 @@ const CONTACT_TYPE_OPTIONS: { value: ContactType; label: string }[] = [
 
 interface CreateCustomerModalProps {
   onClose: () => void;
-  onCreate: (data: Partial<DBCustomer>) => Promise<void>;
+  onCreate: (data: Partial<DBCustomer>) => Promise<DBCustomer | void>;
+  onAddProperty?: (customerId: string) => void;
 }
 
-export function CreateCustomerModal({ onClose, onCreate }: CreateCustomerModalProps) {
+export function CreateCustomerModal({ onClose, onCreate, onAddProperty }: CreateCustomerModalProps) {
   const [form, setForm] = useState({
     name: "",
     phone: "",
@@ -26,6 +27,7 @@ export function CreateCustomerModal({ onClose, onCreate }: CreateCustomerModalPr
     city: "",
     notes: "",
   });
+  const [addProperty, setAddProperty] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -35,7 +37,11 @@ export function CreateCustomerModal({ onClose, onCreate }: CreateCustomerModalPr
     setLoading(true);
     setError(null);
     try {
-      await onCreate(form);
+      const created = await onCreate(form);
+      onClose();
+      if (addProperty && onAddProperty && created && typeof created === "object" && "id" in created) {
+        onAddProperty((created as DBCustomer).id);
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : "Müşteri kaydedilemedi. Lütfen tekrar deneyin.");
     } finally {
@@ -127,6 +133,24 @@ export function CreateCustomerModal({ onClose, onCreate }: CreateCustomerModalPr
             />
           </div>
 
+          {/* Mülk ekle seçeneği */}
+          <label className="flex items-center gap-3 cursor-pointer group select-none">
+            <div
+              className={`w-5 h-5 rounded border flex items-center justify-center transition-colors ${
+                addProperty ? "bg-[#DBE64C] border-[#DBE64C]" : "border-white/20 bg-white/[0.04] group-hover:border-white/40"
+              }`}
+              onClick={() => setAddProperty((v) => !v)}
+            >
+              {addProperty && (
+                <svg viewBox="0 0 10 8" className="w-3 h-3 fill-[#001F3F]">
+                  <path d="M1 4l3 3 5-6" stroke="currentColor" strokeWidth="1.5" fill="none" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              )}
+            </div>
+            <input type="checkbox" checked={addProperty} onChange={(e) => setAddProperty(e.target.checked)} className="hidden" />
+            <span className="text-sm text-slate-300">Bu müşteriye mülk ekle</span>
+          </label>
+
           <div className="flex justify-end gap-3 pt-2">
             <button
               type="button"
@@ -138,9 +162,9 @@ export function CreateCustomerModal({ onClose, onCreate }: CreateCustomerModalPr
             <button
               type="submit"
               disabled={loading || !form.name.trim()}
-              className="rounded-xl bg-[#24d6a4] px-6 py-2.5 text-sm font-semibold text-[#030822] shadow-[0_0_20px_rgba(36,214,164,0.3)] transition-all hover:opacity-90 disabled:opacity-50"
+              className="rounded-xl bg-[#DBE64C] px-6 py-2.5 text-sm font-semibold text-[#001F3F] shadow-[0_0_20px_rgba(219,230,76,0.3)] transition-all hover:opacity-90 disabled:opacity-50"
             >
-              {loading ? "Kaydediliyor..." : "Kaydet"}
+              {loading ? "Kaydediliyor..." : addProperty ? "Kaydet & Mülk Ekle" : "Kaydet"}
             </button>
           </div>
         </form>

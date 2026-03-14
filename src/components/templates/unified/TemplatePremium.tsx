@@ -122,7 +122,7 @@ export default function TemplatePremium({ data }: Props) {
                 offerDetails={mapped.exclusiveOffer?.details}
                 consultantName={mapped.consultant.adSoyad}
               />
-              <SalesProcessSection steps={mapped.salesSteps} theme={theme} />
+              <SalesProcessSection steps={mapped.salesSteps} theme={theme} variant="timeline" />
             </div>
           </div>
 
