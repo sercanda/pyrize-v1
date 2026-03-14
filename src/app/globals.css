@@ -21,6 +21,28 @@
   --nuit: #1E488F;
   --mantis: #74C365;
   --book-green: #00804C;
+
+  /* shadcn/ui CSS Variables — Dark (Midnight Mirage) */
+  --background: 210 100% 12%;       /* #001F3F midnight */
+  --foreground: 60 13% 96%;         /* #F6F7ED praxeti */
+  --card: 210 100% 10%;
+  --card-foreground: 60 13% 96%;
+  --popover: 210 100% 10%;
+  --popover-foreground: 60 13% 96%;
+  --primary: 72 71% 58%;            /* #DBE64C spring */
+  --primary-foreground: 210 100% 12%;
+  --secondary: 220 60% 32%;         /* #1E488F nuit */
+  --secondary-foreground: 60 13% 96%;
+  --muted: 215 30% 18%;
+  --muted-foreground: 215 20% 55%;
+  --accent: 72 71% 58%;
+  --accent-foreground: 210 100% 12%;
+  --destructive: 0 72% 51%;
+  --destructive-foreground: 60 13% 96%;
+  --border: 215 30% 18%;
+  --input: 215 30% 18%;
+  --ring: 72 71% 58%;
+  --radius: 0.75rem;
 }
 
 .font-instrument {
