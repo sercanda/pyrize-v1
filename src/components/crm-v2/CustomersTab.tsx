@@ -4,6 +4,7 @@ import { useState, useMemo } from "react";
 import { Search, Plus, Phone, Mail, User2, ChevronRight } from "lucide-react";
 import { GlassCard } from "@/components/ui/glass";
 import { useCRMCustomers } from "@/hooks/useCRMCustomers";
+import { useCRMProperties } from "@/hooks/useCRMProperties";
 import { CONTACT_TYPE_LABELS } from "@/types/crm";
 import type { DBCustomer } from "@/types/crm";
 import { CustomerSlideOver } from "./CustomerSlideOver";
@@ -22,6 +23,7 @@ function timeAgo(dateStr: string) {
 
 export function CustomersTab() {
   const { customers, loading, createCustomer, updateCustomer, deleteCustomer } = useCRMCustomers();
+  const { createProperty } = useCRMProperties({ autoFetch: false });
   const [search, setSearch] = useState("");
   const [filterType, setFilterType] = useState<string>("");
   const [selectedCustomer, setSelectedCustomer] = useState<DBCustomer | null>(null);
@@ -163,6 +165,9 @@ export function CustomersTab() {
             await deleteCustomer(selectedCustomer.id);
             setSelectedCustomer(null);
           }}
+          onCreateProperty={async (data, _photos) => {
+            await createProperty({ ...data, customer_id: selectedCustomer.id });
+          }}
         />
       )}
 
@@ -184,7 +189,8 @@ export function CustomersTab() {
         <CreatePropertyModal
           defaultCustomerId={addPropertyForCustomerId}
           onClose={() => setAddPropertyForCustomerId(null)}
-          onCreate={async () => {
+          onCreate={async (data, _photos) => {
+            await createProperty({ ...data, customer_id: addPropertyForCustomerId });
             setAddPropertyForCustomerId(null);
           }}
         />

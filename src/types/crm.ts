@@ -230,6 +230,13 @@ export const PROPERTY_STATUS_LABELS: Record<PropertyStatus, string> = {
   pending: "Beklemede",
 };
 
+export const PROPERTY_STATUS_OPTIONS: { value: PropertyStatus; label: string }[] = [
+  { value: "available", label: "Müsait" },
+  { value: "pending", label: "Beklemede" },
+  { value: "sold", label: "Satıldı" },
+  { value: "rented", label: "Kiralandı" },
+];
+
 export const TODO_PRIORITY_LABELS: Record<TodoPriority, string> = {
   low: "Düşük",
   medium: "Orta",

@@ -466,23 +466,61 @@ export default function LandingPage() {
 
           {/* H1 */}
           <BlurFade delay={0.15} inView>
-            <h1
-              className="font-extrabold tracking-tight leading-[1.08] mb-4"
+            <div
+              className="flex flex-col items-center gap-3 mb-6"
               style={{
                 fontFamily: "var(--font-montserrat), system-ui, sans-serif",
-                fontSize: "clamp(2.6rem, 7vw, 5.5rem)",
-                color: "#F6F7ED",
               }}
             >
-              Emlakçıların %73&apos;ü
-              <br />
-              Sunum Yüzünden
-              <br />
-              Satış Kaybediyor.
-            </h1>
+              {/* Satır 1 — soluk intro */}
+              <p
+                className="font-semibold tracking-wide uppercase"
+                style={{ fontSize: "clamp(0.7rem, 1.5vw, 0.85rem)", color: "#8A9BB5", letterSpacing: "0.25em" }}
+              >
+                Emlakçıların
+              </p>
+
+              {/* Satır 2 — stat kutusu + devam */}
+              <div className="flex flex-wrap items-center justify-center gap-3">
+                <span
+                  className="inline-flex items-center px-4 py-1.5 rounded-xl border font-black animate-glow-pulse"
+                  style={{
+                    fontSize: "clamp(1.6rem, 4vw, 2.8rem)",
+                    borderColor: "#DBE64C",
+                    background: "rgba(219,230,76,0.1)",
+                    color: "#DBE64C",
+                    lineHeight: 1.1,
+                  }}
+                >
+                  %73&apos;ü
+                </span>
+                <span
+                  className="font-extrabold tracking-tight"
+                  style={{ fontSize: "clamp(1.6rem, 4vw, 2.8rem)", color: "#F6F7ED", lineHeight: 1.1 }}
+                >
+                  Sunum Yüzünden
+                </span>
+              </div>
+
+              {/* Satır 3 — shiny vurgu */}
+              <AnimatedShinyText
+                className="font-black tracking-tight"
+                style={
+                  {
+                    fontSize: "clamp(1.6rem, 4vw, 2.8rem)",
+                    color: "#F6F7ED",
+                    lineHeight: 1.1,
+                    "--shiny-width": "100px",
+                  } as React.CSSProperties
+                }
+              >
+                Satış Kaybediyor.
+              </AnimatedShinyText>
+            </div>
+
             <div
-              className="h-1 w-20 rounded-full mb-6"
-              style={{ background: "#DBE64C" }}
+              className="h-px w-14 rounded-full mx-auto mb-6"
+              style={{ background: "#DBE64C", opacity: 0.6 }}
             />
           </BlurFade>
 

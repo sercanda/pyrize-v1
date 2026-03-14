@@ -1,20 +1,24 @@
 "use client";
 
+import { useState, useMemo } from "react";
 import {
   Users2,
   TrendingUp,
   CheckCircle2,
   Clock,
-  Building2,
   Phone,
   Mail,
   MessageSquare,
   FileText,
+  Plus,
 } from "lucide-react";
 import { GlassCard } from "@/components/ui/glass";
 import { useCRMDashboard } from "@/hooks/useCRMDashboard";
-import { DB_ACTIVITY_TYPE_LABELS } from "@/types/crm";
+import { useCRMDeals } from "@/hooks/useCRMDeals";
+import { DB_ACTIVITY_TYPE_LABELS, DEAL_STAGES } from "@/types/crm";
+import type { DealStage } from "@/types/crm";
 import type { CRMTab } from "./CRMLayout";
+import { CreateDealModal } from "./CreateDealModal";
 
 const ACTIVITY_ICONS: Record<string, typeof Phone> = {
   call: Phone,
@@ -48,6 +52,26 @@ interface CRMDashboardProps {
 
 export function CRMDashboard({ onNavigate }: CRMDashboardProps) {
   const { stats, loading } = useCRMDashboard();
+  const { deals, createDeal } = useCRMDeals();
+  const [showCreateDeal, setShowCreateDeal] = useState(false);
+
+  const dealsByStage = useMemo(() => {
+    const map: Record<DealStage, { count: number; value: number }> = {
+      lead: { count: 0, value: 0 },
+      meeting: { count: 0, value: 0 },
+      offer: { count: 0, value: 0 },
+      contract: { count: 0, value: 0 },
+      closed: { count: 0, value: 0 },
+      lost: { count: 0, value: 0 },
+    };
+    deals.forEach((d) => {
+      if (map[d.stage]) {
+        map[d.stage].count++;
+        map[d.stage].value += Number(d.value) || 0;
+      }
+    });
+    return map;
+  }, [deals]);
 
   if (loading) {
     return (
@@ -136,6 +160,50 @@ export function CRMDashboard({ onNavigate }: CRMDashboardProps) {
         })}
       </div>
 
+      {/* Pipeline Özeti */}
+      <GlassCard className="p-6" hover={false}>
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-lg font-semibold text-white">Pipeline</h2>
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => onNavigate("firsatlar")}
+              className="text-xs text-cyan-400 hover:text-cyan-300 transition-colors"
+            >
+              Tümünü Gör
+            </button>
+            <button
+              onClick={() => setShowCreateDeal(true)}
+              className="flex items-center gap-1.5 rounded-lg bg-[#DBE64C] px-3 py-1.5 text-xs font-semibold text-[#001F3F] transition hover:opacity-90"
+            >
+              <Plus className="h-3.5 w-3.5" />
+              Fırsat Ekle
+            </button>
+          </div>
+        </div>
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+          {DEAL_STAGES.filter((s) => s.key !== "lost").map((stage) => {
+            const data = dealsByStage[stage.key];
+            return (
+              <button
+                key={stage.key}
+                onClick={() => onNavigate("firsatlar")}
+                className="rounded-xl border border-white/10 bg-white/[0.03] p-3 text-left transition hover:bg-white/[0.07]"
+              >
+                <span className={`text-[10px] font-semibold uppercase tracking-wider ${stage.color}`}>
+                  {stage.title}
+                </span>
+                <p className="mt-1.5 text-2xl font-bold text-white tabular-nums">{data.count}</p>
+                <p className="mt-0.5 text-xs text-slate-500">
+                  {data.value > 0
+                    ? new Intl.NumberFormat("tr-TR", { notation: "compact", maximumFractionDigits: 1 }).format(data.value) + " ₺"
+                    : "Fırsat yok"}
+                </p>
+              </button>
+            );
+          })}
+        </div>
+      </GlassCard>
+
       {/* Recent Activities */}
       <GlassCard className="p-6" hover={false}>
         <div className="flex items-center justify-between mb-4">
@@ -180,6 +248,16 @@ export function CRMDashboard({ onNavigate }: CRMDashboardProps) {
           </p>
         )}
       </GlassCard>
+
+      {showCreateDeal && (
+        <CreateDealModal
+          onClose={() => setShowCreateDeal(false)}
+          onCreate={async (data) => {
+            await createDeal(data);
+            setShowCreateDeal(false);
+          }}
+        />
+      )}
     </div>
   );
 }

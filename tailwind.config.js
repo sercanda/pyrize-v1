@@ -103,6 +103,10 @@ module.exports = {
           "0%": { backgroundPosition: "-200% 0" },
           "100%": { backgroundPosition: "200% 0" },
         },
+        "glow-pulse": {
+          "0%, 100%": { boxShadow: "0 0 8px rgba(219,230,76,0.2), inset 0 0 8px rgba(219,230,76,0.05)" },
+          "50%": { boxShadow: "0 0 28px rgba(219,230,76,0.55), inset 0 0 12px rgba(219,230,76,0.1)" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
@@ -114,6 +118,7 @@ module.exports = {
         "pulse-dot": "pulse-dot 2s ease-in-out infinite",
         "fade-up": "fadeUp 0.6s ease-out forwards",
         shimmer: "shimmer 2s linear infinite",
+        "glow-pulse": "glow-pulse 2.5s ease-in-out infinite",
       },
     },
   },

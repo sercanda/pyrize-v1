@@ -13,7 +13,9 @@ import {
   CheckSquare,
   FileText,
   ExternalLink,
+  Plus,
 } from "lucide-react";
+import { CreatePropertyModal } from "./CreatePropertyModal";
 import { SlideOver } from "./SlideOver";
 import { SlideOverTabs } from "@/components/ui/AppTabGroup";
 import { CONTACT_TYPE_LABELS } from "@/types/crm";
@@ -35,10 +37,12 @@ interface CustomerSlideOverProps {
   onClose: () => void;
   onUpdate: (updates: Partial<DBCustomer>) => Promise<void>;
   onDelete: () => Promise<void>;
+  onCreateProperty?: (data: Partial<DBProperty>, photos?: File[]) => Promise<void>;
 }
 
-export function CustomerSlideOver({ customer, onClose, onUpdate, onDelete }: CustomerSlideOverProps) {
+export function CustomerSlideOver({ customer, onClose, onUpdate, onDelete, onCreateProperty }: CustomerSlideOverProps) {
   const [activeTab, setActiveTab] = useState<TabKey>("bilgi");
+  const [showAddProperty, setShowAddProperty] = useState(false);
   const [relatedDeals, setRelatedDeals] = useState<DBDeal[]>([]);
   const [relatedProperties, setRelatedProperties] = useState<DBProperty[]>([]);
   const [relatedActivities, setRelatedActivities] = useState<DBActivity[]>([]);
@@ -161,22 +165,33 @@ export function CustomerSlideOver({ customer, onClose, onUpdate, onDelete }: Cus
       )}
 
       {activeTab === "mulkler" && (
-        <RelatedList
-          items={relatedProperties}
-          loading={loadingRelated}
-          emptyText="Bu müşteriye bağlı mülk yok"
-          renderItem={(prop: DBProperty) => (
-            <div key={prop.id} className="rounded-xl bg-white/[0.04] p-3">
-              <p className="text-sm font-medium text-white">{prop.title}</p>
-              <div className="flex items-center gap-2 mt-1">
-                {prop.city && <span className="text-xs text-slate-400">{prop.city}</span>}
-                <span className="text-xs text-cyan-400">
-                  {new Intl.NumberFormat("tr-TR").format(prop.price)} TL
-                </span>
-              </div>
-            </div>
+        <div className="space-y-3">
+          {onCreateProperty && (
+            <button
+              onClick={() => setShowAddProperty(true)}
+              className="w-full flex items-center justify-center gap-2 rounded-xl border border-dashed border-[#DBE64C]/30 bg-[#DBE64C]/[0.04] py-2.5 text-sm font-medium text-[#DBE64C] transition hover:bg-[#DBE64C]/10"
+            >
+              <Plus className="h-4 w-4" />
+              Mülk Ekle
+            </button>
           )}
-        />
+          <RelatedList
+            items={relatedProperties}
+            loading={loadingRelated}
+            emptyText="Bu müşteriye bağlı mülk yok"
+            renderItem={(prop: DBProperty) => (
+              <div key={prop.id} className="rounded-xl bg-white/[0.04] p-3">
+                <p className="text-sm font-medium text-white">{prop.title}</p>
+                <div className="flex items-center gap-2 mt-1">
+                  {prop.city && <span className="text-xs text-slate-400">{prop.city}</span>}
+                  <span className="text-xs text-[#DBE64C]">
+                    {new Intl.NumberFormat("tr-TR").format(prop.price)} TL
+                  </span>
+                </div>
+              </div>
+            )}
+          />
+        </div>
       )}
 
       {activeTab === "firsatlar" && (
@@ -243,6 +258,17 @@ export function CustomerSlideOver({ customer, onClose, onUpdate, onDelete }: Cus
               </div>
             </div>
           )}
+        />
+      )}
+
+      {showAddProperty && onCreateProperty && (
+        <CreatePropertyModal
+          onClose={() => setShowAddProperty(false)}
+          defaultCustomerId={customer.id}
+          onCreate={async (data, photos) => {
+            await onCreateProperty(data, photos);
+            setShowAddProperty(false);
+          }}
         />
       )}
 

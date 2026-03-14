@@ -130,6 +130,7 @@ export default function HaftalikRaporOlusturPage() {
   const [raporKopyalamaModal, setRaporKopyalamaModal] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
   const [step, setStep] = useState<1 | 2 | 3>(1);
+  const [aiAlanLoading, setAiAlanLoading] = useState<Record<string, boolean>>({});
 
   // Kullanıcı erişim kontrolü
   useEffect(() => {
@@ -312,6 +313,56 @@ export default function HaftalikRaporOlusturPage() {
   const canSubmit = useMemo(() => {
     return canProceedToStep3;
   }, [canProceedToStep3]);
+
+  const handleAiAlan = async (
+    alan: 'saticiYorumu' | 'aliciGeribildirimleri' | 'problemler',
+    mod: 'olustur' | 'detaylandir'
+  ) => {
+    const key = `${alan}-${mod}`;
+    setAiAlanLoading((p) => ({ ...p, [key]: true }));
+    try {
+      const res = await fetch('/api/ai/haftalik-rapor-alan', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          alan,
+          mod,
+          mevcutMetin:
+            alan === 'saticiYorumu'
+              ? formData.saticiYorumu
+              : alan === 'aliciGeribildirimleri'
+              ? formData.potansiyelAliciGeriBildirimleri
+              : formData.gorulenAnaProblemler,
+          performansVerisi: {
+            mulkAdi: formData.mulkAdi,
+            portfoyAdi: formData.portfoyAdi,
+            toplamGoruntulenme: parseInt(formData.toplamGoruntulenme) || 0,
+            haftalikGoruntulenme: parseInt(formData.haftalikGoruntulenme) || 0,
+            toplamFavoriSayisi: parseInt(formData.toplamFavoriSayisi) || 0,
+            toplamMesajSayisi: parseInt(formData.toplamMesajSayisi) || 0,
+            toplamAramaSayisi: parseInt(formData.toplamAramaSayisi) || 0,
+            yapilanTeklifSayisi: parseInt(formData.yapilanTeklifSayisi) || 0,
+            yerindeGosterimSayisi: parseInt(formData.yerindeGosterimSayisi) || 0,
+            ciddiAliciSayisi: parseInt(formData.ciddiAliciSayisi) || 0,
+          },
+        }),
+      });
+      if (!res.ok) return;
+      const data = await res.json();
+      if (data.icerik) {
+        const fieldMap: Record<string, keyof typeof formData> = {
+          saticiYorumu: 'saticiYorumu',
+          aliciGeribildirimleri: 'potansiyelAliciGeriBildirimleri',
+          problemler: 'gorulenAnaProblemler',
+        };
+        handleInputChange(fieldMap[alan], data.icerik);
+      }
+    } catch {
+      // silently fail
+    } finally {
+      setAiAlanLoading((p) => ({ ...p, [key]: false }));
+    }
+  };
 
   const handleSubmit = async () => {
     if (!canSubmit) return;
@@ -911,41 +962,110 @@ export default function HaftalikRaporOlusturPage() {
               </header>
 
               <div className="space-y-6">
+                {/* Satıcının Yorumu */}
                 <div className="space-y-2">
-                  <label className="text-xs uppercase tracking-[0.3em] text-slate-400">
-                    Satıcının Yorumu
-                  </label>
+                  <div className="flex items-center justify-between">
+                    <label className="text-xs uppercase tracking-[0.3em] text-slate-400">
+                      Satıcının Yorumu
+                    </label>
+                    <div className="flex gap-1.5">
+                      <button
+                        type="button"
+                        disabled={aiAlanLoading['saticiYorumu-olustur']}
+                        onClick={() => handleAiAlan('saticiYorumu', 'olustur')}
+                        className="flex items-center gap-1 rounded-lg border border-[#DBE64C]/20 bg-[#DBE64C]/[0.05] px-2.5 py-1 text-[10px] font-medium text-[#DBE64C] transition hover:bg-[#DBE64C]/10 disabled:opacity-50"
+                      >
+                        {aiAlanLoading['saticiYorumu-olustur'] ? <Loader2 className="h-3 w-3 animate-spin" /> : <Sparkles className="h-3 w-3" />}
+                        AI ile Oluştur
+                      </button>
+                      <button
+                        type="button"
+                        disabled={aiAlanLoading['saticiYorumu-detaylandir'] || !formData.saticiYorumu.trim()}
+                        onClick={() => handleAiAlan('saticiYorumu', 'detaylandir')}
+                        className="flex items-center gap-1 rounded-lg border border-white/10 bg-white/[0.04] px-2.5 py-1 text-[10px] font-medium text-slate-400 transition hover:bg-white/10 hover:text-slate-200 disabled:opacity-50"
+                      >
+                        {aiAlanLoading['saticiYorumu-detaylandir'] ? <Loader2 className="h-3 w-3 animate-spin" /> : <Sparkles className="h-3 w-3" />}
+                        Detaylandır
+                      </button>
+                    </div>
+                  </div>
                   <textarea
                     value={formData.saticiYorumu}
                     onChange={(e) => handleInputChange('saticiYorumu', e.target.value)}
                     rows={4}
-                    className="w-full rounded-lg border border-white/10 bg-white/5 px-4 py-3 text-white placeholder:text-slate-500 focus:border-cyan-500/50 focus:outline-none focus:ring-2 focus:ring-cyan-500/20"
+                    className="w-full rounded-lg border border-white/10 bg-white/5 px-4 py-3 text-white placeholder:text-slate-500 focus:border-[#DBE64C]/30 focus:outline-none focus:ring-1 focus:ring-[#DBE64C]/20"
                     placeholder="Satıcının bu hafta hakkındaki görüşleri ve yorumları..."
                   />
                 </div>
 
+                {/* Alıcı Geri Bildirimleri */}
                 <div className="space-y-2">
-                  <label className="text-xs uppercase tracking-[0.3em] text-slate-400">
-                    Potansiyel Alıcıların Geri Bildirimleri
-                  </label>
+                  <div className="flex items-center justify-between">
+                    <label className="text-xs uppercase tracking-[0.3em] text-slate-400">
+                      Potansiyel Alıcıların Geri Bildirimleri
+                    </label>
+                    <div className="flex gap-1.5">
+                      <button
+                        type="button"
+                        disabled={aiAlanLoading['aliciGeribildirimleri-olustur']}
+                        onClick={() => handleAiAlan('aliciGeribildirimleri', 'olustur')}
+                        className="flex items-center gap-1 rounded-lg border border-[#DBE64C]/20 bg-[#DBE64C]/[0.05] px-2.5 py-1 text-[10px] font-medium text-[#DBE64C] transition hover:bg-[#DBE64C]/10 disabled:opacity-50"
+                      >
+                        {aiAlanLoading['aliciGeribildirimleri-olustur'] ? <Loader2 className="h-3 w-3 animate-spin" /> : <Sparkles className="h-3 w-3" />}
+                        AI ile Oluştur
+                      </button>
+                      <button
+                        type="button"
+                        disabled={aiAlanLoading['aliciGeribildirimleri-detaylandir'] || !formData.potansiyelAliciGeriBildirimleri.trim()}
+                        onClick={() => handleAiAlan('aliciGeribildirimleri', 'detaylandir')}
+                        className="flex items-center gap-1 rounded-lg border border-white/10 bg-white/[0.04] px-2.5 py-1 text-[10px] font-medium text-slate-400 transition hover:bg-white/10 hover:text-slate-200 disabled:opacity-50"
+                      >
+                        {aiAlanLoading['aliciGeribildirimleri-detaylandir'] ? <Loader2 className="h-3 w-3 animate-spin" /> : <Sparkles className="h-3 w-3" />}
+                        Detaylandır
+                      </button>
+                    </div>
+                  </div>
                   <textarea
                     value={formData.potansiyelAliciGeriBildirimleri}
                     onChange={(e) => handleInputChange('potansiyelAliciGeriBildirimleri', e.target.value)}
                     rows={4}
-                    className="w-full rounded-lg border border-white/10 bg-white/5 px-4 py-3 text-white placeholder:text-slate-500 focus:border-cyan-500/50 focus:outline-none focus:ring-2 focus:ring-cyan-500/20"
+                    className="w-full rounded-lg border border-white/10 bg-white/5 px-4 py-3 text-white placeholder:text-slate-500 focus:border-[#DBE64C]/30 focus:outline-none focus:ring-1 focus:ring-[#DBE64C]/20"
                     placeholder="Potansiyel alıcıların geri bildirimleri ve görüşleri..."
                   />
                 </div>
 
+                {/* Ana Problemler */}
                 <div className="space-y-2">
-                  <label className="text-xs uppercase tracking-[0.3em] text-slate-400">
-                    Görülen Ana Problemler
-                  </label>
+                  <div className="flex items-center justify-between">
+                    <label className="text-xs uppercase tracking-[0.3em] text-slate-400">
+                      Görülen Ana Problemler
+                    </label>
+                    <div className="flex gap-1.5">
+                      <button
+                        type="button"
+                        disabled={aiAlanLoading['problemler-olustur']}
+                        onClick={() => handleAiAlan('problemler', 'olustur')}
+                        className="flex items-center gap-1 rounded-lg border border-[#DBE64C]/20 bg-[#DBE64C]/[0.05] px-2.5 py-1 text-[10px] font-medium text-[#DBE64C] transition hover:bg-[#DBE64C]/10 disabled:opacity-50"
+                      >
+                        {aiAlanLoading['problemler-olustur'] ? <Loader2 className="h-3 w-3 animate-spin" /> : <Sparkles className="h-3 w-3" />}
+                        AI ile Oluştur
+                      </button>
+                      <button
+                        type="button"
+                        disabled={aiAlanLoading['problemler-detaylandir'] || !formData.gorulenAnaProblemler.trim()}
+                        onClick={() => handleAiAlan('problemler', 'detaylandir')}
+                        className="flex items-center gap-1 rounded-lg border border-white/10 bg-white/[0.04] px-2.5 py-1 text-[10px] font-medium text-slate-400 transition hover:bg-white/10 hover:text-slate-200 disabled:opacity-50"
+                      >
+                        {aiAlanLoading['problemler-detaylandir'] ? <Loader2 className="h-3 w-3 animate-spin" /> : <Sparkles className="h-3 w-3" />}
+                        Detaylandır
+                      </button>
+                    </div>
+                  </div>
                   <textarea
                     value={formData.gorulenAnaProblemler}
                     onChange={(e) => handleInputChange('gorulenAnaProblemler', e.target.value)}
                     rows={4}
-                    className="w-full rounded-lg border border-white/10 bg-white/5 px-4 py-3 text-white placeholder:text-slate-500 focus:border-cyan-500/50 focus:outline-none focus:ring-2 focus:ring-cyan-500/20"
+                    className="w-full rounded-lg border border-white/10 bg-white/5 px-4 py-3 text-white placeholder:text-slate-500 focus:border-[#DBE64C]/30 focus:outline-none focus:ring-1 focus:ring-[#DBE64C]/20"
                     placeholder="Bu hafta görülen ana problemler ve çözüm önerileri..."
                   />
                 </div>
