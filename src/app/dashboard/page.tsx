@@ -17,7 +17,12 @@ export default function DashboardHomePage() {
     <div className="mx-auto w-full max-w-7xl px-4 pb-16 pt-8 md:px-8">
       <section className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-white md:text-4xl">Ana Sayfa</h1>
+          <h1
+            className="text-3xl font-extrabold text-white md:text-4xl tracking-tight"
+            style={{ fontFamily: "var(--font-montserrat)" }}
+          >
+            Ana Sayfa
+          </h1>
           <p className="mt-2 text-sm text-slate-400 md:text-base">
             CRM özetiniz, son sunumlar ve pipeline metrikleri tek ekranda.
           </p>
@@ -42,7 +47,7 @@ export default function DashboardHomePage() {
         <MagneticCard enableMagnetism={true}>
           <div className="rounded-3xl border border-white/10 bg-white/5 p-6 shadow-[0_25px_70px_rgba(6,12,28,0.35)] transition hover:border-cyan-400/40 hover:shadow-[0_25px_70px_rgba(14,165,233,0.25)]">
           <div className="flex items-center justify-between">
-            <h2 className="text-lg font-semibold text-white">Son Sunumlar</h2>
+            <h2 className="text-base font-bold text-white tracking-tight" style={{ fontFamily: "var(--font-montserrat)" }}>Son Sunumlar</h2>
             <Link
               href="/dashboard/sunumlar"
               className="text-xs uppercase tracking-[0.3em] text-cyan-200 transition hover:text-cyan-100"
@@ -78,7 +83,7 @@ export default function DashboardHomePage() {
         <MagneticCard enableMagnetism={true}>
           <div className="rounded-3xl border border-white/10 bg-white/5 p-6 shadow-[0_25px_70px_rgba(6,12,28,0.35)] transition hover:border-cyan-400/40 hover:shadow-[0_25px_70px_rgba(14,165,233,0.25)]">
           <div className="flex items-center justify-between">
-            <h2 className="text-lg font-semibold text-white">Yapılacaklar</h2>
+            <h2 className="text-base font-bold text-white tracking-tight" style={{ fontFamily: "var(--font-montserrat)" }}>Yapılacaklar</h2>
             <Link
               href="/dashboard/todo"
               className="text-xs uppercase tracking-[0.3em] text-cyan-200 transition hover:text-cyan-100"
@@ -127,7 +132,7 @@ export default function DashboardHomePage() {
       </section>
 
       <section className="mt-12 space-y-6">
-        <h2 className="text-lg font-semibold text-white">Metrikler</h2>
+        <h2 className="text-base font-bold text-white tracking-tight" style={{ fontFamily: "var(--font-montserrat)" }}>Metrikler</h2>
         <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
           {crmStats.map((stat) => (
             <MagneticCard key={stat.label} enableMagnetism={true}>
@@ -135,7 +140,7 @@ export default function DashboardHomePage() {
               <p className="text-xs uppercase tracking-[0.35em] text-slate-300">
                 {stat.label}
               </p>
-              <p className="mt-3 text-3xl font-semibold text-white">{stat.value}</p>
+              <p className="mt-3 text-3xl font-bold text-white tabular-nums" style={{ fontFamily: "var(--font-montserrat)" }}>{stat.value}</p>
               <p className="mt-2 text-xs text-slate-300">{stat.hint}</p>
               </div>
             </MagneticCard>
@@ -146,15 +151,15 @@ export default function DashboardHomePage() {
       <section className="mt-12 grid gap-6 md:grid-cols-3">
         <MagneticCard enableMagnetism={true}>
           <div className="rounded-3xl border border-white/10 bg-white/5 p-6 shadow-[0_25px_70px_rgba(6,12,28,0.35)] transition hover:border-cyan-400/40 hover:shadow-[0_25px_70px_rgba(14,165,233,0.25)]">
-            <h3 className="text-sm font-semibold uppercase tracking-[0.3em] text-slate-200">
+            <h3 className="text-xs font-semibold uppercase tracking-[0.25em] text-slate-400" style={{ fontFamily: "var(--font-montserrat)" }}>
               Toplam Sunum
             </h3>
-            <p className="mt-3 text-3xl font-bold text-white">{sunumlar.length}</p>
+            <p className="mt-3 text-3xl font-bold text-white tabular-nums" style={{ fontFamily: "var(--font-montserrat)" }}>{sunumlar.length}</p>
           </div>
         </MagneticCard>
         <MagneticCard enableMagnetism={true}>
           <div className="rounded-3xl border border-white/10 bg-white/5 p-6 shadow-[0_25px_70px_rgba(6,12,28,0.35)] transition hover:border-cyan-400/40 hover:shadow-[0_25px_70px_rgba(14,165,233,0.25)]">
-            <h3 className="text-sm font-semibold uppercase tracking-[0.3em] text-slate-200">
+            <h3 className="text-xs font-semibold uppercase tracking-[0.25em] text-slate-400" style={{ fontFamily: "var(--font-montserrat)" }}>
               Aktif Sunum
             </h3>
             <p className="mt-3 text-3xl font-bold text-white">
@@ -164,7 +169,7 @@ export default function DashboardHomePage() {
         </MagneticCard>
         <MagneticCard enableMagnetism={true}>
           <div className="rounded-3xl border border-white/10 bg-white/5 p-6 shadow-[0_25px_70px_rgba(6,12,28,0.35)] transition hover:border-cyan-400/40 hover:shadow-[0_25px_70px_rgba(14,165,233,0.25)]">
-            <h3 className="text-sm font-semibold uppercase tracking-[0.3em] text-slate-200">
+            <h3 className="text-xs font-semibold uppercase tracking-[0.25em] text-slate-400" style={{ fontFamily: "var(--font-montserrat)" }}>
               Toplam Değer
             </h3>
             <p className="mt-3 text-3xl font-bold text-white">

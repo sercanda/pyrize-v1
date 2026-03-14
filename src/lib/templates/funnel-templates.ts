@@ -129,40 +129,152 @@ const joinWithSeparator = (
     .filter(item => item.length > 0)
     .join(separator);
 
+// Genel gayrimenkul satış soruları (platform soruları değil)
 const DEFAULT_FAQ_ENTRIES = [
   {
-    question: "Sunum ne kadar sürede hazırlanıyor?",
+    question: "Hizmet bedeli ne zaman ödeniyor?",
     answer:
-      "Formu tamamladığınız anda AI içerik üretimi başlar ve premium funnel saniyeler içinde hazır olur. Ortalama süre 10-15 saniyedir.",
+      "Satış gerçekleşmeden hiçbir hizmet bedeli alınmaz. Komisyon yalnızca başarılı satış tamamlandığında tahsil edilir. Sıfır risk garantisi.",
   },
   {
-    question: "Sunumu nasıl paylaşabilirim?",
+    question: "Mülkü kaç günde satarsınız?",
     answer:
-      "Sunum linkini danışanınızla paylaşabilir, PDF çıktısını indirebilir veya CRM notlarınıza ekleyebilirsiniz. Tüm güncellemeler tek panelde senkronize edilir.",
+      "Bölge dinamiklerine ve fiyatlandırmaya göre değişmekle birlikte ortalama 30-60 gün içinde satış hedefliyoruz. Hedef fiyat aralığı doğru belirlendiğinde bu süre önemli ölçüde kısalıyor.",
   },
   {
-    question: "İçeriği sonradan düzenleyebilir miyim?",
+    question: "Satış fiyatını nasıl belirliyorsunuz?",
     answer:
-      "Evet. Düzenleme ekranındaki chatbot üzerinden istediğiniz alanı revize edebilir, farklı tonlarda metinler üretebilirsiniz.",
+      "Bölgedeki son 6 aydaki emsal satışlar, aktif rakip ilanlar ve piyasa talep analizi birlikte değerlendiriliyor. Hem maksimum gelir hem de hızlı satış için optimal fiyat aralığı belirliyoruz.",
   },
   {
-    question: "Verilerim güvende mi?",
+    question: "Profesyonel fotoğraf ve pazarlama dahil mi?",
     answer:
-      "Sunumlar sadece sizinle paylaşılır, üçüncü taraflarla paylaşılmadan şifreli olarak saklanır ve dilediğiniz an silebilirsiniz.",
+      "Evet. Profesyonel fotoğraf çekimi, sunum hazırlığı ve dijital pazarlama hizmetleri sürecin bir parçasıdır. Ekstra maliyet yoktur.",
   },
 ];
 
-const buildFaqSection = (danisman: { adSoyad: string }): Bolge => ({
-  tip: "faq",
-  baslik: "Aklınızdaki Sorular",
-  icerik:
-    "Sunum sürecine dair en sık sorulan sorular ve yanıtları. İsterseniz düzenleme ekranından bu listeyi özelleştirebilirsiniz.",
-  altBolge: DEFAULT_FAQ_ENTRIES.map((item) => ({
-    baslik: item.question,
-    icerik: item.answer.replace("{DANISMAN}", danisman.adSoyad),
-    tip: "text" as const,
-  })),
-});
+// Stil bazlı FAQ setleri
+const HIZLI_SATIS_FAQ_ENTRIES = [
+  {
+    question: "Liste fiyatında pazarlık payı var mı?",
+    answer:
+      "Fiyat, piyasa verileriyle zaten optimize edilmiş durumda. Gereksiz indirim yerine doğru alıcıyla hızlı ve güçlü bir kapanış hedefliyoruz.",
+  },
+  {
+    question: "Bu fırsatı neden şimdi değerlendirmeliyim?",
+    answer:
+      "Benzer mülkler bölgede hızla satılıyor. Fiyat bandı ve talep bu dönemde en uygun seviyede. Beklemek, alım gücünüzün erimesi anlamına gelebilir.",
+  },
+  {
+    question: "Kapora ve teklif süreci nasıl işliyor?",
+    answer:
+      "Teklif vermenizin ardından 48 saat içinde tapu işlemlerine başlayabiliriz. Süreç tamamen şeffaf ve hızlı; avukat ve noter desteği tarafımızdan sağlanır.",
+  },
+  {
+    question: "Hizmet bedeli ne zaman ödeniyor?",
+    answer:
+      "Yalnızca satış kapandığında. Satış gerçekleşmezse hiçbir ücret talep edilmez.",
+  },
+];
+
+const PREMIUM_FAQ_ENTRIES = [
+  {
+    question: "Özel gösterim nasıl organize ediliyor?",
+    answer:
+      "Mülk, yalnızca önceden belirlenen nitelikli alıcılara özel davet ile gösteriliyor. Kalabalık açık ev yerine seçici ve saygın bir süreç.",
+  },
+  {
+    question: "Bu segment için referanslarınız var mı?",
+    answer:
+      "Üst segment portföylerde kanıtlanmış bir satış geçmişimiz bulunuyor. Detayları görüşmemizde paylaşabilirim.",
+  },
+  {
+    question: "Değerleme nasıl yapılıyor?",
+    answer:
+      "Lüks segment kıyaslamaları, bölgenin en seçkin satışları ve uluslararası alıcı profili dikkate alınarak kapsamlı bir değerleme raporu hazırlanıyor.",
+  },
+  {
+    question: "Gizlilik nasıl sağlanıyor?",
+    answer:
+      "Mülk bilgileri ve portföy sahipliği yalnızca onaylı alıcılarla paylaşılır. Her aşamada tam gizlilik garantisi sunuyoruz.",
+  },
+];
+
+const GUVEN_ODAKLI_FAQ_ENTRIES = [
+  {
+    question: "Sizi diğer danışmanlardan ayıran nedir?",
+    answer:
+      "Aktif müşteri referansları, şeffaf süreç yönetimi ve satış garantisi. Söz vermek kolay; kanıtlamak için somut verilerimiz mevcut.",
+  },
+  {
+    question: "Satış gerçekleşmezse ne olur?",
+    answer:
+      "Anlaşma süresince herhangi bir ücret talep etmiyoruz. Satış gerçekleşmezse komisyon sıfır. Çıkarlarımız tamamen örtüşüyor.",
+  },
+  {
+    question: "Kaç müşteriyle aynı anda çalışıyorsunuz?",
+    answer:
+      "Kaliteyi korumak için sınırlı sayıda portföyle çalışıyorum. Her müşteriye yeterli zaman ve enerji ayırmak önceliğim.",
+  },
+  {
+    question: "Süreç boyunca iletişim nasıl olacak?",
+    answer:
+      "Haftalık ilerleme raporu ve anlık bildirimler. Her görüntülenme, her teklif, her geri bildirim size anında iletilir.",
+  },
+];
+
+const MINIMALIST_FAQ_ENTRIES = [
+  {
+    question: "İletişime nasıl geçebilirim?",
+    answer:
+      "WhatsApp veya telefon ile doğrudan ulaşabilirsiniz. Randevu zorunluluğu yok.",
+  },
+  {
+    question: "Satış süreci kaç aşamadan oluşuyor?",
+    answer:
+      "3 adım: Değerleme → Pazarlama → Kapanış. Gereksiz karmaşıklık yok.",
+  },
+  {
+    question: "Komisyon oranı nedir?",
+    answer:
+      "Standart piyasa oranında, satış gerçekleştiğinde. Öncesinde hiçbir ücret yoktur.",
+  },
+];
+
+const buildFaqSection = (danisman: { adSoyad: string }, sunumStili?: string): Bolge => {
+  let entries = DEFAULT_FAQ_ENTRIES;
+  let baslik = "Aklınızdaki Sorular";
+  let icerik = "Satış sürecine dair en sık sorulan sorular:";
+
+  if (sunumStili === "hizli_satis") {
+    entries = HIZLI_SATIS_FAQ_ENTRIES;
+    baslik = "Sık Sorulanlar";
+    icerik = "Hızlı karar sürecinde sık karşılaşılan sorular:";
+  } else if (sunumStili === "premium_sunum") {
+    entries = PREMIUM_FAQ_ENTRIES;
+    baslik = "Sık Sorulan Prestij Soruları";
+    icerik = "Seçkin alıcıların ve portföy sahiplerinin önceden bilmek istediği detaylar:";
+  } else if (sunumStili === "guven_odakli") {
+    entries = GUVEN_ODAKLI_FAQ_ENTRIES;
+    baslik = "Güvencenizi Pekiştiren Sorular";
+    icerik = "Danışmanınızı tanımak ve süreci anlamak için kritik sorular:";
+  } else if (sunumStili === "minimalist") {
+    entries = MINIMALIST_FAQ_ENTRIES;
+    baslik = "Sık Sorulanlar";
+    icerik = "Hızlı yanıtlar:";
+  }
+
+  return {
+    tip: "faq",
+    baslik,
+    icerik,
+    altBolge: entries.map((item) => ({
+      baslik: item.question,
+      icerik: item.answer.replace("{DANISMAN}", danisman.adSoyad),
+      tip: "text" as const,
+    })),
+  };
+};
 
 const buildMarketAnalysisSection = ({
   mulk,
@@ -2301,7 +2413,7 @@ const guvenOdakliTemplate: FunnelTemplate = {
           }
         ]
       },
-      buildFaqSection(danisman),
+      buildFaqSection(danisman, "guven_odakli"),
       {
         tip: "cta",
         baslik: "Güvenli Satış Süreciniz Başlasın",
@@ -2455,7 +2567,7 @@ export function generateSunumFromTemplate({
   }
 
   if (!bolgeler.some((bolge) => bolge.tip === "faq")) {
-    bolgeler.push(buildFaqSection(formattedDanisman));
+    bolgeler.push(buildFaqSection(formattedDanisman, sunumStili));
   }
   const heroTagline =
     amac === "portfoy_almak"

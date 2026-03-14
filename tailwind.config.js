@@ -59,6 +59,7 @@ module.exports = {
       fontFamily: {
         serif: ["var(--font-instrument)", "Georgia", "serif"],
         sans: ["var(--font-dm-sans)", "var(--font-poppins)", "system-ui", "sans-serif"],
+        montserrat: ["var(--font-montserrat)", "system-ui", "sans-serif"],
       },
       keyframes: {
         "accordion-down": {

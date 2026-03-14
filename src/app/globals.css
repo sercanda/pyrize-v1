@@ -53,6 +53,10 @@
   font-family: var(--font-dm-sans), system-ui, sans-serif;
 }
 
+.font-montserrat {
+  font-family: var(--font-montserrat), "Segoe UI", system-ui, sans-serif;
+}
+
 @keyframes marquee {
   0% {
     transform: translateX(0%);

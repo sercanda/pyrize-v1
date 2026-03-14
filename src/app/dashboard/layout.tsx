@@ -75,32 +75,37 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
         onMouseEnter={() => collapsed && setHovered(true)}
         onMouseLeave={() => collapsed && setHovered(false)}
       >
-        {/* Logo Section - Her zaman görünür, simetrik */}
-        <div className={`flex items-center ${collapsed && !hovered ? "justify-center px-2" : "justify-between px-4"} py-6 transition-all duration-300`}>
+        {/* Logo Section */}
+        <div className={`flex items-center ${collapsed && !hovered ? "justify-center px-2" : "justify-between px-5"} py-5 border-b border-white/[0.06] transition-all duration-300`}>
           <Link
             href="/"
-            className={`flex items-center gap-2 text-white transition-all duration-300 ${collapsed && !hovered ? "justify-center" : ""}`}
+            className={`flex items-center gap-2.5 transition-all duration-300 ${collapsed && !hovered ? "justify-center" : ""}`}
           >
-            <span className={`logo-text font-bold uppercase tracking-tight transition-all duration-300 ${collapsed && !hovered ? "text-sm" : "text-xl"}`}>
-              {collapsed && !hovered ? "P" : "PYRIZE"}
-            </span>
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-[#DBE64C] to-[#74C365] shadow-[0_0_12px_rgba(219,230,76,0.35)] flex-shrink-0">
+              <span className="text-[#001F3F] font-black text-sm" style={{ fontFamily: "var(--font-montserrat)" }}>P</span>
+            </div>
             {(!collapsed || hovered) && (
-              <span className="h-2 w-2 rounded-full bg-pink-500 animate-pulse" />
+              <span
+                className="text-white font-extrabold tracking-widest text-sm uppercase"
+                style={{ fontFamily: "var(--font-montserrat)" }}
+              >
+                PYRIZE
+              </span>
             )}
           </Link>
           {(!collapsed || hovered) && (
             <button
               onClick={handleToggle}
-              className="rounded-lg border border-white/10 bg-white/5 p-1.5 text-white transition-all duration-200 hover:border-cyan-300/60 hover:bg-white/10 hover:scale-110"
+              className="rounded-lg p-1.5 text-slate-500 transition-all duration-200 hover:text-white hover:bg-white/8"
               aria-label="Menüyü daralt"
             >
-              <ChevronsLeft className="h-4 w-4 text-cyan-200" />
+              <ChevronsLeft className="h-4 w-4" />
             </button>
           )}
         </div>
 
         {/* Navigation */}
-        <nav className={`relative flex-1 space-y-1 overflow-y-scroll ${isExpanded ? "px-4" : "px-2"} pb-6 transition-all duration-300 scrollbar-hide`}>
+        <nav className={`relative flex-1 space-y-0.5 overflow-y-scroll ${isExpanded ? "px-3" : "px-2"} py-4 transition-all duration-300 scrollbar-hide`}>
           {NAV_ITEMS.map((item) => {
             const Icon = item.icon;
             const isActive = pathname === item.href;
@@ -109,29 +114,42 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
                 key={item.href}
                 href={item.href}
                 onClick={handleNavClick}
-                className={`group flex w-full items-center gap-3 rounded-xl border transition-all duration-200 ${isExpanded ? "px-4 py-3" : "px-2 py-2 justify-center"
-                  } text-left text-sm font-medium ${isActive
-                    ? "border-cyan-400/40 bg-white/10 text-white shadow-[0_12px_30px_rgba(14,165,233,0.12)]"
-                    : "border-transparent text-slate-300 hover:border-cyan-300/30 hover:bg-white/5 hover:text-white hover:scale-[1.02]"
-                  }`}
+                className={`group relative flex w-full items-center gap-3 rounded-xl transition-all duration-200 ${
+                  isExpanded ? "px-3 py-2.5" : "px-2 py-2.5 justify-center"
+                } text-left ${
+                  isActive
+                    ? "bg-white/10 text-white"
+                    : "text-slate-400 hover:bg-white/5 hover:text-slate-200"
+                }`}
               >
+                {/* Active left indicator */}
+                {isActive && (
+                  <span className="absolute left-0 top-1/2 -translate-y-1/2 w-0.5 h-5 rounded-r-full bg-gradient-to-b from-[#DBE64C] to-[#74C365]" />
+                )}
                 <span
-                  className={`flex items-center justify-center rounded-lg transition-all duration-200 ${isExpanded ? "h-10 w-10" : "h-9 w-9"
-                    } ${isActive
-                      ? "bg-cyan-500/20 text-cyan-200"
-                      : "bg-white/5 text-slate-400 group-hover:bg-cyan-500/10 group-hover:text-cyan-200"
-                    }`}
+                  className={`relative flex items-center justify-center rounded-lg flex-shrink-0 transition-all duration-200 ${
+                    isExpanded ? "h-8 w-8" : "h-8 w-8"
+                  } ${
+                    isActive
+                      ? "bg-gradient-to-br from-[#DBE64C]/20 to-[#74C365]/10 text-[#DBE64C]"
+                      : "text-slate-500 group-hover:text-slate-300"
+                  }`}
                 >
-                  <Icon className="h-5 w-5" />
+                  <Icon className="h-4 w-4" strokeWidth={isActive ? 2.5 : 1.75} />
                 </span>
                 {isExpanded && (
-                  <span className="transition-opacity duration-200">{item.label}</span>
+                  <span
+                    className={`text-[13px] transition-opacity duration-200 ${isActive ? "font-600" : "font-[450]"}`}
+                    style={{ fontFamily: "var(--font-montserrat)" }}
+                  >
+                    {item.label}
+                  </span>
                 )}
               </Link>
             );
           })}
-          {/* Fade efekti - Alt kısımda kaydırılabilir olduğunu gösterir */}
-          <div className="pointer-events-none sticky bottom-0 h-12 bg-gradient-to-t from-[#050b1d]/95 via-[#050b1d]/50 to-transparent" />
+          {/* Fade efekti */}
+          <div className="pointer-events-none sticky bottom-0 h-10 bg-gradient-to-t from-[#050b1d]/95 via-[#050b1d]/50 to-transparent" />
         </nav>
 
         {/* Bottom Section */}
@@ -142,10 +160,10 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
           {collapsed && !hovered && (
             <button
               onClick={handleToggle}
-              className="mt-3 inline-flex w-full items-center justify-center rounded-xl border border-white/15 bg-white/5 p-2 text-white transition-all duration-200 hover:border-cyan-300/40 hover:bg-white/10 hover:scale-110"
+              className="mt-2 inline-flex w-full items-center justify-center rounded-xl p-2 text-slate-500 transition-all duration-200 hover:text-white hover:bg-white/5"
               aria-label="Menüyü genişlet"
             >
-              <ChevronsRight className="h-4 w-4 text-cyan-200" />
+              <ChevronsRight className="h-4 w-4" />
             </button>
           )}
         </div>
