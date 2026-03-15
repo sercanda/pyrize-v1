@@ -31,8 +31,8 @@ const estimateCost = (body: Partial<SunumOlusturBody> | null | undefined) => {
 export async function POST(request: NextRequest) {
   return withSecurity<SunumOlusturBody>(
     request,
-    async ({ body, registerActualCost }) => {
-      console.log("📨 Sunum oluşturma isteği alındı");
+    async ({ body, registerActualCost, userId }) => {
+      console.log("📨 Sunum oluşturma isteği alındı, userId:", userId);
       try {
         if (!body?.danisman?.adSoyad || !body.danisman.telefon) {
           return NextResponse.json(
@@ -117,13 +117,14 @@ export async function POST(request: NextRequest) {
 
           // TASK A: DB upsert - MUST succeed (throws if fails)
           const { error: dbError } = await supabaseServer.from("sunumlar").upsert({
-            id: haftalikRaporId, // Use UUID, not slug
+            id: haftalikRaporId,
             slug: haftalikRaporSlug,
             baslik: icerik.baslik,
             durum: "aktif",
             mulk_turu: null,
             fiyat: null,
             customer_id: customerId,
+            user_id: userId || null,
             istek: body,
             icerik,
             sunum_turu: 'haftalik_rapor',
@@ -292,7 +293,7 @@ export async function POST(request: NextRequest) {
 
         // TASK A: DB upsert - MUST succeed (throws if fails)
         const { error: dbError } = await supabaseServer.from("sunumlar").upsert({
-          id: id, // Use UUID, not slug
+          id: id,
           slug,
           baslik: body.baslik || body?.mulk?.konum || "Sunum",
           durum: "aktif",
@@ -303,6 +304,7 @@ export async function POST(request: NextRequest) {
             body.mulk?.fiyat ??
             null,
           customer_id: customerId,
+          user_id: userId || null,
           istek: body,
           icerik,
           created_at: createdAtIso,

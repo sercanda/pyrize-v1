@@ -17,6 +17,7 @@ import {
   ChevronsRight,
   FileText,
   TrendingUp,
+  Calculator,
 } from "lucide-react";
 import { DashboardHeader } from "@/components/DashboardHeader";
 import { ConfettiButton } from "@/components/ui/ConfettiButton";
@@ -31,6 +32,8 @@ const NAV_ITEMS = [
   { href: "/dashboard/todo", label: "Görevler", icon: CheckSquare },
   { href: "/dashboard/takvim", label: "Takvim", icon: CalendarDays },
   { href: "/dashboard/ciro-planlayici", label: "Ciro Planlayıcı", icon: TrendingUp },
+  { href: "/dashboard/komisyon", label: "Komisyon Hesapla", icon: Calculator },
+  { href: "/dashboard/ofisim", label: "Ofisim", icon: Users2 },
   { href: "/dashboard/arama", label: "Arama", icon: Search },
   { href: "/dashboard/fotograf", label: "Pyrize AI", icon: Sparkles },
   { href: "/dashboard/krediler", label: "Kredi Paketleri", icon: CreditCard },
