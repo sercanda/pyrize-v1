@@ -20,6 +20,7 @@ import {
   Mail,
   MapPin,
   Home,
+  ChevronDown,
 } from "lucide-react";
 import { getSupabaseClient } from "@/lib/supabaseClient";
 import type { OfisProfili, EkipUyesi, OfisPortfoy } from "@/types/ofis";
@@ -181,6 +182,7 @@ export default function OfisimPage() {
 
   // Ekip modal state
   const [ekipModalOpen, setEkipModalOpen] = useState(false);
+  const [expandedEkip, setExpandedEkip] = useState<Record<string, boolean>>({});
   const [ekipEditing, setEkipEditing] = useState<EkipUyesi | null>(null);
   const [ekipForm, setEkipForm] = useState<EkipUyesi>(emptyEkipUyesi());
 
@@ -721,73 +723,78 @@ export default function OfisimPage() {
               </button>
             </div>
           ) : (
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {(profil.ekip_uyeleri || []).map((uye) => (
-                <div
-                  key={uye.id}
-                  className="rounded-2xl border border-white/10 bg-white/[0.03] p-5 flex flex-col"
-                >
-                  <div className="flex items-start gap-4 mb-4">
-                    {uye.foto_url ? (
-                      <img
-                        src={uye.foto_url}
-                        alt={uye.ad}
-                        className="h-14 w-14 rounded-xl object-cover border border-white/10"
-                      />
-                    ) : (
-                      <div className="h-14 w-14 rounded-xl bg-white/10 flex items-center justify-center text-white/40 text-xl font-bold">
-                        {uye.ad?.charAt(0)?.toUpperCase() || "?"}
-                      </div>
-                    )}
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm font-semibold text-white truncate">
-                        {uye.ad}
-                      </p>
-                      {uye.unvan && (
-                        <p className="text-xs text-slate-400 mt-0.5 truncate">
-                          {uye.unvan}
+            <div className="space-y-2">
+              {(profil.ekip_uyeleri || []).map((uye) => {
+                const isOpen = expandedEkip[uye.id] || false;
+                return (
+                  <div key={uye.id} className="rounded-2xl border border-white/10 bg-white/[0.03] overflow-hidden transition-all">
+                    {/* Accordion Header */}
+                    <button
+                      onClick={() => setExpandedEkip(prev => ({ ...prev, [uye.id]: !prev[uye.id] }))}
+                      className="w-full flex items-center gap-4 p-4 text-left hover:bg-white/[0.04] transition"
+                    >
+                      {/* Avatar */}
+                      {uye.foto_url ? (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img src={uye.foto_url} alt={uye.ad} className="h-12 w-12 rounded-full object-cover ring-2 ring-[#DBE64C]/30 flex-shrink-0" />
+                      ) : (
+                        <div className="h-12 w-12 rounded-full bg-gradient-to-br from-[#DBE64C]/20 to-[#DBE64C]/5 ring-2 ring-[#DBE64C]/30 flex items-center justify-center text-[#DBE64C] text-lg font-bold flex-shrink-0">
+                          {uye.ad?.charAt(0)?.toUpperCase() || "?"}
+                        </div>
+                      )}
+                      {/* Name + subtitle */}
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-semibold text-white">{uye.ad}</p>
+                        <p className="text-xs text-slate-400">
+                          {uye.unvan || "Ekip Üyesi"}
+                          {uye.uzmanlik && <span className="text-[#DBE64C] ml-1">• {uye.uzmanlik}</span>}
                         </p>
-                      )}
-                      {uye.uzmanlik && (
-                        <span className="inline-block mt-1.5 px-2 py-0.5 rounded-md text-[10px] font-medium border border-[#DBE64C]/30 bg-[#DBE64C]/10 text-[#DBE64C]">
-                          {uye.uzmanlik}
-                        </span>
-                      )}
-                    </div>
-                  </div>
+                      </div>
+                      {/* Chevron */}
+                      <ChevronDown className={`h-4 w-4 text-slate-400 transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`} />
+                    </button>
 
-                  <div className="space-y-1.5 text-xs text-slate-400 flex-1">
-                    {uye.telefon && (
-                      <div className="flex items-center gap-2">
-                        <Phone className="h-3 w-3" />
-                        <span className="truncate">{uye.telefon}</span>
+                    {/* Accordion Content */}
+                    {isOpen && (
+                      <div className="px-4 pb-4 pt-0 border-t border-white/5 animate-in fade-in slide-in-from-top-2 duration-200">
+                        <div className="pl-16 space-y-3 pt-3">
+                          {uye.telefon && (
+                            <div className="flex items-center gap-2.5 text-sm text-slate-300">
+                              <Phone className="h-4 w-4 text-slate-500" />
+                              <a href={`tel:${uye.telefon}`} className="hover:text-[#DBE64C] transition">{uye.telefon}</a>
+                            </div>
+                          )}
+                          {uye.email && (
+                            <div className="flex items-center gap-2.5 text-sm text-slate-300">
+                              <Mail className="h-4 w-4 text-slate-500" />
+                              <a href={`mailto:${uye.email}`} className="hover:text-[#DBE64C] transition">{uye.email}</a>
+                            </div>
+                          )}
+                          {uye.uzmanlik && (
+                            <span className="inline-block px-2.5 py-1 rounded-full text-[10px] font-medium border border-[#DBE64C]/30 bg-[#DBE64C]/10 text-[#DBE64C]">
+                              {uye.uzmanlik}
+                            </span>
+                          )}
+                          <div className="flex gap-2 pt-2">
+                            <button
+                              onClick={(e) => { e.stopPropagation(); openEkipEdit(uye); }}
+                              className="flex items-center gap-1.5 rounded-lg bg-white/5 px-3 py-1.5 text-xs text-slate-300 hover:bg-white/10 transition"
+                            >
+                              <Pencil className="h-3 w-3" /> Düzenle
+                            </button>
+                            <button
+                              onClick={(e) => { e.stopPropagation(); handleEkipDelete(uye.id); }}
+                              className="flex items-center gap-1.5 rounded-lg bg-red-500/10 px-3 py-1.5 text-xs text-red-400 hover:bg-red-500/20 transition"
+                            >
+                              <Trash2 className="h-3 w-3" /> Sil
+                            </button>
+                          </div>
+                        </div>
                       </div>
                     )}
-                    {uye.email && (
-                      <div className="flex items-center gap-2">
-                        <Mail className="h-3 w-3" />
-                        <span className="truncate">{uye.email}</span>
-                      </div>
-                    )}
                   </div>
-
-                  <div className="flex gap-2 mt-4 pt-3 border-t border-white/5">
-                    <button
-                      onClick={() => openEkipEdit(uye)}
-                      className="flex-1 flex items-center justify-center gap-1.5 rounded-lg bg-white/5 px-3 py-2 text-xs text-slate-300 hover:bg-white/10 transition"
-                    >
-                      <Pencil className="h-3 w-3" />
-                      Düzenle
-                    </button>
-                    <button
-                      onClick={() => handleEkipDelete(uye.id)}
-                      className="flex items-center justify-center gap-1.5 rounded-lg bg-red-500/10 px-3 py-2 text-xs text-red-400 hover:bg-red-500/20 transition"
-                    >
-                      <Trash2 className="h-3 w-3" />
-                    </button>
-                  </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           )}
         </div>
