@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Plus, FileText, MoreVertical, Share2, Download, Search as SearchIcon, Sparkles, ChevronDown, ChevronUp } from "lucide-react";
+import { Plus, FileText, MoreVertical, Share2, Download, Search as SearchIcon, Sparkles, ChevronDown, ChevronUp, Eye, Trash2, Link2 } from "lucide-react";
+import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 import { useSunumlar } from "../hooks/useSunumlar";
 import { formatDashboardPrice } from "../data";
 import { MagneticCard } from "@/components/ui/MagneticCard";
@@ -192,9 +193,62 @@ export default function DashboardSunumlarPage() {
                           {formatDashboardPrice(sunum)}
                         </p>
                       </div>
-                      <button className="text-gray-400 transition hover:text-white">
-                        <MoreVertical className="h-5 w-5" />
-                      </button>
+                      <Menu>
+                        <MenuButton className="rounded-lg p-1.5 text-gray-400 transition hover:bg-white/10 hover:text-white">
+                          <MoreVertical className="h-5 w-5" />
+                        </MenuButton>
+                        <MenuItems
+                          transition
+                          anchor="bottom end"
+                          className="z-50 w-48 origin-top-right rounded-xl border border-white/10 bg-[#0a1128]/95 backdrop-blur-xl p-1 text-sm shadow-[0_25px_60px_rgba(0,0,0,0.5)] transition duration-100 ease-out data-closed:scale-95 data-closed:opacity-0"
+                        >
+                          <MenuItem>
+                            <Link
+                              href={`/sunum/${sunum.id}`}
+                              className="group flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-slate-200 data-focus:bg-white/10"
+                            >
+                              <Eye className="h-4 w-4 text-slate-400 group-data-focus:text-white" />
+                              Görüntüle
+                            </Link>
+                          </MenuItem>
+                          <MenuItem>
+                            <button
+                              onClick={() => {
+                                const url = `${window.location.origin}/sunum/${sunum.id}`;
+                                navigator.clipboard.writeText(url);
+                              }}
+                              className="group flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-slate-200 data-focus:bg-white/10"
+                            >
+                              <Link2 className="h-4 w-4 text-slate-400 group-data-focus:text-white" />
+                              Linki Kopyala
+                            </button>
+                          </MenuItem>
+                          <MenuItem>
+                            <Link
+                              href={`/api/pdf?id=${sunum.id}`}
+                              target="_blank"
+                              className="group flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-slate-200 data-focus:bg-white/10"
+                            >
+                              <Download className="h-4 w-4 text-slate-400 group-data-focus:text-white" />
+                              PDF İndir
+                            </Link>
+                          </MenuItem>
+                          <div className="my-1 h-px bg-white/5" />
+                          <MenuItem>
+                            <button
+                              onClick={() => {
+                                if (confirm("Bu sunumu silmek istediğinize emin misiniz?")) {
+                                  fetch(`/api/sunum/${sunum.id}`, { method: "DELETE" }).then(() => window.location.reload());
+                                }
+                              }}
+                              className="group flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-red-400 data-focus:bg-red-500/10"
+                            >
+                              <Trash2 className="h-4 w-4" />
+                              Sil
+                            </button>
+                          </MenuItem>
+                        </MenuItems>
+                      </Menu>
                     </div>
 
                     <div className="mb-4 text-xs text-gray-400">
