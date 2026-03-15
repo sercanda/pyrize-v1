@@ -12,6 +12,7 @@ import { generateSunumFromTemplate } from "@/lib/templates/funnel-templates";
 import { formatPriceRange } from "@/lib/utils/price";
 import { getKFEForProperty, formatKFEForPrompt } from "@/lib/utils/kfe";
 import { buildPresentationPrompt } from "@/lib/ai/prompts";
+import { buildIcerikPrompt } from "@/lib/ai/prompts/sunumIcerikPrompts";
 import { callLLM, isLLMAvailable } from "@/lib/ai/fal-llm";
 
 // FAL AI üzerinden LLM kullan (OpenRouter Router → Gemini 2.5 Flash)
@@ -613,7 +614,18 @@ ${modernTemplateGuidelines}
 
 ÇIKTI: Sadece geçerli JSON döndür, başka metin ekleme.`;
 
-      const userPrompt = buildPresentationPrompt(istek, marketData);
+      // Yeni detaylı prompt factory kullan (sunumStili varsa)
+      const userPrompt = istek.sunumStili
+        ? buildIcerikPrompt({
+            amac: istek.amac,
+            sunumStili: istek.sunumStili,
+            tema: istek.tema,
+            mulk: istek.mulk,
+            danisman: istek.danisman,
+            bolge: istek.mulk.konum,
+            locationAnalysis: istek.locationAnalysis,
+          })
+        : buildPresentationPrompt(istek, marketData);
       const text = await callLLM({ systemPrompt, prompt: userPrompt, maxTokens: 8000 });
 
       if (!text) {
