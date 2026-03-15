@@ -36,6 +36,8 @@ export interface OfisProfili {
   id: string;
   user_id: string;
   slug: string;
+  ofis_slug: string;
+  danisan_slug: string;
 
   // Ofis Bilgileri
   ofis_adi: string;

@@ -3,6 +3,8 @@ CREATE TABLE IF NOT EXISTS ofis_profilleri (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
   slug TEXT UNIQUE NOT NULL,
+  ofis_slug TEXT NOT NULL DEFAULT '',
+  danisan_slug TEXT NOT NULL DEFAULT '',
 
   -- Ofis Bilgileri
   ofis_adi TEXT NOT NULL,
