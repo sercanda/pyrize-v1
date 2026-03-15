@@ -2,6 +2,16 @@
 
 import { useState, useMemo } from "react";
 import {
+  DndContext,
+  DragOverlay,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  closestCorners,
+  type DragStartEvent,
+  type DragEndEvent,
+} from "@dnd-kit/core";
+import {
   Users2,
   TrendingUp,
   CheckCircle2,
@@ -16,9 +26,12 @@ import { GlassCard } from "@/components/ui/glass";
 import { useCRMDashboard } from "@/hooks/useCRMDashboard";
 import { useCRMDeals } from "@/hooks/useCRMDeals";
 import { DB_ACTIVITY_TYPE_LABELS, DEAL_STAGES } from "@/types/crm";
-import type { DealStage } from "@/types/crm";
+import type { DBDeal, DealStage } from "@/types/crm";
 import type { CRMTab } from "./CRMLayout";
 import { CreateDealModal } from "./CreateDealModal";
+import { DealStageColumn } from "./DealStageColumn";
+import { DealCard } from "./DealCard";
+import { DealSlideOver } from "./DealSlideOver";
 
 const ACTIVITY_ICONS: Record<string, typeof Phone> = {
   call: Phone,
@@ -52,17 +65,30 @@ interface CRMDashboardProps {
 
 export function CRMDashboard({ onNavigate }: CRMDashboardProps) {
   const { stats, loading } = useCRMDashboard();
-  const { deals, createDeal } = useCRMDeals();
+  const { deals, createDeal, moveDealStage, updateDeal, deleteDeal } = useCRMDeals();
   const [showCreateDeal, setShowCreateDeal] = useState(false);
+  const [activeDeal, setActiveDeal] = useState<DBDeal | null>(null);
+  const [selectedDeal, setSelectedDeal] = useState<DBDeal | null>(null);
 
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 8 } })
+  );
+
+  // Deal arrays by stage (for Kanban columns)
+  const dealArraysByStage = useMemo(() => {
+    const map: Record<DealStage, DBDeal[]> = {
+      lead: [], meeting: [], offer: [], contract: [], closed: [], lost: [],
+    };
+    deals.forEach((d) => { if (map[d.stage]) map[d.stage].push(d); });
+    return map;
+  }, [deals]);
+
+  // Summary stats by stage (for overview cards)
   const dealsByStage = useMemo(() => {
     const map: Record<DealStage, { count: number; value: number }> = {
-      lead: { count: 0, value: 0 },
-      meeting: { count: 0, value: 0 },
-      offer: { count: 0, value: 0 },
-      contract: { count: 0, value: 0 },
-      closed: { count: 0, value: 0 },
-      lost: { count: 0, value: 0 },
+      lead: { count: 0, value: 0 }, meeting: { count: 0, value: 0 },
+      offer: { count: 0, value: 0 }, contract: { count: 0, value: 0 },
+      closed: { count: 0, value: 0 }, lost: { count: 0, value: 0 },
     };
     deals.forEach((d) => {
       if (map[d.stage]) {
@@ -72,6 +98,24 @@ export function CRMDashboard({ onNavigate }: CRMDashboardProps) {
     });
     return map;
   }, [deals]);
+
+  const visibleStages = DEAL_STAGES.filter((s) => s.key !== "lost");
+
+  const handleDragStart = (event: DragStartEvent) => {
+    const deal = deals.find((d) => d.id === event.active.id);
+    setActiveDeal(deal || null);
+  };
+
+  const handleDragEnd = async (event: DragEndEvent) => {
+    setActiveDeal(null);
+    const { active, over } = event;
+    if (!over) return;
+    const dealId = active.id as string;
+    const newStage = over.id as DealStage;
+    const deal = deals.find((d) => d.id === dealId);
+    if (!deal || deal.stage === newStage) return;
+    await moveDealStage(dealId, newStage);
+  };
 
   if (loading) {
     return (
@@ -181,7 +225,7 @@ export function CRMDashboard({ onNavigate }: CRMDashboardProps) {
           </div>
         </div>
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
-          {DEAL_STAGES.filter((s) => s.key !== "lost").map((stage) => {
+          {visibleStages.map((stage) => {
             const data = dealsByStage[stage.key];
             return (
               <button
@@ -203,6 +247,28 @@ export function CRMDashboard({ onNavigate }: CRMDashboardProps) {
           })}
         </div>
       </GlassCard>
+
+      {/* Kanban Pipeline Board */}
+      <DndContext
+        sensors={sensors}
+        collisionDetection={closestCorners}
+        onDragStart={handleDragStart}
+        onDragEnd={handleDragEnd}
+      >
+        <div className="flex gap-4 overflow-x-auto pb-4 -mx-4 px-4 md:-mx-6 md:px-6">
+          {visibleStages.map((stage) => (
+            <DealStageColumn
+              key={stage.key}
+              stage={stage}
+              deals={dealArraysByStage[stage.key]}
+              onDealClick={setSelectedDeal}
+            />
+          ))}
+        </div>
+        <DragOverlay>
+          {activeDeal && <DealCard deal={activeDeal} isDragging />}
+        </DragOverlay>
+      </DndContext>
 
       {/* Recent Activities */}
       <GlassCard className="p-6" hover={false}>
@@ -248,6 +314,22 @@ export function CRMDashboard({ onNavigate }: CRMDashboardProps) {
           </p>
         )}
       </GlassCard>
+
+      {/* Deal SlideOver */}
+      {selectedDeal && (
+        <DealSlideOver
+          deal={selectedDeal}
+          onClose={() => setSelectedDeal(null)}
+          onUpdate={async (updates) => {
+            const updated = await updateDeal(selectedDeal.id, updates);
+            setSelectedDeal(updated);
+          }}
+          onDelete={async () => {
+            await deleteDeal(selectedDeal.id);
+            setSelectedDeal(null);
+          }}
+        />
+      )}
 
       {showCreateDeal && (
         <CreateDealModal
