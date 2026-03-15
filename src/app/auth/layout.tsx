@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "motion/react";
+import { PyrizeLogo } from "@/components/ui/PyrizeLogo";
 
 const slogans = [
   "Profesyonel emlak sunumları",
@@ -62,13 +63,7 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
         <div className="relative z-10 px-12 lg:px-20 max-w-lg">
           {/* Logo */}
           <Link href="/" className="inline-flex items-center gap-3 mb-8 group">
-            <span
-              className="text-5xl lg:text-6xl text-white font-bold tracking-tight"
-              style={{ fontFamily: "'DM Serif Display', serif" }}
-            >
-              PYRIZE
-            </span>
-            <span className="w-3 h-3 rounded-full bg-[#C9A96E] shadow-[0_0_20px_rgba(201,169,110,0.5)] group-hover:shadow-[0_0_30px_rgba(201,169,110,0.7)] transition-shadow" />
+            <PyrizeLogo variant="dark" className="h-12" />
           </Link>
 
           {/* Gold divider */}

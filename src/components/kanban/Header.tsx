@@ -50,7 +50,7 @@ export function Header({ onNewTask, viewMode, onViewModeChange, searchQuery = ""
         <div className="flex items-center gap-3">
           <button
             onClick={onNewTask}
-            className="flex items-center gap-2 rounded-lg bg-[#24d6a4] px-4 py-2 text-sm font-semibold text-page-bg shadow-lg transition hover:opacity-90"
+            className="flex items-center gap-2 rounded-lg bg-[#DBE64C] px-4 py-2 text-sm font-semibold text-page-bg shadow-lg transition hover:opacity-90"
           >
             YENİ GÖREV
             <ChevronDown className="h-4 w-4" />

@@ -63,6 +63,14 @@ export interface MulkBilgileri {
   kullanimPotansiyeli?: string; // KULLANIM POTANSİYELİ alanı
   fotograflar?: string[]; // Mülk fotoğrafları (base64 veya URL)
   ilanNo?: string; // İlan numarası
+  siteMi?: boolean;
+  asansor?: boolean;
+  otopark?: boolean;
+  guvenlik?: boolean;
+  havuz?: boolean;
+  sporSalonu?: boolean;
+  bahceTeras?: boolean;
+  merkeziIsitma?: boolean;
 }
 
 export interface MarkaRenkleri {
@@ -177,7 +185,9 @@ export type BolgeTipi =
   | "lifestyle" // Yaşam tarzı vizyonu (premium)
   | "exclusive_offer" // VIP/özel teklif (premium)
   | "testimonials" // Sosyal kanıt/referanslar (güven odaklı)
-  | "guarantees"; // Garantiler (güven odaklı)
+  | "guarantees" // Garantiler (güven odaklı)
+  | "yatirim_potansiyeli" // Yatırım potansiyeli analizi
+  | "sosyal_yasam"; // Sosyal yaşam ve çevre
 
 export interface Bolge {
   tip: BolgeTipi;

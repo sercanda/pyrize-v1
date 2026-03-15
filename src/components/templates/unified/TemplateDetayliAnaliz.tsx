@@ -77,7 +77,7 @@ export default function TemplateDetayliAnaliz({ data }: Props) {
               <PageHeader num="01" title="Mülk Değerleme Özeti" />
               <HeroSection property={mapped.property} heroDescription={mapped.heroDescription} heroHighlight={mapped.heroHighlight} theme={theme} />
               <div className="mt-8 print:mt-8">
-                <RegionalComparisonSection property={mapped.property} valuationData={mapped.valuation} theme={theme} />
+                <RegionalComparisonSection property={mapped.property} valuationData={mapped.valuation} theme={theme} variant="table" />
               </div>
             </div>
           </div>
@@ -85,7 +85,7 @@ export default function TemplateDetayliAnaliz({ data }: Props) {
           {/* PAGE 2: PROPERTY PLAN */}
           <div data-pdf-page="2" className="w-full min-h-screen px-6 md:px-12 lg:px-16 py-16 flex flex-col border-b border-dashed border-white/5 print:border-none print:block print:h-auto print:min-h-0 print:py-10 print:px-10 print:break-after-page">
             <PageHeader num="02" title="Mülk Profili & Konum Analizi" />
-            <PropertyPlanSection property={mapped.property} theme={theme} />
+            <PropertyPlanSection property={mapped.property} theme={theme} variant="compact" />
           </div>
 
           {/* PAGE 3: SALES PROCESS */}

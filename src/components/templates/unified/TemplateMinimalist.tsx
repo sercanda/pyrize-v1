@@ -79,6 +79,7 @@ export default function TemplateMinimalist({ data }: Props) {
                 heroDescription={mapped.heroDescription}
                 heroHighlight={mapped.heroHighlight}
                 theme={theme}
+                variant="clean"
               />
 
               <div
@@ -99,14 +100,14 @@ export default function TemplateMinimalist({ data }: Props) {
           {/* PAGE 2: BENEFITS */}
           <div data-pdf-page="2" className="w-full min-h-screen px-6 py-20 flex flex-col print:block print:h-auto print:min-h-0 print:py-12 print:px-12 print:break-after-page">
             <SectionDivider label="Neden Bu Mülk" />
-            <BenefitsSection benefits={essentialBenefits} theme={theme} />
+            <BenefitsSection benefits={essentialBenefits} theme={theme} variant="numbered" />
           </div>
 
           {/* PAGE 3: CONSULTANT + FOOTER */}
           <div data-pdf-page="3" className="w-full min-h-screen px-6 py-20 flex flex-col print:block print:h-auto print:min-h-0 print:py-12 print:px-12 print:break-after-page">
             <SectionDivider label="Danışmanınız" />
             <div className="flex-grow flex flex-col justify-start">
-              <ConsultantTrustSection consultant={mapped.consultant} theme={theme} />
+              <ConsultantTrustSection consultant={mapped.consultant} theme={theme} variant="minimal" />
             </div>
             <footer className="pt-12 mt-auto print:pt-8 print:mt-8">
               <div

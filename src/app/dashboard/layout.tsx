@@ -21,6 +21,7 @@ import {
 import { DashboardHeader } from "@/components/DashboardHeader";
 import { ConfettiButton } from "@/components/ui/ConfettiButton";
 import { ReactNode } from "react";
+import { PyrizeLogo, PyrizeLogoIcon } from "@/components/ui/PyrizeLogo";
 
 const NAV_ITEMS = [
   { href: "/dashboard", label: "Ana Sayfa", icon: Home },
@@ -81,16 +82,10 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
             href="/"
             className={`flex items-center gap-2.5 transition-all duration-300 ${collapsed && !hovered ? "justify-center" : ""}`}
           >
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-[#DBE64C] to-[#74C365] shadow-[0_0_12px_rgba(219,230,76,0.35)] flex-shrink-0">
-              <span className="text-[#001F3F] font-black text-sm" style={{ fontFamily: "var(--font-montserrat)" }}>P</span>
-            </div>
-            {(!collapsed || hovered) && (
-              <span
-                className="text-white font-extrabold tracking-widest text-sm uppercase"
-                style={{ fontFamily: "var(--font-montserrat)" }}
-              >
-                PYRIZE
-              </span>
+            {collapsed && !hovered ? (
+              <PyrizeLogoIcon className="h-8 w-8" />
+            ) : (
+              <PyrizeLogo variant="dark" className="h-6" />
             )}
           </Link>
           {(!collapsed || hovered) && (

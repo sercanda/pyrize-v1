@@ -1,14 +1,29 @@
 "use client";
 
 import Link from "next/link";
+import { useMemo } from "react";
 import { crmStats, formatDashboardPrice } from "./data";
 import { useSunumlar } from "./hooks/useSunumlar";
 import { useTasks } from "./hooks/useTasks";
+import { useCRMDeals } from "@/hooks/useCRMDeals";
+import { DEAL_STAGES } from "@/types/crm";
+import type { DealStage } from "@/types/crm";
 import { MagneticCard } from "@/components/ui/MagneticCard";
 
 export default function DashboardHomePage() {
   const { sunumlar } = useSunumlar();
   const { tasks } = useTasks();
+  const { deals } = useCRMDeals();
+
+  const dealsByStage = useMemo(() => {
+    const map: Record<DealStage, { count: number; value: number }> = {
+      lead: { count: 0, value: 0 }, meeting: { count: 0, value: 0 },
+      offer: { count: 0, value: 0 }, contract: { count: 0, value: 0 },
+      closed: { count: 0, value: 0 }, lost: { count: 0, value: 0 },
+    };
+    deals.forEach((d) => { if (map[d.stage]) { map[d.stage].count++; map[d.stage].value += Number(d.value) || 0; } });
+    return map;
+  }, [deals]);
   const upcomingTasks = [...tasks]
     .sort((a, b) => new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime())
     .slice(0, 4);
@@ -71,7 +86,7 @@ export default function DashboardHomePage() {
                     })}
                   </p>
                 </div>
-                <p className="text-sm font-semibold text-[#57B6B2]">
+                <p className="text-sm font-semibold text-[#DBE64C]">
                   {formatDashboardPrice(sunum)}
                 </p>
               </div>
@@ -145,6 +160,38 @@ export default function DashboardHomePage() {
               </div>
             </MagneticCard>
           ))}
+        </div>
+      </section>
+
+      {/* Pipeline Özeti */}
+      <section className="mt-12">
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-base font-bold text-white tracking-tight" style={{ fontFamily: "var(--font-montserrat)" }}>Pipeline</h2>
+          <Link href="/dashboard/crm?tab=firsatlar" className="text-xs uppercase tracking-[0.3em] text-cyan-200 transition hover:text-cyan-100">
+            Tümünü Gör
+          </Link>
+        </div>
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+          {DEAL_STAGES.filter((s) => s.key !== "lost").map((stage) => {
+            const data = dealsByStage[stage.key];
+            return (
+              <Link
+                key={stage.key}
+                href="/dashboard/crm?tab=firsatlar"
+                className="rounded-xl border border-white/10 bg-white/[0.03] p-4 text-left transition hover:bg-white/[0.07] hover:border-white/20"
+              >
+                <span className={`text-[10px] font-semibold uppercase tracking-wider ${stage.color}`}>
+                  {stage.title}
+                </span>
+                <p className="mt-1.5 text-2xl font-bold text-white tabular-nums">{data.count}</p>
+                <p className="mt-0.5 text-xs text-slate-500">
+                  {data.value > 0
+                    ? new Intl.NumberFormat("tr-TR", { notation: "compact", maximumFractionDigits: 1 }).format(data.value) + " ₺"
+                    : "—"}
+                </p>
+              </Link>
+            );
+          })}
         </div>
       </section>
 

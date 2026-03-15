@@ -3,6 +3,7 @@
 import { useState, Suspense } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
+import { PyrizeLogo } from "@/components/ui/PyrizeLogo";
 import { Mail, Lock, AlertCircle, Eye, EyeOff, ArrowRight, RefreshCw, CheckCircle } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 import { createSupabaseBrowserClient } from "@/lib/supabase/client";
@@ -103,8 +104,7 @@ function LoginForm() {
       {/* Mobile logo */}
       <div className="md:hidden text-center mb-8">
         <Link href="/" className="inline-flex items-center gap-2">
-          <span className="text-2xl font-bold text-white tracking-tight" style={{ fontFamily: "'DM Serif Display', serif" }}>PYRIZE</span>
-          <span className="w-2 h-2 rounded-full bg-[#C9A96E]" />
+          <PyrizeLogo variant="dark" className="h-7" />
         </Link>
       </div>
 
@@ -151,10 +151,10 @@ function LoginForm() {
               initial={{ opacity: 0, y: -10, height: 0 }}
               animate={{ opacity: 1, y: 0, height: "auto" }}
               exit={{ opacity: 0, y: -10, height: 0 }}
-              className="bg-[#24d6a4]/10 border border-[#24d6a4]/20 rounded-xl p-4 flex items-center gap-3"
+              className="bg-[#DBE64C]/10 border border-[#DBE64C]/20 rounded-xl p-4 flex items-center gap-3"
             >
-              <CheckCircle className="w-5 h-5 text-[#24d6a4] flex-shrink-0" />
-              <span className="text-[#24d6a4] text-sm">{success}</span>
+              <CheckCircle className="w-5 h-5 text-[#DBE64C] flex-shrink-0" />
+              <span className="text-[#DBE64C] text-sm">{success}</span>
             </motion.div>
           )}
         </AnimatePresence>

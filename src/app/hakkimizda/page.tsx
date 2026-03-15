@@ -135,7 +135,7 @@ export default function HakkimizdaPage() {
             </p>
             <Link
               href="/auth/register"
-              className="bg-[#24d6a4] text-page-bg font-bold py-3 px-6 rounded-md hover:opacity-90 transition-opacity inline-block"
+              className="bg-[#DBE64C] text-page-bg font-bold py-3 px-6 rounded-md hover:opacity-90 transition-opacity inline-block"
             >
               Ücretsiz Başlayın
             </Link>

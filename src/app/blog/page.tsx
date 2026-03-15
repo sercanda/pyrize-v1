@@ -128,7 +128,7 @@ export default function BlogPage() {
                 key={category}
                 className={`px-6 py-2 rounded-full transition-colors ${
                   category === "Tümü"
-                    ? "bg-[#24d6a4] text-page-bg font-semibold"
+                    ? "bg-[#DBE64C] text-page-bg font-semibold"
                     : "bg-transparent border border-white/20 text-slate-300 hover:bg-white/10"
                 }`}
               >
@@ -145,7 +145,7 @@ export default function BlogPage() {
               <Link
                 key={post.id}
                 href={`/blog/${post.id}`}
-                className="bg-transparent rounded-lg border border-white/20 overflow-hidden hover:border-[#24d6a4] transition-colors group"
+                className="bg-transparent rounded-lg border border-white/20 overflow-hidden hover:border-[#DBE64C] transition-colors group"
               >
                 <div className="relative h-48 overflow-hidden">
                   <Image
@@ -155,7 +155,7 @@ export default function BlogPage() {
                     className="object-cover group-hover:scale-110 transition-transform duration-300"
                   />
                   <div className="absolute top-4 left-4">
-                    <span className="bg-[#24d6a4] text-page-bg px-3 py-1 rounded-full text-xs font-semibold">
+                    <span className="bg-[#DBE64C] text-page-bg px-3 py-1 rounded-full text-xs font-semibold">
                       {post.category}
                     </span>
                   </div>
@@ -166,13 +166,13 @@ export default function BlogPage() {
                     <span>•</span>
                     <span>{post.readTime} okuma</span>
                   </div>
-                  <h3 className="text-xl font-bold text-white mb-3 group-hover:text-[#24d6a4] transition-colors">
+                  <h3 className="text-xl font-bold text-white mb-3 group-hover:text-[#DBE64C] transition-colors">
                     {post.title}
                   </h3>
                   <p className="text-slate-400 mb-4 line-clamp-3">{post.excerpt}</p>
                   <div className="flex items-center justify-between">
                     <span className="text-sm text-slate-400">{post.author}</span>
-                    <span className="text-[#24d6a4] font-semibold text-sm group-hover:translate-x-1 transition-transform inline-block">
+                    <span className="text-[#DBE64C] font-semibold text-sm group-hover:translate-x-1 transition-transform inline-block">
                       Devamını Oku →
                     </span>
                   </div>
@@ -193,9 +193,9 @@ export default function BlogPage() {
               <input
                 type="email"
                 placeholder="E-posta adresiniz"
-                className="flex-1 px-4 py-3 bg-white/5 border border-white/20 rounded-md text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#24d6a4]"
+                className="flex-1 px-4 py-3 bg-white/5 border border-white/20 rounded-md text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#DBE64C]"
               />
-              <button className="bg-[#24d6a4] text-page-bg font-semibold px-6 py-3 rounded-md hover:opacity-90 transition-opacity">
+              <button className="bg-[#DBE64C] text-page-bg font-semibold px-6 py-3 rounded-md hover:opacity-90 transition-opacity">
                 Abone Ol
               </button>
             </div>

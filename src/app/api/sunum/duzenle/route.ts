@@ -50,7 +50,7 @@ export async function POST(request: NextRequest) {
           
           if (!updatedSunumData.istek.markaRenkleri) {
             updatedSunumData.istek.markaRenkleri = {
-              primary: '#24d6a4',
+              primary: '#DBE64C',
               secondary: '#3A7DFF',
               accent: '#FF6B9D'
             };

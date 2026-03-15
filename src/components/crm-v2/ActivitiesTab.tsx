@@ -81,7 +81,7 @@ export function ActivitiesTab() {
           <button
             type="submit"
             disabled={adding || !form.description.trim()}
-            className="inline-flex items-center gap-2 rounded-xl bg-[#24d6a4] px-4 py-2.5 text-sm font-semibold text-[#030822] transition-all hover:opacity-90 disabled:opacity-50"
+            className="inline-flex items-center gap-2 rounded-xl bg-[#DBE64C] px-4 py-2.5 text-sm font-semibold text-[#001F3F] transition-all hover:opacity-90 disabled:opacity-50"
           >
             <Plus className="h-4 w-4" />
             Ekle

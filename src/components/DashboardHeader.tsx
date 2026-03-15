@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ProfileDropdown } from "@/components/ProfileDropdown";
 import { useAuthContext } from "@/components/AuthProvider";
+import { PyrizeLogo } from "@/components/ui/PyrizeLogo";
 
 interface DashboardHeaderProps {
   sidebarWidth: number;
@@ -38,8 +39,7 @@ export function DashboardHeader({ sidebarWidth }: DashboardHeaderProps) {
         {/* Sol taraf - Mobil için logo */}
         <div className="flex flex-shrink-0 items-center md:hidden">
           <Link href="/" className="flex items-center gap-2 text-white">
-            <span className="logo-text font-bold text-lg uppercase tracking-tight">PYRIZE</span>
-            <span className="h-2 w-2 rounded-full bg-pink-500" />
+            <PyrizeLogo variant="dark" className="h-5" />
           </Link>
         </div>
 

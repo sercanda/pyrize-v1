@@ -63,7 +63,7 @@ export default function IletisimPage() {
                     type="text"
                     id="name"
                     name="name"
-                    className="w-full px-4 py-3 bg-white/5 border border-white/20 rounded-md text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#24d6a4]"
+                    className="w-full px-4 py-3 bg-white/5 border border-white/20 rounded-md text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#DBE64C]"
                     placeholder="Adınız ve soyadınız"
                     required
                   />
@@ -76,7 +76,7 @@ export default function IletisimPage() {
                     type="email"
                     id="email"
                     name="email"
-                    className="w-full px-4 py-3 bg-white/5 border border-white/20 rounded-md text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#24d6a4]"
+                    className="w-full px-4 py-3 bg-white/5 border border-white/20 rounded-md text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#DBE64C]"
                     placeholder="ornek@email.com"
                     required
                   />
@@ -89,7 +89,7 @@ export default function IletisimPage() {
                     type="text"
                     id="subject"
                     name="subject"
-                    className="w-full px-4 py-3 bg-white/5 border border-white/20 rounded-md text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#24d6a4]"
+                    className="w-full px-4 py-3 bg-white/5 border border-white/20 rounded-md text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#DBE64C]"
                     placeholder="Mesaj konusu"
                     required
                   />
@@ -102,14 +102,14 @@ export default function IletisimPage() {
                     id="message"
                     name="message"
                     rows={6}
-                    className="w-full px-4 py-3 bg-white/5 border border-white/20 rounded-md text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#24d6a4] resize-none"
+                    className="w-full px-4 py-3 bg-white/5 border border-white/20 rounded-md text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#DBE64C] resize-none"
                     placeholder="Mesajınızı buraya yazın..."
                     required
                   ></textarea>
                 </div>
                 <button
                   type="submit"
-                  className="w-full bg-[#24d6a4] text-page-bg font-semibold py-3 px-6 rounded-md hover:opacity-90 transition-opacity flex items-center justify-center gap-2"
+                  className="w-full bg-[#DBE64C] text-page-bg font-semibold py-3 px-6 rounded-md hover:opacity-90 transition-opacity flex items-center justify-center gap-2"
                 >
                   <Send className="w-5 h-5" />
                   Gönder
@@ -125,8 +125,8 @@ export default function IletisimPage() {
                 <h2 className="text-2xl font-bold text-white mb-6">İletişim Bilgileri</h2>
                 <div className="space-y-6">
                   <div className="flex items-start gap-4">
-                    <div className="bg-[#24d6a4]/20 p-3 rounded-lg">
-                      <Mail className="w-6 h-6 text-[#24d6a4]" />
+                    <div className="bg-[#DBE64C]/20 p-3 rounded-lg">
+                      <Mail className="w-6 h-6 text-[#DBE64C]" />
                     </div>
                     <div>
                       <h3 className="font-semibold text-white mb-1">E-posta</h3>
@@ -135,8 +135,8 @@ export default function IletisimPage() {
                     </div>
                   </div>
                   <div className="flex items-start gap-4">
-                    <div className="bg-[#24d6a4]/20 p-3 rounded-lg">
-                      <Phone className="w-6 h-6 text-[#24d6a4]" />
+                    <div className="bg-[#DBE64C]/20 p-3 rounded-lg">
+                      <Phone className="w-6 h-6 text-[#DBE64C]" />
                     </div>
                     <div>
                       <h3 className="font-semibold text-white mb-1">Telefon</h3>
@@ -145,8 +145,8 @@ export default function IletisimPage() {
                     </div>
                   </div>
                   <div className="flex items-start gap-4">
-                    <div className="bg-[#24d6a4]/20 p-3 rounded-lg">
-                      <MapPin className="w-6 h-6 text-[#24d6a4]" />
+                    <div className="bg-[#DBE64C]/20 p-3 rounded-lg">
+                      <MapPin className="w-6 h-6 text-[#DBE64C]" />
                     </div>
                     <div>
                       <h3 className="font-semibold text-white mb-1">Adres</h3>
@@ -161,21 +161,21 @@ export default function IletisimPage() {
                 <div className="flex gap-4">
                   <a
                     href="#"
-                    className="bg-white/5 p-3 rounded-lg border border-white/20 hover:bg-[#24d6a4] hover:border-[#24d6a4] transition-colors"
+                    className="bg-white/5 p-3 rounded-lg border border-white/20 hover:bg-[#DBE64C] hover:border-[#DBE64C] transition-colors"
                     aria-label="LinkedIn"
                   >
                     <span className="text-white">in</span>
                   </a>
                   <a
                     href="#"
-                    className="bg-white/5 p-3 rounded-lg border border-white/20 hover:bg-[#24d6a4] hover:border-[#24d6a4] transition-colors"
+                    className="bg-white/5 p-3 rounded-lg border border-white/20 hover:bg-[#DBE64C] hover:border-[#DBE64C] transition-colors"
                     aria-label="Twitter"
                   >
                     <span className="text-white">𝕏</span>
                   </a>
                   <a
                     href="#"
-                    className="bg-white/5 p-3 rounded-lg border border-white/20 hover:bg-[#24d6a4] hover:border-[#24d6a4] transition-colors"
+                    className="bg-white/5 p-3 rounded-lg border border-white/20 hover:bg-[#DBE64C] hover:border-[#DBE64C] transition-colors"
                     aria-label="Instagram"
                   >
                     <span className="text-white">IG</span>
@@ -190,7 +190,7 @@ export default function IletisimPage() {
                 </p>
                 <Link
                   href="/fiyatlandirma"
-                  className="text-[#24d6a4] hover:underline font-semibold"
+                  className="text-[#DBE64C] hover:underline font-semibold"
                 >
                   SSS sayfasına git →
                 </Link>

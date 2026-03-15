@@ -82,7 +82,7 @@ export function DealsTab() {
         </div>
         <button
           onClick={() => setShowCreateModal(true)}
-          className="inline-flex items-center gap-2 rounded-xl bg-[#24d6a4] px-4 py-2.5 text-sm font-semibold text-[#030822] shadow-[0_0_20px_rgba(36,214,164,0.3)] transition-all hover:opacity-90"
+          className="inline-flex items-center gap-2 rounded-xl bg-[#DBE64C] px-4 py-2.5 text-sm font-semibold text-[#001F3F] shadow-[0_0_20px_rgba(219,230,76,0.3)] transition-all hover:opacity-90"
         >
           <Plus className="h-4 w-4" />
           Yeni Fırsat

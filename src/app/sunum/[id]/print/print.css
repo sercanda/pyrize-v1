@@ -1322,3 +1322,20 @@ li {
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
 }
+
+/* LocationAdvantages compact layout for PDF */
+.pdf-render-mode [data-section="location-advantages"] {
+  gap: 2mm !important;
+}
+.pdf-render-mode [data-section="location-advantages"] .grid {
+  gap: 2mm !important;
+}
+.pdf-render-mode [data-section="location-advantages"] h2 {
+  font-size: 14pt !important;
+}
+.pdf-render-mode [data-section="location-advantages"] h3 {
+  font-size: 10pt !important;
+}
+.pdf-render-mode [data-section="location-advantages"] p {
+  font-size: 8pt !important;
+}

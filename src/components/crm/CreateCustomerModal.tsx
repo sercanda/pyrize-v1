@@ -322,7 +322,7 @@ export function CreateCustomerModal({ isOpen, onClose, defaultStage }: CreateCus
             </button>
             <button
               type="submit"
-              className="rounded-lg bg-[#24d6a4] px-6 py-2 text-sm font-semibold text-page-bg shadow-lg transition hover:opacity-90"
+              className="rounded-lg bg-[#DBE64C] px-6 py-2 text-sm font-semibold text-page-bg shadow-lg transition hover:opacity-90"
             >
               Oluştur
             </button>

@@ -23,7 +23,7 @@ export function ConfettiButton({
       particleCount: 80,
       spread: 70,
       origin: { y: 0.9, x: 0.1 },
-      colors: ['#24d6a4', '#22d3ee', '#818cf8'],
+      colors: ['#DBE64C', '#22d3ee', '#818cf8'],
     });
     router.push(href);
   };
@@ -34,7 +34,7 @@ export function ConfettiButton({
       onPress={handlePress}
       className={
         className ??
-        'relative w-full overflow-visible rounded-xl bg-[#24d6a4] px-4 py-2.5 text-sm font-semibold text-[#030822] shadow-[0_0_24px_rgba(36,214,164,0.35)] transition-transform hover:-translate-y-0.5 after:absolute after:inset-0 after:rounded-xl after:bg-[#24d6a4]/40 after:content-[""] after:transition after:duration-500 hover:after:scale-150 hover:after:opacity-0'
+        'relative w-full overflow-visible rounded-xl bg-[#DBE64C] px-4 py-2.5 text-sm font-semibold text-[#030822] shadow-[0_0_24px_rgba(219,230,76,0.35)] transition-transform hover:-translate-y-0.5 after:absolute after:inset-0 after:rounded-xl after:bg-[#DBE64C]/40 after:content-[""] after:transition after:duration-500 hover:after:scale-150 hover:after:opacity-0'
       }
     >
       <Plus className="mr-1.5 inline h-4 w-4" />

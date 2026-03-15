@@ -267,7 +267,7 @@ export default function AdminPage() {
 
             <button
               type="submit"
-              className="w-full rounded-xl bg-[#24d6a4] px-5 py-3 text-sm font-semibold text-page-bg shadow-[0_0_24px_rgba(36,214,164,0.35)] transition hover:opacity-90"
+              className="w-full rounded-xl bg-[#DBE64C] px-5 py-3 text-sm font-semibold text-page-bg shadow-[0_0_24px_rgba(219,230,76,0.35)] transition hover:opacity-90"
             >
               Giriş Yap
             </button>

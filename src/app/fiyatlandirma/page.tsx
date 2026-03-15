@@ -107,13 +107,13 @@ export default function FiyatlandirmaPage() {
                 key={index}
                 className={`bg-transparent p-8 rounded-lg border ${
                   plan.popular
-                    ? "border-[#24d6a4] border-2 scale-105"
+                    ? "border-[#DBE64C] border-2 scale-105"
                     : "border-white/20"
                 } relative`}
               >
                 {plan.popular && (
                   <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
-                    <span className="bg-[#24d6a4] text-page-bg px-4 py-1 rounded-full text-sm font-semibold">
+                    <span className="bg-[#DBE64C] text-page-bg px-4 py-1 rounded-full text-sm font-semibold">
                       En Popüler
                     </span>
                   </div>
@@ -134,7 +134,7 @@ export default function FiyatlandirmaPage() {
                 <ul className="space-y-4 mb-8">
                   {plan.features.map((feature, featureIndex) => (
                     <li key={featureIndex} className="flex items-start">
-                      <span className="material-symbols-outlined text-[#24d6a4] mr-3 mt-0.5">
+                      <span className="material-symbols-outlined text-[#DBE64C] mr-3 mt-0.5">
                         check_circle
                       </span>
                       <span className="text-slate-300">{feature}</span>
@@ -145,7 +145,7 @@ export default function FiyatlandirmaPage() {
                   href={plan.name === "Kurumsal" ? "/iletisim" : "/auth/register"}
                   className={`block w-full text-center py-3 px-6 rounded-md font-semibold transition-colors ${
                     plan.popular
-                      ? "bg-[#24d6a4] text-page-bg hover:opacity-90"
+                      ? "bg-[#DBE64C] text-page-bg hover:opacity-90"
                       : "bg-transparent text-white border border-white/20 hover:bg-white/10"
                   }`}
                 >

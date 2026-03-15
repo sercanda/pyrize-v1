@@ -228,7 +228,7 @@ export default function DashboardTakvimPage() {
               <button
                 type="submit"
                 disabled={submitting}
-                className="rounded-full bg-[#24d6a4] px-4 py-2 text-xs font-semibold uppercase tracking-[0.3em] text-page-bg shadow-[0_0_15px_rgba(36,214,164,0.35)] transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
+                className="rounded-full bg-[#DBE64C] px-4 py-2 text-xs font-semibold uppercase tracking-[0.3em] text-page-bg shadow-[0_0_15px_rgba(219,230,76,0.35)] transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
               >
                 {submitting ? "Kaydediliyor..." : "Görevi Kaydet"}
               </button>

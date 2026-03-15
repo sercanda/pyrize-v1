@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { PyrizeLogo } from "@/components/ui/PyrizeLogo";
 import { Mail, Lock, User, AlertCircle, Eye, EyeOff, CheckCircle, ArrowRight, RefreshCw } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 import { createSupabaseBrowserClient } from "@/lib/supabase/client";
@@ -109,8 +110,7 @@ export default function RegisterPage() {
         {/* Mobile logo */}
         <div className="md:hidden mb-8">
           <Link href="/" className="inline-flex items-center gap-2">
-            <span className="text-2xl font-bold text-white tracking-tight" style={{ fontFamily: "'DM Serif Display', serif" }}>PYRIZE</span>
-            <span className="w-2 h-2 rounded-full bg-[#C9A96E]" />
+            <PyrizeLogo variant="dark" className="h-7" />
           </Link>
         </div>
 
@@ -118,9 +118,9 @@ export default function RegisterPage() {
           initial={{ scale: 0 }}
           animate={{ scale: 1 }}
           transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
-          className="w-20 h-20 rounded-full bg-[#24d6a4]/10 border border-[#24d6a4]/20 flex items-center justify-center mx-auto mb-6"
+          className="w-20 h-20 rounded-full bg-[#DBE64C]/10 border border-[#DBE64C]/20 flex items-center justify-center mx-auto mb-6"
         >
-          <Mail className="w-9 h-9 text-[#24d6a4]" />
+          <Mail className="w-9 h-9 text-[#DBE64C]" />
         </motion.div>
 
         <h1 className="text-2xl font-bold text-white mb-3" style={{ fontFamily: "'DM Serif Display', serif" }}>
@@ -133,7 +133,7 @@ export default function RegisterPage() {
 
         <div className="bg-white/[0.03] border border-[#C9A96E]/10 rounded-xl p-6 mb-6">
           <div className="flex items-start gap-3 text-left">
-            <CheckCircle className="w-5 h-5 text-[#24d6a4] mt-0.5 flex-shrink-0" />
+            <CheckCircle className="w-5 h-5 text-[#DBE64C] mt-0.5 flex-shrink-0" />
             <p className="text-white/60 text-sm leading-relaxed">
               Gelen kutunuzu kontrol edin ve bağlantıya tıklayarak hesabınızı aktifleştirin. Spam klasörünü de kontrol etmeyi unutmayın.
             </p>

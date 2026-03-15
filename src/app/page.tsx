@@ -37,6 +37,7 @@ import { MagicCard } from "@/components/magicui/magic-card";
 import { Marquee } from "@/components/magicui/marquee";
 import { Meteors } from "@/components/magicui/meteors";
 import HeroOrbBackground from "@/components/ui/HeroOrbBackground";
+import { PyrizeLogo } from "@/components/ui/PyrizeLogo";
 
 /* ─────────────────────────────────────────────────────────────
    DATA
@@ -331,15 +332,7 @@ export default function LandingPage() {
         <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2">
-            <span
-              className="text-xl font-bold tracking-wider"
-              style={{
-                fontFamily: "var(--font-instrument), Georgia, serif",
-                color: "#DBE64C",
-              }}
-            >
-              PYRIZE
-            </span>
+            <PyrizeLogo variant="dark" className="h-6" />
           </Link>
 
           {/* Desktop Nav */}
@@ -1266,15 +1259,9 @@ export default function LandingPage() {
         <div className="max-w-7xl mx-auto grid md:grid-cols-3 gap-12 mb-12">
           {/* Brand */}
           <div>
-            <span
-              className="text-xl font-bold tracking-wider mb-4 block"
-              style={{
-                fontFamily: "var(--font-instrument), Georgia, serif",
-                color: "#DBE64C",
-              }}
-            >
-              PYRIZE
-            </span>
+            <div className="mb-4">
+              <PyrizeLogo variant="dark" className="h-6" />
+            </div>
             <p
               className="text-sm leading-relaxed max-w-[280px]"
               style={{ color: "#8A9BB5" }}

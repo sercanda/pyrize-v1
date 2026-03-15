@@ -9,6 +9,20 @@ import { MagneticCard } from "@/components/ui/MagneticCard";
 
 type FilterKey = "hepsi" | "aktif" | "taslak";
 
+const STIL_LABELS: Record<string, string> = {
+  detayli_analiz: "Detaylı Analiz",
+  hizli_satis: "Hızlı Satış",
+  premium_sunum: "Premium",
+  guven_odakli: "Güven Odaklı",
+  minimalist: "Minimalist",
+};
+
+const TEMA_LABELS: Record<string, string> = {
+  modern: "Modern",
+  kurumsal: "Kurumsal",
+  luks: "Lüks",
+};
+
 interface SkorResult {
   skor: number;
   yorum: string;
@@ -147,14 +161,26 @@ export default function DashboardSunumlarPage() {
                   <div className="group overflow-hidden rounded-3xl border border-white/10 bg-white/5 p-6 shadow-[0_25px_70px_rgba(6,12,28,0.35)] transition hover:border-white/20">
                     <div className="mb-4 flex items-start justify-between">
                       <div className="flex-1">
-                        <div
-                          className={`mb-2 inline-block rounded-full px-3 py-1 text-xs font-semibold ${
-                            sunum.durum === "aktif"
-                              ? "bg-green-500/20 text-green-400"
-                              : "bg-yellow-500/20 text-yellow-400"
-                          }`}
-                        >
-                          {sunum.durum === "aktif" ? "Aktif" : "Taslak"}
+                        <div className="flex flex-wrap items-center gap-1.5 mb-2">
+                          <span
+                            className={`inline-block rounded-full px-3 py-1 text-xs font-semibold ${
+                              sunum.durum === "aktif"
+                                ? "bg-green-500/20 text-green-400"
+                                : "bg-yellow-500/20 text-yellow-400"
+                            }`}
+                          >
+                            {sunum.durum === "aktif" ? "Aktif" : "Taslak"}
+                          </span>
+                          {(sunum as any).istek?.sunumStili && (
+                            <span className="rounded-full bg-indigo-500/15 text-indigo-300 px-2 py-0.5 text-[10px] font-semibold">
+                              {STIL_LABELS[(sunum as any).istek.sunumStili] || (sunum as any).istek.sunumStili}
+                            </span>
+                          )}
+                          {(sunum as any).istek?.tema && (
+                            <span className="rounded-full bg-purple-500/15 text-purple-300 px-2 py-0.5 text-[10px] font-semibold">
+                              {TEMA_LABELS[(sunum as any).istek.tema] || (sunum as any).istek.tema}
+                            </span>
+                          )}
                         </div>
                         <h3 className="mb-2 line-clamp-2 text-lg font-semibold text-white">
                           {sunum.baslik}

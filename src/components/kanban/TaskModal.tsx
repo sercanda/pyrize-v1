@@ -504,7 +504,7 @@ export function TaskModal({ task, isOpen, onClose, defaultColumn }: TaskModalPro
             <button
               type="submit"
               disabled={!formData.title.trim()}
-              className="rounded-lg bg-[#24d6a4] px-5 py-2 text-xs font-semibold text-[#030822] shadow-[0_0_16px_rgba(36,214,164,0.2)] transition hover:opacity-90 disabled:opacity-40"
+              className="rounded-lg bg-[#DBE64C] px-5 py-2 text-xs font-semibold text-[#001F3F] shadow-[0_0_16px_rgba(219,230,76,0.2)] transition hover:opacity-90 disabled:opacity-40"
             >
               {task ? "Güncelle" : "Oluştur"}
             </button>
@@ -529,7 +529,7 @@ export function TaskModal({ task, isOpen, onClose, defaultColumn }: TaskModalPro
                 <button type="button" onClick={() => { setShowAddUserModal(false); setNewUserName(""); }} className="rounded-lg px-3 py-1.5 text-xs text-slate-400 hover:text-white transition">
                   İptal
                 </button>
-                <button type="button" onClick={addTempUser} disabled={!newUserName.trim()} className="rounded-lg bg-[#24d6a4] px-3 py-1.5 text-xs font-semibold text-[#030822] disabled:opacity-40 transition hover:opacity-90">
+                <button type="button" onClick={addTempUser} disabled={!newUserName.trim()} className="rounded-lg bg-[#DBE64C] px-3 py-1.5 text-xs font-semibold text-[#001F3F] disabled:opacity-40 transition hover:opacity-90">
                   Ekle
                 </button>
               </div>

@@ -145,7 +145,7 @@ export function CreateDealModal({ onClose, onCreate }: CreateDealModalProps) {
             <button
               type="submit"
               disabled={loading || !form.title.trim()}
-              className="rounded-xl bg-[#24d6a4] px-6 py-2.5 text-sm font-semibold text-[#030822] shadow-[0_0_20px_rgba(36,214,164,0.3)] transition-all hover:opacity-90 disabled:opacity-50"
+              className="rounded-xl bg-[#DBE64C] px-6 py-2.5 text-sm font-semibold text-[#001F3F] shadow-[0_0_20px_rgba(219,230,76,0.3)] transition-all hover:opacity-90 disabled:opacity-50"
             >
               {loading ? "Kaydediliyor..." : "Kaydet"}
             </button>

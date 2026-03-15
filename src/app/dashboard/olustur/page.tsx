@@ -93,6 +93,14 @@ interface MulkFormState {
   aciklama: string;
   fotograflar: string[];
   ilanNo?: string;
+  siteMi?: boolean;
+  asansor?: boolean;
+  otopark?: boolean;
+  guvenlik?: boolean;
+  havuz?: boolean;
+  sporSalonu?: boolean;
+  bahceTeras?: boolean;
+  merkeziIsitma?: boolean;
 }
 
 interface StepOption<T> {
@@ -1236,6 +1244,14 @@ export default function DashboardOlusturPage() {
     kat: mulk.kat || undefined,
     yas: mulk.yas || undefined,
     krediyeUygun: mulk.krediyeUygun,
+    siteMi: mulk.siteMi || undefined,
+    asansor: mulk.asansor || undefined,
+    otopark: mulk.otopark || undefined,
+    guvenlik: mulk.guvenlik || undefined,
+    havuz: mulk.havuz || undefined,
+    sporSalonu: mulk.sporSalonu || undefined,
+    bahceTeras: mulk.bahceTeras || undefined,
+    merkeziIsitma: mulk.merkeziIsitma || undefined,
     // Çok uzun metinler OpenRouter tarafında PAYLOAD_TOO_LARGE hatasına neden olabiliyor.
     // Bu yüzden açıklama ve AI alanlarını makul bir uzunlukta kesiyoruz.
     aciklama: mulk.aciklama ? mulk.aciklama.slice(0, 2000) : undefined,
@@ -1676,6 +1692,45 @@ export default function DashboardOlusturPage() {
                     />
                   </div>
                 )}
+              </div>
+
+              {/* Mülk Özellikleri Toggle Grid */}
+              <div className="space-y-3">
+                <label className="text-xs uppercase tracking-[0.3em] text-slate-400">
+                  Mülk Özellikleri
+                </label>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+                  {[
+                    { key: 'siteMi' as const, label: 'Site İçi' },
+                    { key: 'asansor' as const, label: 'Asansör' },
+                    { key: 'otopark' as const, label: 'Otopark' },
+                    { key: 'guvenlik' as const, label: '7/24 Güvenlik' },
+                    { key: 'havuz' as const, label: 'Havuz' },
+                    { key: 'sporSalonu' as const, label: 'Spor Salonu' },
+                    { key: 'bahceTeras' as const, label: 'Bahçe / Teras' },
+                    { key: 'merkeziIsitma' as const, label: 'Merkezi Isıtma' },
+                  ].map((item) => (
+                    <button
+                      key={item.key}
+                      type="button"
+                      onClick={() => setMulk((prev) => ({ ...prev, [item.key]: !prev[item.key] }))}
+                      className={`flex items-center gap-2 rounded-xl px-3 py-2.5 text-xs font-medium transition border ${
+                        mulk[item.key]
+                          ? 'border-[#DBE64C]/40 bg-[#DBE64C]/10 text-[#DBE64C]'
+                          : 'border-white/10 bg-white/5 text-slate-400 hover:border-white/20'
+                      }`}
+                    >
+                      <div className={`w-4 h-4 rounded flex items-center justify-center flex-shrink-0 ${
+                        mulk[item.key] ? 'bg-[#DBE64C]/20' : 'bg-white/10'
+                      }`}>
+                        {mulk[item.key] && (
+                          <svg className="w-3 h-3 text-[#DBE64C]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" /></svg>
+                        )}
+                      </div>
+                      {item.label}
+                    </button>
+                  ))}
+                </div>
               </div>
 
               <div className="rounded-2xl border border-white/10 bg-white/5 p-6">

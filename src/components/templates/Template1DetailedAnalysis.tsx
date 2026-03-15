@@ -186,7 +186,7 @@ export default function Template1DetailedAnalysis({ data }: Props) {
   
   // Marka renkleri varsayılan değerlerle birlikte
   const colors = {
-    primary: markaRenkleri?.primary || '#24d6a4',
+    primary: markaRenkleri?.primary || '#DBE64C',
     secondary: markaRenkleri?.secondary || '#3A7DFF',
     accent: markaRenkleri?.accent || '#FF6B9D'
   };

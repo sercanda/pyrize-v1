@@ -20,7 +20,7 @@ export function Header({ onNewCustomer, searchQuery, onSearchChange }: HeaderPro
         <SearchBar value={searchQuery} onChange={onSearchChange} />
         <button
           onClick={onNewCustomer}
-          className="flex items-center gap-2 rounded-lg bg-gradient-to-r from-[#24d6a4] to-[#1fb894] px-4 py-2 text-sm font-semibold text-page-bg shadow-lg shadow-[#24d6a4]/20 transition-all hover:scale-105 hover:shadow-xl hover:shadow-[#24d6a4]/30 active:scale-95"
+          className="flex items-center gap-2 rounded-lg bg-gradient-to-r from-[#DBE64C] to-[#1fb894] px-4 py-2 text-sm font-semibold text-page-bg shadow-lg shadow-[#DBE64C]/20 transition-all hover:scale-105 hover:shadow-xl hover:shadow-[#DBE64C]/30 active:scale-95"
         >
           <Plus className="h-4 w-4" />
           Yeni Müşteri

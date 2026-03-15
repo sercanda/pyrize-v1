@@ -91,6 +91,7 @@ export default function TemplateHizliSatis({ data }: Props) {
                 heroDescription={mapped.heroDescription}
                 heroHighlight={mapped.heroHighlight}
                 theme={theme}
+                variant="bold"
               />
 
               {mapped.quickHighlights && mapped.quickHighlights.length > 0 && (
@@ -128,7 +129,7 @@ export default function TemplateHizliSatis({ data }: Props) {
               </span>
             </div>
             <div className="space-y-16 print:space-y-8">
-              <RegionalComparisonSection property={mapped.property} valuationData={mapped.valuation} theme={theme} />
+              <RegionalComparisonSection property={mapped.property} valuationData={mapped.valuation} theme={theme} variant="compact" />
               <SalesProcessSection steps={quickSteps} theme={theme} variant="compact" />
             </div>
           </div>
@@ -150,8 +151,8 @@ export default function TemplateHizliSatis({ data }: Props) {
               </span>
             </div>
             <div className="space-y-16 print:space-y-12 flex-grow flex flex-col justify-start">
-              <ConsultantTrustSection consultant={mapped.consultant} theme={theme} />
-              <FAQSection faqs={quickFaqs} theme={theme} />
+              <ConsultantTrustSection consultant={mapped.consultant} theme={theme} variant="card" />
+              <FAQSection faqs={quickFaqs} theme={theme} variant="inline" />
             </div>
             <footer className={`border-t ${theme.borderColor} py-8 flex flex-col items-center text-center mt-auto print:py-6 print:bg-transparent print:border-slate-300 print:mt-8`}>
               <p className={`${theme.textSecondary} text-xs uppercase tracking-widest mb-2 print:text-slate-800`}>Gizli ve Özel Ticari Bilgi İçerir</p>

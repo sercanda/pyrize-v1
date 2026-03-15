@@ -56,8 +56,24 @@ function buildPropertySection(mulk: MulkBilgileri): string {
     mulk.cevreOzellikleri?.length ? `- Çevre Özellikleri: ${mulk.cevreOzellikleri.join(', ')}` : '',
     mulk.avantajlar?.length ? `- Avantajlar: ${mulk.avantajlar.join(', ')}` : '',
     mulk.aciklama ? `- Açıklama: ${mulk.aciklama}` : '',
+    // Mülk Özellikleri (boolean toggles)
+    buildPropertyFeatures(mulk),
   ];
   return lines.filter(Boolean).join('\n');
+}
+
+function buildPropertyFeatures(mulk: MulkBilgileri): string {
+  const features: string[] = [];
+  if (mulk.siteMi) features.push('Site içi');
+  if (mulk.asansor) features.push('Asansör');
+  if (mulk.otopark) features.push('Otopark');
+  if (mulk.guvenlik) features.push('7/24 Güvenlik');
+  if (mulk.havuz) features.push('Havuz');
+  if (mulk.sporSalonu) features.push('Spor Salonu');
+  if (mulk.bahceTeras) features.push('Bahçe/Teras');
+  if (mulk.merkeziIsitma) features.push('Merkezi Isıtma');
+  if (features.length === 0) return '';
+  return `- Mülk Özellikleri: ${features.join(', ')}`;
 }
 
 function buildPropertyRules(mulk: MulkBilgileri): string {

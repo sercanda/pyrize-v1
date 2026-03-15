@@ -345,7 +345,7 @@ export function CustomerDetailModal({ customer, isOpen, onClose }: CustomerDetai
                     </button>
                     <button
                       onClick={handleSave}
-                      className="rounded-lg bg-[#24d6a4] px-4 py-2 text-sm font-semibold text-page-bg shadow-lg transition hover:opacity-90"
+                      className="rounded-lg bg-[#DBE64C] px-4 py-2 text-sm font-semibold text-page-bg shadow-lg transition hover:opacity-90"
                     >
                       Kaydet
                     </button>
@@ -449,7 +449,7 @@ export function CustomerDetailModal({ customer, isOpen, onClose }: CustomerDetai
                   <button
                     onClick={handleAddActivity}
                     disabled={!activityDescription.trim()}
-                    className="rounded-lg bg-[#24d6a4] px-4 py-2 text-sm font-semibold text-page-bg shadow-lg transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
+                    className="rounded-lg bg-[#DBE64C] px-4 py-2 text-sm font-semibold text-page-bg shadow-lg transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
                   >
                     <Plus className="h-4 w-4" />
                   </button>

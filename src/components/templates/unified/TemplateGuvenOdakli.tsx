@@ -105,9 +105,9 @@ export default function TemplateGuvenOdakli({ data }: Props) {
                 </p>
               </div>
 
-              <HeroSection property={mapped.property} heroDescription={mapped.heroDescription} heroHighlight={mapped.heroHighlight} theme={theme} />
+              <HeroSection property={mapped.property} heroDescription={mapped.heroDescription} heroHighlight={mapped.heroHighlight} theme={theme} variant="trust" consultantName={mapped.consultant.adSoyad} consultantPhoto={mapped.consultant.profilFotografiUrl} />
               <div className="print:mt-8">
-                <ConsultantTrustSection consultant={mapped.consultant} theme={theme} />
+                <ConsultantTrustSection consultant={mapped.consultant} theme={theme} variant="hero" />
               </div>
             </div>
           </div>
@@ -128,7 +128,7 @@ export default function TemplateGuvenOdakli({ data }: Props) {
             </div>
             <div className="space-y-16 print:space-y-10">
               <TestimonialSection theme={theme} testimonials={mapped.testimonials} />
-              <BenefitsSection benefits={mapped.salesBenefits} theme={theme} />
+              <BenefitsSection benefits={mapped.salesBenefits} theme={theme} variant="list" />
             </div>
           </div>
 

@@ -8,6 +8,7 @@ import {
   LogOut,
   Settings,
   LayoutDashboard,
+  User,
 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
@@ -89,7 +90,7 @@ export function ProfileDropdown({ name, email, role, avatarUrl, onLogout }: Prof
         aria-haspopup="menu"
         aria-expanded={open}
       >
-        <span className="relative flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br from-cyan-500/80 via-teal-500/80 to-emerald-500/80 text-sm font-semibold text-white shadow-[0_0_20px_rgba(56,189,248,0.35)]">
+        <span className="relative flex h-9 w-9 items-center justify-center rounded-full border border-[#DBE64C]/30 bg-[#DBE64C]/10 text-sm font-semibold text-[#DBE64C]">
           {avatarUrl ? (
             <Image
               src={avatarUrl}
@@ -98,7 +99,7 @@ export function ProfileDropdown({ name, email, role, avatarUrl, onLogout }: Prof
               className="rounded-full object-cover"
             />
           ) : (
-            getInitials(name)
+            <User className="h-5 w-5" />
           )}
         </span>
         <span className="hidden md:flex flex-col leading-tight tracking-normal text-left normal-case">
@@ -126,7 +127,7 @@ export function ProfileDropdown({ name, email, role, avatarUrl, onLogout }: Prof
         >
           <div className="border-b border-white/10 bg-white/5 px-4 py-4">
             <div className="flex items-center gap-3">
-              <div className="relative flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-cyan-500 to-indigo-500 text-lg font-semibold text-white">
+              <div className="relative flex h-12 w-12 items-center justify-center rounded-full border border-[#DBE64C]/30 bg-[#DBE64C]/10 text-lg font-semibold text-[#DBE64C]">
                 {avatarUrl ? (
                   <Image
                     src={avatarUrl}
@@ -135,7 +136,7 @@ export function ProfileDropdown({ name, email, role, avatarUrl, onLogout }: Prof
                     className="rounded-full object-cover"
                   />
                 ) : (
-                  getInitials(name)
+                  <User className="h-6 w-6" />
                 )}
               </div>
               <div>

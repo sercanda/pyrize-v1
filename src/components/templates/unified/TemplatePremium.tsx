@@ -85,7 +85,7 @@ export default function TemplatePremium({ data }: Props) {
           <div data-pdf-page="1" className="min-h-screen flex flex-col print:block print:h-auto print:break-after-page print:px-10 print:py-12 relative">
             <div className="flex-1 flex flex-col justify-center gap-16 px-6 md:px-10 lg:px-12 py-20 print:px-0 print:gap-10 print:block">
               <EditorialHeader label="Özel Portföy — Sunum" />
-              <HeroSection property={mapped.property} heroDescription={mapped.heroDescription} heroHighlight={mapped.heroHighlight} theme={theme} />
+              <HeroSection property={mapped.property} heroDescription={mapped.heroDescription} heroHighlight={mapped.heroHighlight} theme={theme} variant="magazine" />
             </div>
           </div>
 
@@ -107,8 +107,8 @@ export default function TemplatePremium({ data }: Props) {
           <div data-pdf-page="3" className="w-full min-h-screen px-6 md:px-10 lg:px-12 py-20 flex flex-col print:block print:h-auto print:min-h-0 print:py-12 print:px-10 print:break-after-page">
             <EditorialHeader label="Mülk Profili & Avantajlar" />
             <div className="space-y-24 print:space-y-12">
-              <PropertyPlanSection property={mapped.property} theme={theme} />
-              <BenefitsSection benefits={mapped.salesBenefits.slice(0, 3)} theme={theme} />
+              <PropertyPlanSection property={mapped.property} theme={theme} variant="editorial" />
+              <BenefitsSection benefits={mapped.salesBenefits.slice(0, 3)} theme={theme} variant="icon-row" />
             </div>
           </div>
 
@@ -130,8 +130,8 @@ export default function TemplatePremium({ data }: Props) {
           <div data-pdf-page="5" className="w-full min-h-screen px-6 md:px-10 lg:px-12 py-20 flex flex-col print:block print:h-auto print:min-h-0 print:py-12 print:px-10 print:break-after-page">
             <EditorialHeader label="Danışman & Sıkça Sorulanlar" />
             <div className="space-y-20 print:space-y-12 flex-grow flex flex-col justify-start">
-              <ConsultantTrustSection consultant={mapped.consultant} theme={theme} />
-              <FAQSection faqs={mapped.faqs} theme={theme} />
+              <ConsultantTrustSection consultant={mapped.consultant} theme={theme} variant="hero" />
+              <FAQSection faqs={mapped.faqs} theme={theme} variant="accordion" />
             </div>
             <footer className={`border-t mt-auto py-10 flex flex-col items-center text-center print:py-6 print:bg-transparent print:mt-8`} style={{ borderColor: `${GOLD}30` }}>
               <div className="w-8 h-px mb-6" style={{ background: GOLD }} />
