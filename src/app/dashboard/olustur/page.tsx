@@ -49,6 +49,7 @@ import {
   parseCurrencyToNumber
 } from '@/lib/utils/price';
 import { getSupabaseClient } from '@/lib/supabaseClient';
+import { AppCombobox } from '@/components/ui/AppCombobox';
 import {
   getNadirFirsatTemplate,
   getKonumPrimiTemplate,
@@ -1568,23 +1569,19 @@ export default function DashboardOlusturPage() {
                   <label className="text-xs uppercase tracking-[0.3em] text-slate-400">
                     Mülk Türü *
                   </label>
-                  <select
+                  <AppCombobox<MulkTuru>
                     value={mulk.tur}
-                    onChange={(event) =>
-                      setMulk((prev) => ({
-                        ...prev,
-                        tur: event.target.value as MulkTuru
-                      }))
-                    }
-                    className="w-full rounded-2xl border border-white/10 bg-slate-900/90 px-4 py-3 text-sm text-white transition focus:border-cyan-400 focus:outline-none focus:ring-2 focus:ring-cyan-400/50"
-                  >
-                    <option value="daire" className="bg-slate-900 text-white">Daire</option>
-                    <option value="arsa" className="bg-slate-900 text-white">Arsa</option>
-                    <option value="villa" className="bg-slate-900 text-white">Villa</option>
-                    <option value="ticari" className="bg-slate-900 text-white">Ticari</option>
-                    <option value="ofis" className="bg-slate-900 text-white">Ofis</option>
-                    <option value="kompleks" className="bg-slate-900 text-white">Kompleks</option>
-                  </select>
+                    onChange={(val) => setMulk((prev) => ({ ...prev, tur: val }))}
+                    placeholder="Mülk türü seçin"
+                    options={[
+                      { value: 'daire', label: 'Daire' },
+                      { value: 'arsa', label: 'Arsa' },
+                      { value: 'villa', label: 'Villa' },
+                      { value: 'ticari', label: 'Ticari' },
+                      { value: 'ofis', label: 'Ofis' },
+                      { value: 'kompleks', label: 'Kompleks' },
+                    ]}
+                  />
                 </div>
 
                 <div className="space-y-2">
@@ -1633,20 +1630,16 @@ export default function DashboardOlusturPage() {
                   <label className="text-xs uppercase tracking-[0.3em] text-slate-400">
                     Krediye Uygunluk
                   </label>
-                  <select
+                  <AppCombobox
                     value={mulk.krediyeUygun || 'uygun'}
-                    onChange={(event) =>
-                      setMulk((prev) => ({
-                        ...prev,
-                        krediyeUygun: event.target.value as any
-                      }))
-                    }
-                    className="w-full rounded-2xl border border-white/10 bg-slate-900/90 px-4 py-3 text-sm text-white transition focus:border-cyan-400 focus:outline-none focus:ring-2 focus:ring-cyan-400/50"
-                  >
-                    <option value="uygun" className="bg-slate-900 text-white">Uygun</option>
-                    <option value="kismen" className="bg-slate-900 text-white">Kısmen / Bankaya Göre</option>
-                    <option value="uygun_degil" className="bg-slate-900 text-white">Uygun Değil</option>
-                  </select>
+                    onChange={(val) => setMulk((prev) => ({ ...prev, krediyeUygun: val as any }))}
+                    placeholder="Krediye uygunluk seçin"
+                    options={[
+                      { value: 'uygun', label: 'Uygun' },
+                      { value: 'kismen', label: 'Kısmen / Bankaya Göre' },
+                      { value: 'uygun_degil', label: 'Uygun Değil' },
+                    ]}
+                  />
                 </div>
 
                 {/* Oda Sayısı - Arsa için gizle */}
@@ -2482,17 +2475,15 @@ export default function DashboardOlusturPage() {
                                 placeholder="Değer"
                                 className="rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-sm text-white placeholder:text-slate-400"
                               />
-                              <select
+                              <AppCombobox
                                 value={snapshot.trend ?? 'stable'}
-                                onChange={(event) =>
-                                  handleSnapshotChange(index, 'trend', event.target.value)
-                                }
-                                className="rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-sm text-white"
-                              >
-                                <option value="up">Artış Eğilimi</option>
-                                <option value="down">Düşüş Eğilimi</option>
-                                <option value="stable">Stabil</option>
-                              </select>
+                                onChange={(val) => handleSnapshotChange(index, 'trend', val)}
+                                options={[
+                                  { value: 'up', label: 'Artış Eğilimi' },
+                                  { value: 'down', label: 'Düşüş Eğilimi' },
+                                  { value: 'stable', label: 'Stabil' },
+                                ]}
+                              />
                               <input
                                 value={snapshot.trendLabel || ''}
                                 onChange={(event) =>
@@ -2557,16 +2548,14 @@ export default function DashboardOlusturPage() {
                                 placeholder="Fiyat"
                                 className="rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-sm text-white placeholder:text-slate-400"
                               />
-                              <select
+                              <AppCombobox
                                 value={comparable.status}
-                                onChange={(event) =>
-                                  handleComparableChange(index, 'status', event.target.value)
-                                }
-                                className="rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-sm text-white"
-                              >
-                                <option value="Satışta">Satışta</option>
-                                <option value="Satıldı">Satıldı</option>
-                              </select>
+                                onChange={(val) => handleComparableChange(index, 'status', val)}
+                                options={[
+                                  { value: 'Satışta', label: 'Satışta' },
+                                  { value: 'Satıldı', label: 'Satıldı' },
+                                ]}
+                              />
                               <input
                                 value={comparable.size || ''}
                                 onChange={(event) =>
